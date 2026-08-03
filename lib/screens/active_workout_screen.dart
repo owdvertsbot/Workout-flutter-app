@@ -673,11 +673,13 @@ class _RunningTimerDialog extends StatefulWidget {
 
 class _RunningTimerDialogState extends State<_RunningTimerDialog> {
   late int _remaining;
+  late int _initialSeconds;
   
   @override
   void initState() {
     super.initState();
     _remaining = widget.seconds;
+    _initialSeconds = widget.seconds;
     _tick();
   }
 
@@ -691,29 +693,72 @@ class _RunningTimerDialogState extends State<_RunningTimerDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text('Rest'),
+      title: const Text('Rest Timer'),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
+          // Timer display
           Text(
             '${_remaining ~/ 60}:${(_remaining % 60).toString().padLeft(2, '0')}',
-            style: GoogleFonts.inter(
+            style: GoogleFonts.jetBrainsMono(
               fontSize: 64,
               fontWeight: FontWeight.bold,
-              color: _remaining <= 10 ? Colors.red : Colors.green,
+              color: _remaining <= 10 ? Colors.red : const Color(0xFF00E676),
             ),
+          ),
+          const SizedBox(height: 16),
+          // +30s / -15s adjustment buttons (FDS 3.4)
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              OutlinedButton(
+                onPressed: () => setState(() => _remaining += 30),
+                child: const Text('+30s'),
+              ),
+              const SizedBox(width: 12),
+              OutlinedButton(
+                onPressed: _remaining > 15 ? () => setState(() => _remaining -= 15) : null,
+                child: const Text('-15s'),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          // Time elapsed / total
+          Text(
+            'of ${_initialSeconds}s',
+            style: GoogleFonts.inter(fontSize: 12, color: Colors.grey),
           ),
           if (_remaining == 0) ...[
             const SizedBox(height: 16),
-            const Text('Time\'s up!', style: TextStyle(fontSize: 24)),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              decoration: BoxDecoration(
+                color: const Color(0xFFFFD700).withOpacity(0.2),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: const Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.check_circle, color: Color(0xFFFFD700)),
+                  SizedBox(width: 8),
+                  Text("Time's up!", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                ],
+              ),
+            ),
           ],
         ],
       ),
       actions: [
+        // Skip Rest button (FDS 3.4)
         if (_remaining > 0)
-          TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancel'))
-        else
-          ElevatedButton(onPressed: () => Navigator.pop(context), child: const Text('Done')),
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Skip Rest'),
+          ),
+        ElevatedButton(
+          onPressed: () => Navigator.pop(context),
+          child: const Text('Done'),
+        ),
       ],
     );
   }
