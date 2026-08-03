@@ -1,0 +1,214 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../providers/providers.dart';
+import '../main.dart';
+import 'active_workout_screen.dart';
+import 'onboarding_screen.dart';
+
+class SplashScreen extends ConsumerStatefulWidget {
+  const SplashScreen({super.key});
+
+  @override
+  ConsumerState<SplashScreen> createState() => _SplashScreenState();
+}
+
+class _SplashScreenState extends ConsumerState<SplashScreen>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _animationController;
+  late Animation<double> _pulseAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1500),
+    )..repeat(reverse: true);
+
+    _pulseAnimation = Tween<double>(begin: 0.95, end: 1.05).animate(
+      CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
+    );
+
+    _initializeApp();
+  }
+
+  Future<void> _initializeApp() async {
+    // Simulate initialization delay for visual effect
+    await Future.delayed(const Duration(milliseconds: 1500));
+
+    if (mounted) {
+      // Check for active workout
+      final activeWorkout = ref.read(activeWorkoutProvider);
+      
+      if (activeWorkout != null) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (_) => const _WorkoutRecoveryScreen()),
+        );
+      } else {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (_) => const OnboardingScreen()),
+        );
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: const Color(0xFF121212),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            // Animated Logo
+            ScaleTransition(
+              scale: _pulseAnimation,
+              child: Container(
+                width: 120,
+                height: 120,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  gradient: const LinearGradient(
+                    colors: [Color(0xFF00E676), Color(0xFF7C4DFF)],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: const Color(0xFF00E676).withOpacity(0.5),
+                      blurRadius: 30,
+                      spreadRadius: 5,
+                    ),
+                  ],
+                ),
+                child: const Center(
+                  child: Icon(
+                    Icons.fitness_center,
+                    size: 60,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 32),
+            Text(
+              'RPG WORKOUT',
+              style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                letterSpacing: 4,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'Level Up Your Fitness',
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                color: Colors.white.withOpacity(0.7),
+              ),
+            ),
+            const SizedBox(height: 48),
+            // Loading indicator
+            SizedBox(
+              width: 24,
+              height: 24,
+              child: CircularProgressIndicator(
+                strokeWidth: 2,
+                valueColor: AlwaysStoppedAnimation<Color>(
+                  Colors.white.withOpacity(0.5),
+                ),
+              ),
+            ),
+            const SizedBox(height: 48),
+            // Version text
+            Text(
+              'v1.0.0 (Build 1)',
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                color: Colors.white.withOpacity(0.3),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _WorkoutRecoveryScreen extends StatelessWidget {
+  const _WorkoutRecoveryScreen();
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: const Color(0xFF121212),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(
+              Icons.restore,
+              size: 64,
+              color: Color(0xFFFFD700),
+            ),
+            const SizedBox(height: 24),
+            Text(
+              'Workout Recovery',
+              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'We found an active workout session.',
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                color: Colors.white.withOpacity(0.7),
+              ),
+            ),
+            const SizedBox(height: 32),
+            ElevatedButton.icon(
+              onPressed: () {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => const ActiveWorkoutScreen(),
+                  ),
+                );
+              },
+              icon: const Icon(Icons.play_arrow),
+              label: const Text('Resume Workout'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF00E676),
+                foregroundColor: Colors.black,
+                padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+              ),
+            ),
+            const SizedBox(height: 16),
+            TextButton(
+              onPressed: () {
+                // Discard and go to dashboard
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => const MainNavigationScreen(),
+                  ),
+                );
+              },
+              child: const Text(
+                'Discard & Start Fresh',
+                style: TextStyle(color: Colors.white54),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
