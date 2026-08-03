@@ -218,6 +218,23 @@ class ActiveWorkoutNotifier extends StateNotifier<WorkoutSessionModel?> {
       await ref.read(playerProfileProvider.notifier).addXp(250);
     }
     
+    // Check rolling 2-month best PR (+100 XP per FDS)
+    final rollingPR = currentPRs.where((r) => r.recordType == 'ROLLING_2MO').toList();
+    final twoMonthsAgo = DateTime.now().subtract(const Duration(days: 60));
+    // For rolling PR, we check if this is higher than any weight in the last 2 months
+    // If no rolling PR exists or current weight beats it, award XP
+    if (rollingPR.isEmpty || (rollingPR.first.value < set.weightKg!)) {
+      await db.upsertPersonalRecord(PersonalRecordsCompanion(
+        id: Value(ref.read(uuidProvider).v4()),
+        exerciseId: Value(set.exerciseId),
+        recordType: const Value('ROLLING_2MO'),
+        value: Value(set.weightKg!),
+        achievedAt: Value(DateTime.now()),
+      ));
+      prDetected = true;
+      await ref.read(playerProfileProvider.notifier).addXp(100);
+    }
+    
     // Check volume PR (+150 XP per FDS)
     final volumePR = currentPRs.where((r) => r.recordType == 'VOLUME_PR').toList();
     if (volumePR.isEmpty || (volumePR.first.value < volume)) {

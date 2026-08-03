@@ -32,11 +32,11 @@ class RPGWorkoutApp extends ConsumerWidget {
       useMaterial3: true,
       brightness: brightness,
       colorScheme: ColorScheme.fromSeed(
-        seedColor: const Color(0xFF00E676), // Electric Emerald from FDS
+        seedColor: const Color(0xFF00E676),
         brightness: brightness,
         primary: const Color(0xFF00E676),
-        secondary: const Color(0xFF7C4DFF), // Deep Violet from FDS
-        tertiary: const Color(0xFFFFD700), // Gold from FDS
+        secondary: const Color(0xFF7C4DFF),
+        tertiary: const Color(0xFFFFD700),
         surface: isDark ? const Color(0xFF1E1E1E) : Colors.white,
       ),
       scaffoldBackgroundColor: isDark ? const Color(0xFF121212) : const Color(0xFFF5F5F5),
@@ -87,6 +87,8 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
   final List<Widget> _screens = [
     const DashboardScreen(),
     const ExerciseLibraryScreen(),
+    const HistoryScreen(),
+    const ProgressAnalyticsScreen(),
     const ProfileScreen(),
   ];
 
@@ -114,7 +116,17 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
             label: 'Exercises',
           ),
           NavigationDestination(
-            icon: Icon(Icons.person_outlined),
+            icon: Icon(Icons.history_outlined),
+            selectedIcon: Icon(Icons.history),
+            label: 'History',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.analytics_outlined),
+            selectedIcon: Icon(Icons.analytics),
+            label: 'Progress',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.person_outline),
             selectedIcon: Icon(Icons.person),
             label: 'Profile',
           ),
