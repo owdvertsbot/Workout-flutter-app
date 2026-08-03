@@ -10,3 +10,6 @@ export 'workout_summary_screen.dart';
 export 'settings_screen.dart';
 export 'history_screen.dart';
 export 'progress_analytics_screen.dart';
+export 'workout_builder_screen.dart';
+export 'achievements_screen.dart';
+export 'flex_card_share_screen.dart';

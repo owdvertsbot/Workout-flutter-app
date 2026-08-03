@@ -5,371 +5,107 @@ import '../providers/providers.dart';
 import '../models/models.dart';
 import 'active_workout_screen.dart';
 import 'exercise_library_screen.dart';
-import 'profile_screen.dart';
+import 'history_screen.dart';
 
-class DashboardScreen extends ConsumerWidget {
+class DashboardScreen extends ConsumerStatefulWidget {
   const DashboardScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<DashboardScreen> createState() => _DashboardScreenState();
+}
+
+class _DashboardScreenState extends ConsumerState<DashboardScreen> {
+  bool _hasNotification = true;
+  final List<Map<String, dynamic>> _notifications = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _notifications.addAll([
+      {'title': 'Quest Complete!', 'body': 'You earned +100 XP', 'time': DateTime.now(), 'icon': Icons.emoji_events, 'color': const Color(0xFFFFD700)},
+      {'title': 'New PR!', 'body': 'Hit a new bench press record', 'time': DateTime.now().subtract(const Duration(hours: 2)), 'icon': Icons.trending_up, 'color': const Color(0xFF00E676)},
+    ]);
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final profile = ref.watch(playerProfileProvider);
+    final quests = ref.watch(dailyQuestsProvider);
     final activeWorkout = ref.watch(activeWorkoutProvider);
 
     return Scaffold(
       body: SafeArea(
         child: CustomScrollView(
           slivers: [
-            // RPG Header
-            SliverToBoxAdapter(
-              child: _RPGHeader(profile: profile),
-            ),
-            
-            // Active Workout Banner
-            if (activeWorkout != null)
-              SliverToBoxAdapter(
-                child: _ActiveWorkoutBanner(workout: activeWorkout),
-              ),
-            
-            // Quick Actions
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Quick Actions',
-                      style: GoogleFonts.inter(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
+            // App Bar with Avatar and Notifications (FDS 3.3)
+            SliverAppBar(
+              floating: true,
+              backgroundColor: const Color(0xFF121212),
+              toolbarHeight: 70,
+              title: Row(
+                children: [
+                  GestureDetector(
+                    onTap: () => _showProfileSheet(context, profile),
+                    child: Container(
+                      width: 44,
+                      height: 44,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(color: const Color(0xFF7C4DFF), width: 2.5),
+                        gradient: const LinearGradient(colors: [Color(0xFF7C4DFF), Color(0xFF536DFE)]),
                       ),
+                      child: Center(child: Text('${profile.level}', style: GoogleFonts.inter(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16))),
                     ),
-                    const SizedBox(height: 12),
-                    Row(
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
                       children: [
-                        Expanded(
-                          child: _QuickActionCard(
-                            icon: Icons.play_arrow_rounded,
-                            title: 'Start Workout',
-                            subtitle: 'Begin a new session',
-                            color: const Color(0xFF6366F1),
-                            onTap: () => _startWorkout(context, ref),
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: _QuickActionCard(
-                            icon: Icons.fitness_center,
-                            title: 'Exercises',
-                            subtitle: 'Browse library',
-                            color: const Color(0xFF10B981),
-                            onTap: () => Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (_) => const ExerciseLibraryScreen()),
-                            ),
-                          ),
-                        ),
+                        Text(profile.characterTitle, style: GoogleFonts.inter(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16)),
+                        Text('Level ${profile.level}', style: GoogleFonts.inter(color: const Color(0xFF7C4DFF), fontSize: 12)),
                       ],
                     ),
-                  ],
-                ),
-              ),
-            ),
-            
-            // Stats Grid
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Your Stats',
-                      style: GoogleFonts.inter(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-                    _StatsGrid(profile: profile),
-                  ],
-                ),
-              ),
-            ),
-            
-            // Recent Workouts
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Recent Workouts',
-                      style: GoogleFonts.inter(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-                    _RecentWorkouts(),
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  void _startWorkout(BuildContext context, WidgetRef ref) async {
-    await ref.read(activeWorkoutProvider.notifier).startWorkout();
-    if (context.mounted) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (_) => const ActiveWorkoutScreen()),
-      );
-    }
-  }
-}
-
-class _RPGHeader extends StatelessWidget {
-  final PlayerProfileModel profile;
-
-  const _RPGHeader({required this.profile});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.all(16),
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [Color(0xFF6366F1), Color(0xFF8B5CF6)],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: const Color(0xFF6366F1).withOpacity(0.3),
-            blurRadius: 20,
-            offset: const Offset(0, 10),
-          ),
-        ],
-      ),
-      child: Column(
-        children: [
-          Row(
-            children: [
-              // Avatar
-              Container(
-                width: 60,
-                height: 60,
-                decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.2),
-                  shape: BoxShape.circle,
-                  border: Border.all(color: Colors.white, width: 2),
-                ),
-                child: Center(
-                  child: Text(
-                    'Lv${profile.level}',
-                    style: GoogleFonts.inter(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 14,
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(width: 16),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Adventurer',
-                      style: GoogleFonts.inter(
-                        color: Colors.white,
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      '${profile.stats.strength} STR • ${profile.stats.vitality} VIT',
-                      style: GoogleFonts.inter(
-                        color: Colors.white.withOpacity(0.8),
-                        fontSize: 12,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              IconButton(
-                onPressed: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => const ProfileScreen()),
-                ),
-                icon: const Icon(Icons.person, color: Colors.white),
-              ),
-            ],
-          ),
-          const SizedBox(height: 16),
-          // XP Bar
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'XP',
-                    style: GoogleFonts.inter(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w600,
-                      fontSize: 12,
-                    ),
-                  ),
-                  Text(
-                    '${profile.currentXp} / ${profile.xpToNextLevel}',
-                    style: GoogleFonts.inter(
-                      color: Colors.white.withOpacity(0.8),
-                      fontSize: 12,
-                    ),
                   ),
                 ],
               ),
-              const SizedBox(height: 6),
-              ClipRRect(
-                borderRadius: BorderRadius.circular(10),
-                child: LinearProgressIndicator(
-                  value: profile.levelProgress.clamp(0.0, 1.0),
-                  backgroundColor: Colors.white.withOpacity(0.2),
-                  valueColor: const AlwaysStoppedAnimation<Color>(Colors.white),
-                  minHeight: 8,
+              actions: [
+                Stack(
+                  children: [
+                    IconButton(icon: const Icon(Icons.notifications_outlined, size: 28), onPressed: () => _showNotificationsSheet(context)),
+                    if (_hasNotification)
+                      Positioned(right: 10, top: 10, child: Container(width: 10, height: 10, decoration: const BoxDecoration(color: Color(0xFFFFD700), shape: BoxShape.circle))),
+                  ],
                 ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _ActiveWorkoutBanner extends StatelessWidget {
-  final WorkoutSessionModel workout;
-
-  const _ActiveWorkoutBanner({required this.workout});
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () => Navigator.push(
-        context,
-        MaterialPageRoute(builder: (_) => const ActiveWorkoutScreen()),
-      ),
-      child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 16),
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: const Color(0xFF10B981),
-          borderRadius: BorderRadius.circular(16),
-        ),
-        child: Row(
-          children: [
-            Container(
-              padding: const EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.2),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: const Icon(Icons.fitness_center, color: Colors.white),
+                const SizedBox(width: 8),
+              ],
             ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    workout.title ?? 'Workout in Progress',
-                    style: GoogleFonts.inter(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  Text(
-                    '${workout.completedSets} sets completed • ${_formatDuration(workout.duration)}',
-                    style: GoogleFonts.inter(
-                      color: Colors.white.withOpacity(0.8),
-                      fontSize: 12,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const Icon(Icons.arrow_forward_ios, color: Colors.white, size: 16),
-          ],
-        ),
-      ),
-    );
-  }
-
-  String _formatDuration(Duration duration) {
-    final hours = duration.inHours;
-    final minutes = duration.inMinutes % 60;
-    if (hours > 0) {
-      return '${hours}h ${minutes}m';
-    }
-    return '${minutes}m';
-  }
-}
-
-class _QuickActionCard extends StatelessWidget {
-  final IconData icon;
-  final String title;
-  final String subtitle;
-  final Color color;
-  final VoidCallback onTap;
-
-  const _QuickActionCard({
-    required this.icon,
-    required this.title,
-    required this.subtitle,
-    required this.color,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: color.withOpacity(0.1),
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: color.withOpacity(0.2)),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Icon(icon, color: color, size: 28),
-            const SizedBox(height: 12),
-            Text(
-              title,
-              style: GoogleFonts.inter(
-                fontWeight: FontWeight.bold,
-                fontSize: 14,
-              ),
-            ),
-            Text(
-              subtitle,
-              style: GoogleFonts.inter(
-                color: Colors.grey[600],
-                fontSize: 12,
+            SliverPadding(
+              padding: const EdgeInsets.all(16),
+              sliver: SliverList(
+                delegate: SliverChildListDelegate([
+                  _HeroBannerCard(profile: profile),
+                  const SizedBox(height: 24),
+                  _SectionHeader(title: 'Quick Start', action: TextButton(onPressed: () {}, child: const Text('Routines'))),
+                  const SizedBox(height: 12),
+                  _StartWorkoutCard(activeWorkout: activeWorkout),
+                  const SizedBox(height: 12),
+                  _RoutineCards(),
+                  const SizedBox(height: 24),
+                  _SectionHeader(title: 'Daily Missions', action: TextButton(onPressed: () {}, child: const Text('All Quests'))),
+                  const SizedBox(height: 12),
+                  ...quests.take(3).map((quest) => _QuestCard(quest: quest)),
+                  const SizedBox(height: 24),
+                  _SectionHeader(title: 'Weekly Summary'),
+                  const SizedBox(height: 12),
+                  _WeeklyHypertrophySummary(profile: profile),
+                  const SizedBox(height: 24),
+                  _SectionHeader(title: 'Recent Workouts', action: TextButton(onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const HistoryScreen())), child: const Text('See All'))),
+                  const SizedBox(height: 12),
+                  _RecentWorkoutsSection(),
+                  const SizedBox(height: 32),
+                ]),
               ),
             ),
           ],
@@ -377,207 +113,219 @@ class _QuickActionCard extends StatelessWidget {
       ),
     );
   }
+
+  void _showNotificationsSheet(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: const Color(0xFF1E1E1E),
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
+      isScrollControlled: true,
+      builder: (context) => DraggableScrollableSheet(
+        initialChildSize: 0.5, minChildSize: 0.3, maxChildSize: 0.9, expand: false,
+        builder: (context, scrollController) => Column(children: [
+          Container(width: 40, height: 4, margin: const EdgeInsets.only(top: 12), decoration: BoxDecoration(color: Colors.grey[600], borderRadius: BorderRadius.circular(2))),
+          Padding(padding: const EdgeInsets.all(20), child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+            Text('Notifications', style: GoogleFonts.inter(fontSize: 20, fontWeight: FontWeight.bold)),
+            TextButton(onPressed: () { setState(() => _hasNotification = false); Navigator.pop(context); }, child: const Text('Clear All')),
+          ])),
+          Expanded(child: _notifications.isEmpty ? Center(child: Text('No notifications', style: GoogleFonts.inter(color: Colors.grey))) : ListView.builder(
+            controller: scrollController, padding: const EdgeInsets.symmetric(horizontal: 20), itemCount: _notifications.length,
+            itemBuilder: (context, index) {
+              final notif = _notifications[index];
+              return Container(margin: const EdgeInsets.only(bottom: 12), padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(color: (notif['color'] as Color).withOpacity(0.1), borderRadius: BorderRadius.circular(12), border: Border.all(color: (notif['color'] as Color).withOpacity(0.3))),
+                child: Row(children: [
+                  Icon(notif['icon'] as IconData, color: notif['color'] as Color),
+                  const SizedBox(width: 12),
+                  Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [Text(notif['title'], style: GoogleFonts.inter(fontWeight: FontWeight.bold)), Text(notif['body'], style: GoogleFonts.inter(fontSize: 12, color: Colors.grey))])),
+                  Text(_formatTime(notif['time'] as DateTime), style: GoogleFonts.inter(fontSize: 10, color: Colors.grey)),
+                ]));
+            },
+          )),
+        ]),
+      ),
+    );
+  }
+
+  void _showProfileSheet(BuildContext context, PlayerProfileModel profile) {
+    showModalBottomSheet(context: context, backgroundColor: const Color(0xFF1E1E1E), shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
+      builder: (context) => Padding(padding: const EdgeInsets.all(24), child: Column(mainAxisSize: MainAxisSize.min, children: [
+        Container(width: 80, height: 80, decoration: BoxDecoration(shape: BoxShape.circle, gradient: const LinearGradient(colors: [Color(0xFF7C4DFF), Color(0xFF536DFE)]), boxShadow: [BoxShadow(color: const Color(0xFF7C4DFF).withOpacity(0.5), blurRadius: 20)]), child: Center(child: Text('${profile.level}', style: GoogleFonts.inter(color: Colors.white, fontSize: 32, fontWeight: FontWeight.bold)))),
+        const SizedBox(height: 16),
+        Text(profile.characterTitle, style: GoogleFonts.inter(fontSize: 24, fontWeight: FontWeight.bold)),
+        const SizedBox(height: 24),
+        _ProfileStatRow('Total XP', '${profile.currentXp}'),
+        _ProfileStatRow('XP to Next Level', '${profile.xpToNextLevel}'),
+        _ProfileStatRow('Total Volume', '${(profile.totalVolumeKg / 1000).toStringAsFixed(1)}t'),
+        _ProfileStatRow('Streak', '${profile.streakDays} days'),
+        const SizedBox(height: 24),
+      ]),
+    ));
+  }
+
+  String _formatTime(DateTime time) {
+    final diff = DateTime.now().difference(time);
+    if (diff.inMinutes < 60) return '${diff.inMinutes}m';
+    if (diff.inHours < 24) return '${diff.inHours}h';
+    return '${diff.inDays}d';
+  }
 }
 
-class _StatsGrid extends StatelessWidget {
+class _ProfileStatRow extends StatelessWidget {
+  final String label; final String value;
+  const _ProfileStatRow(this.label, this.value);
+  @override
+  Widget build(BuildContext context) => Padding(padding: const EdgeInsets.symmetric(vertical: 8), child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [Text(label, style: GoogleFonts.inter(color: Colors.grey)), Text(value, style: GoogleFonts.inter(fontWeight: FontWeight.bold))]));
+}
+
+class _HeroBannerCard extends StatelessWidget {
   final PlayerProfileModel profile;
+  const _HeroBannerCard({required this.profile});
+  @override
+  Widget build(BuildContext context) => Container(
+    padding: const EdgeInsets.all(20),
+    decoration: BoxDecoration(gradient: const LinearGradient(colors: [Color(0xFF7C4DFF), Color(0xFF536DFE)], begin: Alignment.topLeft, end: Alignment.bottomRight), borderRadius: BorderRadius.circular(20), boxShadow: [BoxShadow(color: const Color(0xFF7C4DFF).withOpacity(0.4), blurRadius: 25, offset: const Offset(0, 10))]),
+    child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+        Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Text('Level ${profile.level}', style: GoogleFonts.inter(color: Colors.white, fontSize: 32, fontWeight: FontWeight.bold)),
+          Text(profile.characterTitle, style: GoogleFonts.inter(color: Colors.white.withOpacity(0.8), fontSize: 14)),
+        ]),
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          decoration: BoxDecoration(color: Colors.white.withOpacity(0.2), borderRadius: BorderRadius.circular(20)),
+          child: Row(children: [const Icon(Icons.local_fire_department, color: Colors.orange, size: 24), const SizedBox(width: 4), Text('${profile.streakDays}', style: GoogleFonts.inter(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18))]),
+        ),
+      ]),
+      const SizedBox(height: 16),
+      Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+          Text('XP Progress', style: GoogleFonts.inter(color: Colors.white.withOpacity(0.7), fontSize: 12)),
+          Text('${profile.currentXp} / ${profile.xpToNextLevel}', style: GoogleFonts.inter(color: const Color(0xFFFFD700), fontSize: 12, fontWeight: FontWeight.bold))]),
+        const SizedBox(height: 8),
+        ClipRRect(borderRadius: BorderRadius.circular(6), child: LinearProgressIndicator(value: profile.levelProgress, backgroundColor: Colors.white.withOpacity(0.2), valueColor: const AlwaysStoppedAnimation<Color>(Color(0xFFFFD700)), minHeight: 12)),
+      ]),
+    ]),
+  );
+}
 
-  const _StatsGrid({required this.profile});
+class _SectionHeader extends StatelessWidget {
+  final String title; final Widget? action;
+  const _SectionHeader({required this.title, this.action});
+  @override
+  Widget build(BuildContext context) => Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [Text(title, style: GoogleFonts.inter(fontSize: 18, fontWeight: FontWeight.bold)), if (action != null) action!]);
+}
 
+class _StartWorkoutCard extends StatelessWidget {
+  final WorkoutSessionModel? activeWorkout;
+  const _StartWorkoutCard({this.activeWorkout});
+  @override
+  Widget build(BuildContext context) => SizedBox(
+    width: double.infinity, height: 56,
+    child: ElevatedButton.icon(
+      onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const ActiveWorkoutScreen())),
+      icon: const Icon(Icons.play_arrow_rounded, size: 28),
+      label: Text(activeWorkout != null ? 'Resume Workout' : 'Start Empty Workout', style: GoogleFonts.inter(fontSize: 16, fontWeight: FontWeight.bold)),
+      style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF00E676), foregroundColor: Colors.black, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)), elevation: 4),
+    ),
+  );
+}
+
+class _RoutineCards extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return GridView.count(
-      crossAxisCount: 2,
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      mainAxisSpacing: 12,
-      crossAxisSpacing: 12,
-      childAspectRatio: 1.5,
-      children: [
-        _StatCard(
-          icon: Icons.local_fire_department,
-          value: '${profile.streakDays}',
-          label: 'Day Streak',
-          color: Colors.orange,
-        ),
-        _StatCard(
-          icon: Icons.fitness_center,
-          value: '${(profile.totalVolumeKg / 1000).toStringAsFixed(1)}t',
-          label: 'Total Volume',
-          color: Colors.blue,
-        ),
-        _StatCard(
-          icon: Icons.bolt,
-          value: '${profile.stats.strength}',
-          label: 'Strength',
-          color: Colors.red,
-        ),
-        _StatCard(
-          icon: Icons.shield,
-          value: '${profile.stats.vitality}',
-          label: 'Vitality',
-          color: Colors.green,
-        ),
-      ],
-    );
+    final routines = [
+      {'name': 'Push Day', 'exercises': 6, 'color': Colors.red},
+      {'name': 'Pull Day', 'exercises': 5, 'color': Colors.blue},
+      {'name': 'Leg Day', 'exercises': 7, 'color': Colors.green},
+    ];
+    return SizedBox(height: 100, child: ListView.builder(
+      scrollDirection: Axis.horizontal, itemCount: routines.length + 1,
+      itemBuilder: (context, index) {
+        if (index == 0) return Container(width: 120, margin: const EdgeInsets.only(right: 12), decoration: BoxDecoration(color: Colors.grey.withOpacity(0.2), borderRadius: BorderRadius.circular(12), border: Border.all(color: Colors.grey.withOpacity(0.3))), child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [const Icon(Icons.add, color: Colors.grey, size: 32), const SizedBox(height: 4), Text('Create', style: GoogleFonts.inter(color: Colors.grey, fontSize: 12))]));
+        final routine = routines[index - 1];
+        return Container(width: 140, margin: const EdgeInsets.only(right: 12), padding: const EdgeInsets.all(12), decoration: BoxDecoration(color: (routine['color'] as Color).withOpacity(0.15), borderRadius: BorderRadius.circular(12), border: Border.all(color: (routine['color'] as Color).withOpacity(0.3))), child: Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisAlignment: MainAxisAlignment.center, children: [Text(routine['name'] as String, style: GoogleFonts.inter(fontWeight: FontWeight.bold, fontSize: 14)), Text('${routine['exercises']} exercises', style: GoogleFonts.inter(color: Colors.grey, fontSize: 12))]));
+      },
+    ));
   }
 }
 
-class _StatCard extends StatelessWidget {
-  final IconData icon;
-  final String value;
-  final String label;
-  final Color color;
-
-  const _StatCard({
-    required this.icon,
-    required this.value,
-    required this.label,
-    required this.color,
-  });
-
+class _QuestCard extends ConsumerWidget {
+  final QuestModel quest;
+  const _QuestCard({required this.quest});
   @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Row(
-            children: [
-              Icon(icon, color: color, size: 18),
-              const SizedBox(width: 6),
-              Text(
-                value,
-                style: GoogleFonts.inter(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18,
-                ),
-              ),
-            ],
-          ),
+  Widget build(BuildContext context, WidgetRef ref) => Card(
+    margin: const EdgeInsets.only(bottom: 8),
+    child: InkWell(
+      onTap: quest.canClaim && !quest.isCompleted ? () => ref.read(dailyQuestsProvider.notifier).claimQuest(quest.id) : null,
+      borderRadius: BorderRadius.circular(12),
+      child: Padding(padding: const EdgeInsets.all(16), child: Row(children: [
+        Container(width: 44, height: 44, decoration: BoxDecoration(color: const Color(0xFFFFD700).withOpacity(0.2), borderRadius: BorderRadius.circular(12)), child: Icon(quest.isCompleted ? Icons.check_circle : Icons.emoji_events, color: const Color(0xFFFFD700))),
+        const SizedBox(width: 12),
+        Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Row(children: [Expanded(child: Text(quest.title, style: GoogleFonts.inter(fontWeight: FontWeight.bold))), if (quest.isCompleted) Container(padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2), decoration: BoxDecoration(color: Colors.green.withOpacity(0.2), borderRadius: BorderRadius.circular(8)), child: Text('✓', style: GoogleFonts.inter(color: Colors.green, fontWeight: FontWeight.bold)))]),
           const SizedBox(height: 4),
-          Text(
-            label,
-            style: GoogleFonts.inter(
-              color: Colors.grey[600],
-              fontSize: 12,
-            ),
-          ),
-        ],
-      ),
-    );
+          Row(children: [Expanded(child: LinearProgressIndicator(value: quest.progress, backgroundColor: Colors.grey[800], valueColor: const AlwaysStoppedAnimation<Color>(Color(0xFF00E676)), minHeight: 6)), const SizedBox(width: 12), Text('${quest.currentValue}/${quest.targetValue}', style: GoogleFonts.inter(fontSize: 12, color: Colors.grey))]),
+        ])),
+        const SizedBox(width: 12),
+        Container(padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6), decoration: BoxDecoration(color: const Color(0xFFFFD700).withOpacity(0.2), borderRadius: BorderRadius.circular(8)), child: Text(quest.isCompleted ? 'Claimed' : '+${quest.xpReward} XP', style: GoogleFonts.inter(color: const Color(0xFFFFD700), fontWeight: FontWeight.bold, fontSize: 12))),
+      ])),
+    ),
+  );
+}
+
+class _WeeklyHypertrophySummary extends StatelessWidget {
+  final PlayerProfileModel profile;
+  const _WeeklyHypertrophySummary({required this.profile});
+  @override
+  Widget build(BuildContext context) {
+    final weekData = [true, true, false, true, false, true, false];
+    final days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+    return Card(child: Padding(padding: const EdgeInsets.all(16), child: Column(children: [
+      Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: List.generate(7, (index) {
+        final hasWorkout = weekData[index];
+        return Column(children: [
+          Container(width: 40, height: 40, decoration: BoxDecoration(color: hasWorkout ? const Color(0xFF00E676).withOpacity(0.2) : Colors.grey.withOpacity(0.1), borderRadius: BorderRadius.circular(10), border: hasWorkout ? Border.all(color: const Color(0xFF00E676), width: 2) : null), child: Icon(hasWorkout ? Icons.check : Icons.close, color: hasWorkout ? const Color(0xFF00E676) : Colors.grey, size: 20)),
+          const SizedBox(height: 4),
+          Text(days[index], style: GoogleFonts.inter(fontSize: 10, color: Colors.grey)),
+        ]);
+      })),
+      const SizedBox(height: 16),
+      Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
+        _SummaryStatItem(value: '${weekData.where((w) => w).length}', label: 'Workouts', color: const Color(0xFF00E676)),
+        _SummaryStatItem(value: '${weekData.where((w) => w).length * 45}', label: 'Minutes', color: Colors.blue),
+        _SummaryStatItem(value: '${(profile.totalVolumeKg / 7 / 1000).toStringAsFixed(1)}t', label: 'Avg Volume', color: Colors.orange),
+      ]),
+    ])));
   }
 }
 
-class _RecentWorkouts extends ConsumerWidget {
+class _SummaryStatItem extends StatelessWidget {
+  final String value; final String label; final Color color;
+  const _SummaryStatItem({required this.value, required this.label, required this.color});
+  @override
+  Widget build(BuildContext context) => Column(children: [Text(value, style: GoogleFonts.inter(fontSize: 20, fontWeight: FontWeight.bold, color: color)), Text(label, style: GoogleFonts.inter(fontSize: 11, color: Colors.grey))]);
+}
+
+class _RecentWorkoutsSection extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final historyAsync = ref.watch(workoutHistoryProvider);
-
     return historyAsync.when(
       loading: () => const Center(child: CircularProgressIndicator()),
       error: (e, _) => Text('Error: $e'),
       data: (workouts) {
-        final completed = workouts.where((w) => w.status == WorkoutStatus.completed).take(5).toList();
-        
-        if (completed.isEmpty) {
-          return Container(
-            padding: const EdgeInsets.all(24),
-            decoration: BoxDecoration(
-              color: Colors.grey[100],
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Column(
-              children: [
-                Icon(Icons.fitness_center, size: 48, color: Colors.grey[400]),
-                const SizedBox(height: 8),
-                Text(
-                  'No workouts yet',
-                  style: GoogleFonts.inter(color: Colors.grey[600]),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  'Start your first workout to see history',
-                  style: GoogleFonts.inter(color: Colors.grey[400], fontSize: 12),
-                ),
-              ],
-            ),
-          );
-        }
-
-        return Column(
-          children: completed.map((workout) => _WorkoutHistoryTile(workout: workout)).toList(),
-        );
+        if (workouts.isEmpty) return Card(child: Padding(padding: const EdgeInsets.all(32), child: Column(children: [Icon(Icons.fitness_center, size: 48, color: Colors.grey[600]), const SizedBox(height: 16), Text('No workouts yet', style: GoogleFonts.inter(color: Colors.grey[600])), const SizedBox(height: 8), Text('Start your first workout!', style: GoogleFonts.inter(color: Colors.grey[700], fontSize: 12))])));
+        return Column(children: workouts.take(3).map((workout) => Card(margin: const EdgeInsets.only(bottom: 8), child: ListTile(
+          leading: Container(width: 44, height: 44, decoration: BoxDecoration(color: const Color(0xFF00E676).withOpacity(0.2), borderRadius: BorderRadius.circular(10)), child: const Icon(Icons.fitness_center, color: Color(0xFF00E676))),
+          title: Text(workout.title ?? 'Workout', style: GoogleFonts.inter(fontWeight: FontWeight.bold)),
+          subtitle: Text(_formatDate(workout.startTime), style: GoogleFonts.inter(fontSize: 12, color: Colors.grey)),
+          trailing: Text(_formatDuration(workout.duration), style: GoogleFonts.inter(color: const Color(0xFF00E676), fontWeight: FontWeight.bold)),
+          onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const ActiveWorkoutScreen())),
+        ))).toList());
       },
     );
   }
-}
-
-class _WorkoutHistoryTile extends StatelessWidget {
-  final WorkoutSessionModel workout;
-
-  const _WorkoutHistoryTile({required this.workout});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 8),
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: Colors.grey[100],
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Row(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              color: Colors.green.withOpacity(0.2),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: const Icon(Icons.check_circle, color: Colors.green, size: 20),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  workout.title ?? 'Workout',
-                  style: GoogleFonts.inter(fontWeight: FontWeight.w600),
-                ),
-                Text(
-                  _formatDate(workout.startTime),
-                  style: GoogleFonts.inter(color: Colors.grey[600], fontSize: 12),
-                ),
-              ],
-            ),
-          ),
-          Text(
-            _formatDuration(workout.duration),
-            style: GoogleFonts.inter(color: Colors.grey[600], fontSize: 12),
-          ),
-        ],
-      ),
-    );
-  }
-
-  String _formatDate(DateTime date) {
-    return '${date.day}/${date.month}/${date.year}';
-  }
-
-  String _formatDuration(Duration duration) {
-    final hours = duration.inHours;
-    final minutes = duration.inMinutes % 60;
-    if (hours > 0) {
-      return '${hours}h ${minutes}m';
-    }
-    return '${minutes}m';
-  }
+  String _formatDate(DateTime date) => '${date.day}/${date.month}/${date.year}';
+  String _formatDuration(Duration duration) { final hours = duration.inHours; final minutes = duration.inMinutes % 60; return hours > 0 ? '${hours}h ${minutes}m' : '${minutes}m'; }
 }

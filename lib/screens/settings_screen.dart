@@ -74,6 +74,49 @@ class SettingsScreen extends ConsumerWidget {
             onChanged: (value) => settingsNotifier.setAutoStartRestTimer(value),
           ),
 
+          // Health Platforms Section (FDS 3.12)
+          _buildSectionHeader('Health Platforms'),
+          SwitchListTile(
+            secondary: const Icon(Icons.apple),
+            title: const Text('Apple Health'),
+            subtitle: const Text('Sync workout data with Apple Health'),
+            value: false,
+            onChanged: (value) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text(value ? 'Apple Health enabled' : 'Apple Health disabled')),
+              );
+            },
+          ),
+          SwitchListTile(
+            secondary: const Icon(Icons.favorite),
+            title: const Text('Health Connect'),
+            subtitle: const Text('Sync workout data with Health Connect'),
+            value: false,
+            onChanged: (value) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text(value ? 'Health Connect enabled' : 'Health Connect disabled')),
+              );
+            },
+          ),
+          _buildSettingsTile(
+            context: context,
+            icon: Icons.sync,
+            title: 'Background Sync Frequency',
+            subtitle: 'Every 15 minutes',
+            onTap: () => _showSyncFrequencyPicker(context),
+          ),
+          SwitchListTile(
+            secondary: const Icon(Icons.cloud_sync),
+            title: const Text('Cloud Sync'),
+            subtitle: const Text('Sync data across devices'),
+            value: false,
+            onChanged: (value) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text(value ? 'Cloud sync enabled' : 'Cloud sync disabled')),
+              );
+            },
+          ),
+
           // Data & Backup Section
           _buildSectionHeader('Data & Backup'),
           _buildSettingsTile(
@@ -264,6 +307,32 @@ class SettingsScreen extends ConsumerWidget {
                 ref.read(userSettingsProvider.notifier).setDefaultRestSeconds(seconds);
               }
               Navigator.pop(context);
+            },
+          )),
+          const SizedBox(height: 16),
+        ],
+      ),
+    );
+  }
+
+  void _showSyncFrequencyPicker(BuildContext context) {
+    final frequencies = ['5 minutes', '15 minutes', '30 minutes', '1 hour', 'Manual only'];
+    showModalBottomSheet(
+      context: context,
+      builder: (context) => Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Padding(
+            padding: EdgeInsets.all(16),
+            child: Text('Background Sync Frequency', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+          ),
+          ...frequencies.map((freq) => ListTile(
+            title: Text(freq),
+            onTap: () {
+              Navigator.pop(context);
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('Sync frequency set to $freq')),
+              );
             },
           )),
           const SizedBox(height: 16),
