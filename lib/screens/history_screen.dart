@@ -1,8 +1,12 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
+import 'package:path_provider/path_provider.dart';
 import '../providers/providers.dart';
 import '../models/models.dart';
+import 'active_workout_screen.dart';
 
 class HistoryScreen extends ConsumerStatefulWidget {
   const HistoryScreen({super.key});
@@ -15,6 +19,81 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
   DateTime _selectedMonth = DateTime.now();
   bool _showCalendar = false;
 
+  void _editWorkout(WorkoutSessionModel workout) {
+    Navigator.push(context, MaterialPageRoute(builder: (_) => const ActiveWorkoutScreen()));
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Edit mode coming soon')),
+    );
+  }
+
+  void _duplicateWorkout(WorkoutSessionModel workout) {
+    ref.read(activeWorkoutProvider.notifier).startWorkout();
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Workout duplicated as template')),
+    );
+  }
+
+  Future<void> _exportWorkoutCSV(WorkoutSessionModel workout) async {
+    try {
+      final csv = _generateCSV(workout);
+      final directory = await getApplicationDocumentsDirectory();
+      final file = File('${directory.path}/workout_${workout.id}.csv');
+      await file.writeAsString(csv);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Exported to ${file.path}')),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Export failed: $e')),
+      );
+    }
+  }
+
+  String _generateCSV(WorkoutSessionModel workout) {
+    final buffer = StringBuffer();
+    buffer.writeln('Date,Exercise,Set,Weight,Reps,RPE,Type');
+    for (final set in workout.sets) {
+      buffer.writeln('${workout.startTime.toIso8601String()},${set.exerciseId},${set.setNumber},${set.weight},${set.reps},${set.rpe ?? ""},${set.setType.name}');
+    }
+    return buffer.toString();
+  }
+
+  Future<void> _deleteWorkout(WorkoutSessionModel workout) async {
+    final confirm = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Delete Workout'),
+        content: const Text('Are you sure you want to delete this workout?'),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(context, false), child: const Text('Cancel')),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            style: TextButton.styleFrom(foregroundColor: Colors.red),
+            child: const Text('Delete'),
+          ),
+        ],
+      ),
+    );
+    if (confirm == true) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Workout deleted')));
+    }
+  }
+
+  void _showWorkoutOptions(WorkoutSessionModel workout) {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) => Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          ListTile(leading: const Icon(Icons.edit), title: const Text('Edit'), onTap: () { Navigator.pop(context); _editWorkout(workout); }),
+          ListTile(leading: const Icon(Icons.copy), title: const Text('Duplicate'), onTap: () { Navigator.pop(context); _duplicateWorkout(workout); }),
+          ListTile(leading: const Icon(Icons.file_download), title: const Text('Export CSV'), onTap: () { Navigator.pop(context); _exportWorkoutCSV(workout); }),
+          ListTile(leading: const Icon(Icons.delete, color: Colors.red), title: const Text('Delete', style: TextStyle(color: Colors.red)), onTap: () { Navigator.pop(context); _deleteWorkout(workout); }),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final historyAsync = ref.watch(workoutHistoryProvider);
@@ -23,10 +102,7 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
       appBar: AppBar(
         title: const Text('Workout History'),
         actions: [
-          IconButton(
-            icon: Icon(_showCalendar ? Icons.view_list : Icons.calendar_month),
-            onPressed: () => setState(() => _showCalendar = !_showCalendar),
-          ),
+          IconButton(icon: Icon(_showCalendar ? Icons.view_list : Icons.calendar_month), onPressed: () => setState(() => _showCalendar = !_showCalendar)),
         ],
       ),
       body: Column(

@@ -106,39 +106,60 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
             // Navigation buttons
             Padding(
               padding: const EdgeInsets.all(24),
-              child: Row(
+              child: Column(
                 children: [
-                  if (_currentPage > 0)
-                    Expanded(
-                      child: OutlinedButton(
-                        onPressed: () {
-                          _pageController.previousPage(
-                            duration: const Duration(milliseconds: 300),
-                            curve: Curves.easeInOut,
-                          );
-                        },
+                  // Cloud sync button (FDS 3.2)
+                  if (_currentPage == 2) ...[
+                    SizedBox(
+                      width: double.infinity,
+                      child: OutlinedButton.icon(
+                        onPressed: _onCloudSync,
+                        icon: const Icon(Icons.cloud),
+                        label: const Text('Sign In / Create Account'),
                         style: OutlinedButton.styleFrom(
-                          foregroundColor: Colors.white,
-                          side: const BorderSide(color: Colors.white54),
+                          foregroundColor: const Color(0xFF7C4DFF),
+                          side: const BorderSide(color: Color(0xFF7C4DFF)),
                           padding: const EdgeInsets.symmetric(vertical: 16),
                         ),
-                        child: const Text('Back'),
                       ),
                     ),
-                  if (_currentPage > 0) const SizedBox(width: 16),
-                  Expanded(
-                    flex: _currentPage == 0 ? 1 : 1,
-                    child: ElevatedButton(
-                      onPressed: _onNext,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF00E676),
-                        foregroundColor: Colors.black,
-                        padding: const EdgeInsets.symmetric(vertical: 16),
+                    const SizedBox(height: 12),
+                  ],
+                  Row(
+                    children: [
+                      if (_currentPage > 0)
+                        Expanded(
+                          child: OutlinedButton(
+                            onPressed: () {
+                              _pageController.previousPage(
+                                duration: const Duration(milliseconds: 300),
+                                curve: Curves.easeInOut,
+                              );
+                            },
+                            style: OutlinedButton.styleFrom(
+                              foregroundColor: Colors.white,
+                              side: const BorderSide(color: Colors.white54),
+                              padding: const EdgeInsets.symmetric(vertical: 16),
+                            ),
+                            child: const Text('Back'),
+                          ),
+                        ),
+                      if (_currentPage > 0) const SizedBox(width: 16),
+                      Expanded(
+                        flex: _currentPage == 0 ? 1 : 1,
+                        child: ElevatedButton(
+                          onPressed: _onNext,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFF00E676),
+                            foregroundColor: Colors.black,
+                            padding: const EdgeInsets.symmetric(vertical: 16),
+                          ),
+                          child: Text(
+                            _currentPage == 2 ? 'Continue as Guest' : 'Continue',
+                          ),
+                        ),
                       ),
-                      child: Text(
-                        _currentPage == 2 ? 'Get Started' : 'Continue',
-                      ),
-                    ),
+                    ],
                   ),
                 ],
               ),
@@ -435,4 +456,27 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
       );
     }
   }
+
+  void _onCloudSync() {
+    // Analytics
+    AnalyticsService.log('onboarding_account_created');
+    
+    // Show cloud sync dialog
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Cloud Sync'),
+        content: const Text('Cloud sync allows you to backup and restore your data across devices. This feature will be available in a future update.'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('OK'),
+          ),
+        ],
+      ),
+    );
+  }
 }
+
+// Re-export AnalyticsService
+export '../screens/splash_screen.dart' show AnalyticsService;

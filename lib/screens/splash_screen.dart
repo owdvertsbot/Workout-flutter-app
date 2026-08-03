@@ -5,6 +5,14 @@ import '../main.dart';
 import 'active_workout_screen.dart';
 import 'onboarding_screen.dart';
 
+// Analytics service for FDS events
+class AnalyticsService {
+  static void log(String event, [Map<String, dynamic>? params]) {
+    // In production, this would send to analytics
+    debugPrint('Analytics: $event ${params ?? ""}');
+  }
+}
+
 class SplashScreen extends ConsumerStatefulWidget {
   const SplashScreen({super.key});
 
@@ -16,10 +24,14 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
     with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation<double> _pulseAnimation;
+  String _statusMessage = 'Initializing...';
+  bool _hasError = false;
 
   @override
   void initState() {
     super.initState();
+    AnalyticsService.log('app_cold_boot_started');
+    
     _animationController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 1500),
@@ -33,31 +45,39 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
   }
 
   Future<void> _initializeApp() async {
-    // Simulate initialization delay for visual effect
-    await Future.delayed(const Duration(milliseconds: 1500));
-
-    if (mounted) {
-      // Check for active workout
-      final activeWorkout = ref.read(activeWorkoutProvider);
+    try {
+      setState(() => _statusMessage = 'Loading database...');
+      await Future.delayed(const Duration(milliseconds: 300));
       
-      if (activeWorkout != null) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (_) => const _WorkoutRecoveryScreen()),
-        );
-      } else {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (_) => const OnboardingScreen()),
-        );
-      }
-    }
-  }
+      setState(() => _statusMessage = 'Checking session...');
+      await Future.delayed(const Duration(milliseconds: 200));
+      
+      setState(() => _statusMessage = 'Ready!');
+      await Future.delayed(const Duration(milliseconds: 200));
+      
+      AnalyticsService.log('app_initialization_completed', {'schema_version': 1});
 
-  @override
-  void dispose() {
-    _animationController.dispose();
-    super.dispose();
+      if (mounted) {
+        final activeWorkout = ref.read(activeWorkoutProvider);
+        
+        if (activeWorkout != null) {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (_) => const _WorkoutRecoveryScreen()),
+          );
+        } else {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (_) => const OnboardingScreen()),
+          );
+        }
+      }
+    } catch (e) {
+      setState(() {
+        _hasError = true;
+        _statusMessage = 'Error: $e';
+      });
+    }
   }
 
   @override
@@ -114,22 +134,51 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                 color: Colors.white.withOpacity(0.7),
               ),
             ),
-            const SizedBox(height: 48),
-            // Loading indicator
-            SizedBox(
-              width: 24,
-              height: 24,
-              child: CircularProgressIndicator(
-                strokeWidth: 2,
-                valueColor: AlwaysStoppedAnimation<Color>(
-                  Colors.white.withOpacity(0.5),
-                ),
+            const SizedBox(height: 32),
+            // Status message
+            if (_hasError)
+              Column(
+                children: [
+                  const Icon(Icons.error_outline, color: Colors.red, size: 32),
+                  const SizedBox(height: 8),
+                  Text(
+                    _statusMessage,
+                    style: const TextStyle(color: Colors.red),
+                  ),
+                  const SizedBox(height: 16),
+                  ElevatedButton(
+                    onPressed: () => _initializeApp(),
+                    child: const Text('Retry'),
+                  ),
+                ],
+              )
+            else
+              Column(
+                children: [
+                  // Loading indicator
+                  SizedBox(
+                    width: 24,
+                    height: 24,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      valueColor: AlwaysStoppedAnimation<Color>(
+                        Colors.white.withOpacity(0.5),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  Text(
+                    _statusMessage,
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: Colors.white.withOpacity(0.5),
+                    ),
+                  ),
+                ],
               ),
-            ),
             const SizedBox(height: 48),
             // Version text
             Text(
-              'v1.0.0 (Build 1)',
+              'v2.4.0 (Build 182)',
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
                 color: Colors.white.withOpacity(0.3),
               ),

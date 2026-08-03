@@ -28,8 +28,10 @@ class WorkoutSummaryScreen extends ConsumerStatefulWidget {
 class _WorkoutSummaryScreenState extends ConsumerState<WorkoutSummaryScreen>
     with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
+  late AnimationController _shimmerController;
   late Animation<double> _scaleAnimation;
   late Animation<double> _fadeAnimation;
+  late Animation<double> _shimmerAnimation;
 
   @override
   void initState() {
@@ -39,6 +41,11 @@ class _WorkoutSummaryScreenState extends ConsumerState<WorkoutSummaryScreen>
       duration: const Duration(milliseconds: 800),
     );
 
+    _shimmerController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1500),
+    )..repeat();
+
     _scaleAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(parent: _animationController, curve: Curves.elasticOut),
     );
@@ -47,12 +54,17 @@ class _WorkoutSummaryScreenState extends ConsumerState<WorkoutSummaryScreen>
       CurvedAnimation(parent: _animationController, curve: Curves.easeIn),
     );
 
+    _shimmerAnimation = Tween<double>(begin: -1.0, end: 2.0).animate(
+      CurvedAnimation(parent: _shimmerController, curve: Curves.linear),
+    );
+
     _animationController.forward();
   }
 
   @override
   void dispose() {
     _animationController.dispose();
+    _shimmerController.dispose();
     super.dispose();
   }
 

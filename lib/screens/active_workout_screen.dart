@@ -57,6 +57,11 @@ class _ActiveWorkoutScreenState extends ConsumerState<ActiveWorkoutScreen> {
 
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.minimize),
+          tooltip: 'Minimize to mini player',
+          onPressed: () => _showMiniPlayer(context),
+        ),
         title: Text(workout.title ?? 'Workout'),
         actions: [
           IconButton(
@@ -73,8 +78,9 @@ class _ActiveWorkoutScreenState extends ConsumerState<ActiveWorkoutScreen> {
             onSelected: (value) => _handleMenuAction(value, context),
             itemBuilder: (context) => [
               const PopupMenuItem(value: 'add_exercise', child: Text('Add Exercise')),
+              const PopupMenuItem(value: 'superset', child: Text('Create Superset')),
               const PopupMenuItem(value: 'finish', child: Text('Finish Workout')),
-              const PopupMenuItem(value: 'abandon', child: Text('Abandon Workout')),
+              const PopupMenuItem(value: 'abandon', child: Text('Abandon Workout', style: TextStyle(color: Colors.red))),
             ],
           ),
         ],
@@ -170,6 +176,9 @@ class _ActiveWorkoutScreenState extends ConsumerState<ActiveWorkoutScreen> {
       case 'add_exercise':
         _navigateToExercisePicker(context);
         break;
+      case 'superset':
+        _showSupersetDialog(context);
+        break;
       case 'finish':
         final confirm = await showDialog<bool>(
           context: context,
@@ -190,6 +199,7 @@ class _ActiveWorkoutScreenState extends ConsumerState<ActiveWorkoutScreen> {
       case 'abandon':
         final confirm = await showDialog<bool>(
           context: context,
+          barrierDismissible: false, // FDS: Non-dismissible by background tap
           builder: (context) => AlertDialog(
             title: const Text('Abandon Workout?'),
             content: const Text('This workout will not be saved.'),
@@ -209,6 +219,53 @@ class _ActiveWorkoutScreenState extends ConsumerState<ActiveWorkoutScreen> {
         }
         break;
     }
+  }
+
+  void _showMiniPlayer(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: const Color(0xFF1E1E1E),
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(16))),
+      builder: (context) => Container(
+        height: 80,
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        child: Row(
+          children: [
+            Container(
+              width: 48, height: 48,
+              decoration: BoxDecoration(color: const Color(0xFF00E676).withOpacity(0.2), borderRadius: BorderRadius.circular(12)),
+              child: const Icon(Icons.fitness_center, color: Color(0xFF00E676)),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text('Workout in Progress', style: GoogleFonts.inter(fontWeight: FontWeight.bold)),
+                  Text('Tap to resume', style: GoogleFonts.inter(fontSize: 12, color: Colors.grey)),
+                ],
+              ),
+            ),
+            const Icon(Icons.keyboard_arrow_up, color: Colors.grey),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _showSupersetDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Create Superset'),
+        content: const Text('Select exercises to combine into a superset. They will alternate during your workout.'),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancel')),
+          ElevatedButton(onPressed: () => Navigator.pop(context), child: const Text('Create')),
+        ],
+      ),
+    );
   }
 
   void _showRestTimerDialog(BuildContext context) {
@@ -732,18 +789,42 @@ class _PlateCalculatorSheetState extends State<_PlateCalculatorSheet> {
             ],
           ),
           const SizedBox(height: 24),
-          Text(
-            'Per Side: ${plates.join(' + ')}',
-            style: GoogleFonts.inter(fontSize: 24, fontWeight: FontWeight.bold),
+          // Visual Barbell (FDS Plate Calculator)
+          SizedBox(
+            height: 80,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                // Left collar
+                Container(width: 8, height: 16, decoration: BoxDecoration(color: Colors.grey[700], borderRadius: BorderRadius.circular(2))),
+                const SizedBox(width: 4),
+                // Left plates (mirrored)
+                ...plates.reversed.map((plate) => _PlateWidget(weight: plate)),
+                // Bar
+                Container(width: 60, height: 12, decoration: BoxDecoration(color: Colors.grey[400], borderRadius: BorderRadius.circular(6))),
+                // Right plates
+                ...plates.map((plate) => _PlateWidget(weight: plate)),
+                const SizedBox(width: 4),
+                // Right collar
+                Container(width: 8, height: 16, decoration: BoxDecoration(color: Colors.grey[700], borderRadius: BorderRadius.circular(2))),
+              ],
+            ),
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: 16),
+          Text(
+            'Per Side: ${plates.isEmpty ? "Bar only" : plates.join(" + ")}',
+            style: GoogleFonts.inter(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 4),
           Text(
             'Total: ${_barWeight + plateWeight * 2}kg',
             style: GoogleFonts.inter(color: Colors.grey),
           ),
-          const SizedBox(height: 24),
+          const SizedBox(height: 16),
           Wrap(
             spacing: 8,
+            runSpacing: 8,
             children: plates.map((p) => Chip(
               label: Text('${p}kg'),
               backgroundColor: Theme.of(context).primaryColor.withOpacity(0.2),
@@ -753,5 +834,44 @@ class _PlateCalculatorSheetState extends State<_PlateCalculatorSheet> {
         ],
       ),
     );
+  }
+}
+
+class _PlateWidget extends StatelessWidget {
+  final double weight;
+  const _PlateWidget({required this.weight});
+
+  @override
+  Widget build(BuildContext context) {
+    final height = _getPlateHeight(weight);
+    final color = _getPlateColor(weight);
+    return Container(
+      width: 8,
+      height: height,
+      decoration: BoxDecoration(
+        color: color,
+        borderRadius: const BorderRadius.horizontal(left: Radius.circular(2), right: Radius.circular(2)),
+      ),
+    );
+  }
+
+  double _getPlateHeight(double weight) {
+    if (weight >= 25) return 70;
+    if (weight >= 20) return 65;
+    if (weight >= 15) return 55;
+    if (weight >= 10) return 50;
+    if (weight >= 5) return 40;
+    if (weight >= 2.5) return 30;
+    return 25;
+  }
+
+  Color _getPlateColor(double weight) {
+    if (weight >= 25) return Colors.red;
+    if (weight >= 20) return Colors.blue;
+    if (weight >= 15) return Colors.yellow;
+    if (weight >= 10) return Colors.green;
+    if (weight >= 5) return Colors.white;
+    if (weight >= 2.5) return Colors.red[300]!;
+    return Colors.grey;
   }
 }
