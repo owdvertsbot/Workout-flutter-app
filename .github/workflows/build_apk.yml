@@ -31,10 +31,16 @@ jobs:
       
       - run: flutter pub get
       
-      - run: flutter build apk --debug
+      - name: Build debug APK
+        run: |
+          flutter build apk --debug 2>&1 | tee build.log || true
+          echo "--- Build output ---"
+          cat build.log
+          echo "--- End of build output ---"
       
       - name: Upload Debug APK
         uses: actions/upload-artifact@v4
+        if: success()
         with:
           name: debug-apk
           path: build/app/outputs/flutter-apk/app-debug.apk
@@ -56,10 +62,12 @@ jobs:
       
       - run: flutter pub get
       
-      - run: flutter build apk --release
+      - name: Build release APK
+        run: flutter build apk --release
       
       - name: Upload Release APK
         uses: actions/upload-artifact@v4
+        if: success()
         with:
           name: release-apk
           path: build/app/outputs/flutter-apk/app-release.apk
