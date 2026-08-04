@@ -1,0 +1,66 @@
+name: GitHub Pages
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'lib/**'
+      - 'web/**'
+      - '.github/workflows/github_pages.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Build Web
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.44.8'
+          channel: 'stable'
+          cache: true
+          cache-key: flutter-3.44.8
+      
+      - run: flutter pub get
+      
+      - name: Create placeholder page
+        run: |
+          mkdir -p build/web
+          cat > build/web/index.html << 'EOF'
+          <!DOCTYPE html>
+          <html>
+          <head><title>RPG Workout App</title></head>
+          <body>
+            <h1>RPG Workout App</h1>
+            <p>Web version is not available due to native SQLite dependencies.</p>
+            <p>Download the Android APK for the full experience.</p>
+          </body>
+          </html>
+          EOF
+      
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: build/web
+
+  deploy:
+    name: Deploy
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
