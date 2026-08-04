@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:drift/drift.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
 import '../database/database.dart';
@@ -48,8 +49,26 @@ final exercisesProvider = FutureProvider<List<ExerciseModel>>((ref) async {
 
 // Load exercises from JSON file
 final exerciseLoaderProvider = FutureProvider<void>((ref) async {
-  // This would load from assets - for now return empty
-  return;
+  final db = ref.read(databaseProvider);
+  
+  // Load exercises from assets
+  final String jsonString = await rootBundle.loadString('assets/exercises.json');
+  final List<dynamic> jsonList = json.decode(jsonString);
+  
+  // Convert to database companions and insert
+  final exercises = jsonList.map((e) => ExercisesCompanion(
+    id: Value(e['id']?.toString() ?? ''),
+    name: Value(e['name']?.toString() ?? ''),
+    category: Value(e['category']?.toString() ?? ''),
+    bodyPart: Value(e['bodyPart']?.toString() ?? ''),
+    equipment: Value(e['equipment']?.toString() ?? ''),
+    muscleGroup: Value(e['muscleGroup']?.toString()),
+    secondaryMuscles: Value(e['secondaryMuscles'] != null ? json.encode(e['secondaryMuscles']) : null),
+    target: Value(e['target']?.toString()),
+    instructions: Value(e['instructions'] != null ? json.encode(e['instructions']) : null),
+  )).toList();
+  
+  await db.insertExercises(exercises);
 });
 
 // Exercise search provider
@@ -220,7 +239,6 @@ class ActiveWorkoutNotifier extends StateNotifier<WorkoutSessionModel?> {
     
     // Check rolling 2-month best PR (+100 XP per FDS)
     final rollingPR = currentPRs.where((r) => r.recordType == 'ROLLING_2MO').toList();
-    final twoMonthsAgo = DateTime.now().subtract(const Duration(days: 60));
     // For rolling PR, we check if this is higher than any weight in the last 2 months
     // If no rolling PR exists or current weight beats it, award XP
     if (rollingPR.isEmpty || (rollingPR.first.value < set.weightKg!)) {
