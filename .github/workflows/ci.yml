@@ -22,7 +22,20 @@ jobs:
       
       - run: flutter pub get
       
-      - run: flutter analyze --no-fatal-infos --no-fatal-warnings
+      - name: Run flutter analyze
+        run: |
+          flutter analyze --no-fatal-infos --no-fatal-warnings 2>&1 | tee analyze.log || true
+          echo "--- Flutter analyze output ---"
+          cat analyze.log
+          echo "--- End of analyze output ---"
+      
+      - name: Upload analyze log
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: flutter-analyze-log
+          path: analyze.log
+          retention-days: 7
 
   test:
     name: Test
