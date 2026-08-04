@@ -511,3 +511,179 @@ class WorkoutCompletionResult {
 
   bool get leveledUp => levelAfter > levelBefore;
 }
+
+// Workout Plan Exercise - represents an exercise within a workout plan
+class WorkoutPlanExercise {
+  final String exerciseId;
+  final int targetSets;
+  final int targetReps;
+  final int restSeconds;
+  final bool isWarmup;
+
+  const WorkoutPlanExercise({
+    required this.exerciseId,
+    required this.targetSets,
+    required this.targetReps,
+    this.restSeconds = 90,
+    this.isWarmup = false,
+  });
+
+  factory WorkoutPlanExercise.fromJson(Map<String, dynamic> json) {
+    return WorkoutPlanExercise(
+      exerciseId: json['exerciseId']?.toString() ?? '',
+      targetSets: json['targetSets'] ?? 3,
+      targetReps: json['targetReps'] ?? 10,
+      restSeconds: json['restSeconds'] ?? 90,
+      isWarmup: json['isWarmup'] ?? false,
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+    'exerciseId': exerciseId,
+    'targetSets': targetSets,
+    'targetReps': targetReps,
+    'restSeconds': restSeconds,
+    'isWarmup': isWarmup,
+  };
+}
+
+// Workout Plan - a structured workout that can be completed as a quest
+class WorkoutPlanModel {
+  final String id;
+  final String title;
+  final String description;
+  final String difficulty; // BEGINNER, INTERMEDIATE, ADVANCED
+  final String category; // STRENGTH, CARDIO, FLEXIBILITY, HYBRID
+  final int estimatedMinutes;
+  final int xpReward;
+  final int goldReward;
+  final List<WorkoutPlanExercise> exercises;
+  final List<String> muscleGroups;
+  final String? imageIcon;
+
+  const WorkoutPlanModel({
+    required this.id,
+    required this.title,
+    required this.description,
+    required this.difficulty,
+    required this.category,
+    required this.estimatedMinutes,
+    required this.xpReward,
+    this.goldReward = 50,
+    required this.exercises,
+    required this.muscleGroups,
+    this.imageIcon,
+  });
+
+  int get totalSets => exercises.fold(0, (sum, e) => sum + e.targetSets);
+
+  factory WorkoutPlanModel.fromJson(Map<String, dynamic> json) {
+    return WorkoutPlanModel(
+      id: json['id']?.toString() ?? '',
+      title: json['title']?.toString() ?? '',
+      description: json['description']?.toString() ?? '',
+      difficulty: json['difficulty']?.toString() ?? 'INTERMEDIATE',
+      category: json['category']?.toString() ?? 'HYBRID',
+      estimatedMinutes: json['estimatedMinutes'] ?? 30,
+      xpReward: json['xpReward'] ?? 100,
+      goldReward: json['goldReward'] ?? 50,
+      exercises: (json['exercises'] as List<dynamic>?)
+          ?.map((e) => WorkoutPlanExercise.fromJson(e as Map<String, dynamic>))
+          .toList() ?? [],
+      muscleGroups: (json['muscleGroups'] as List<dynamic>?)
+          ?.map((e) => e.toString())
+          .toList() ?? [],
+      imageIcon: json['imageIcon']?.toString(),
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+    'id': id,
+    'title': title,
+    'description': description,
+    'difficulty': difficulty,
+    'category': category,
+    'estimatedMinutes': estimatedMinutes,
+    'xpReward': xpReward,
+    'goldReward': goldReward,
+    'exercises': exercises.map((e) => e.toJson()).toList(),
+    'muscleGroups': muscleGroups,
+    'imageIcon': imageIcon,
+  };
+
+  WorkoutPlanModel copyWith({
+    String? id,
+    String? title,
+    String? description,
+    String? difficulty,
+    String? category,
+    int? estimatedMinutes,
+    int? xpReward,
+    int? goldReward,
+    List<WorkoutPlanExercise>? exercises,
+    List<String>? muscleGroups,
+    String? imageIcon,
+  }) {
+    return WorkoutPlanModel(
+      id: id ?? this.id,
+      title: title ?? this.title,
+      description: description ?? this.description,
+      difficulty: difficulty ?? this.difficulty,
+      category: category ?? this.category,
+      estimatedMinutes: estimatedMinutes ?? this.estimatedMinutes,
+      xpReward: xpReward ?? this.xpReward,
+      goldReward: goldReward ?? this.goldReward,
+      exercises: exercises ?? this.exercises,
+      muscleGroups: muscleGroups ?? this.muscleGroups,
+      imageIcon: imageIcon ?? this.imageIcon,
+    );
+  }
+}
+
+// Plan completion status
+enum PlanStatus {
+  available('AVAILABLE', 'Available'),
+  inProgress('IN_PROGRESS', 'In Progress'),
+  completed('COMPLETED', 'Completed');
+
+  final String value;
+  final String label;
+  const PlanStatus(this.value, this.label);
+}
+
+// User's progress on a workout plan
+class PlanProgressModel {
+  final String planId;
+  final PlanStatus status;
+  final DateTime? startedAt;
+  final DateTime? completedAt;
+  final int currentSetIndex;
+  final int xpEarned;
+
+  const PlanProgressModel({
+    required this.planId,
+    this.status = PlanStatus.available,
+    this.startedAt,
+    this.completedAt,
+    this.currentSetIndex = 0,
+    this.xpEarned = 0,
+  });
+
+  PlanProgressModel copyWith({
+    String? planId,
+    PlanStatus? status,
+    DateTime? startedAt,
+    DateTime? completedAt,
+    int? currentSetIndex,
+    int? xpEarned,
+  }) {
+    return PlanProgressModel(
+      planId: planId ?? this.planId,
+      status: status ?? this.status,
+      startedAt: startedAt ?? this.startedAt,
+      completedAt: completedAt ?? this.completedAt,
+      currentSetIndex: currentSetIndex ?? this.currentSetIndex,
+      xpEarned: xpEarned ?? this.xpEarned,
+    );
+  }
+}

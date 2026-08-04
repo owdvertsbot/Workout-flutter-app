@@ -13,4 +13,5 @@ export 'progress_analytics_screen.dart';
 export 'workout_builder_screen.dart';
 export 'achievements_screen.dart';
 export 'missions_screen.dart';
+export 'workout_plans_screen.dart';
 export 'flex_card_share_screen.dart';

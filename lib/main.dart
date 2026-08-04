@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'providers/providers.dart';
 import 'screens/screens.dart';
+import 'models/models.dart';
 
 void main() {
   runApp(const ProviderScope(child: RPGWorkoutApp()));
@@ -150,6 +151,7 @@ class _WorkoutHubScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final activeWorkout = ref.watch(activeWorkoutProvider);
+    final featuredPlans = ref.watch(featuredPlansProvider);
 
     if (activeWorkout != null) {
       // If there's an active workout, show it
@@ -159,12 +161,60 @@ class _WorkoutHubScreen extends ConsumerWidget {
     // Otherwise show the routine hub
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Workout Hub'),
+        title: const Text('⚔️ Quest Missions'),
+        backgroundColor: const Color(0xFF121212),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.list),
+            tooltip: 'All Plans',
+            onPressed: () {
+              Navigator.push(context, MaterialPageRoute(builder: (_) => const WorkoutPlansScreen()));
+            },
+          ),
+        ],
       ),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          // Quick Start (FDS 3.3)
+          // Featured Quest Plans
+          _SectionHeader(title: 'Available Quests'),
+          const SizedBox(height: 12),
+          if (featuredPlans.isEmpty)
+            Container(
+              padding: const EdgeInsets.all(24),
+              decoration: BoxDecoration(
+                color: Colors.grey[900],
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Column(
+                children: [
+                  const Text('🎉', style: TextStyle(fontSize: 48)),
+                  const SizedBox(height: 8),
+                  Text(
+                    'All quests completed!',
+                    style: GoogleFonts.inter(
+                      color: Colors.grey[400],
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    'Check back tomorrow for new quests',
+                    style: GoogleFonts.inter(
+                      color: Colors.grey[600],
+                      fontSize: 12,
+                    ),
+                  ),
+                ],
+              ),
+            )
+          else
+            ...featuredPlans.take(3).map((plan) => _PlanQuickCard(plan: plan)),
+          
+          const SizedBox(height: 24),
+          
+          // Quick Start
           _HubCard(
             title: 'Quick Start',
             subtitle: 'Start an empty workout',
@@ -176,6 +226,7 @@ class _WorkoutHubScreen extends ConsumerWidget {
             },
           ),
           const SizedBox(height: 16),
+          
           // Active workout detection
           _HubCard(
             title: 'Active Workout',
@@ -189,33 +240,151 @@ class _WorkoutHubScreen extends ConsumerWidget {
             },
           ),
           const SizedBox(height: 16),
-          // Routines section (FDS 3.3)
-          _SectionHeader(title: 'Saved Routines'),
-          const SizedBox(height: 8),
-          // Placeholder for routines
-          Container(
-            padding: const EdgeInsets.all(24),
-            decoration: BoxDecoration(
-              color: Colors.grey[900],
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Column(
-              children: [
-                Icon(Icons.bookmark_outline, size: 48, color: Colors.grey[600]),
-                const SizedBox(height: 8),
-                Text('No saved routines', style: TextStyle(color: Colors.grey[400])),
-                const SizedBox(height: 8),
-                ElevatedButton.icon(
-                  onPressed: () {},
-                  icon: const Icon(Icons.add),
-                  label: const Text('Create Routine'),
-                ),
-              ],
+          
+          // View All Plans Button
+          OutlinedButton.icon(
+            onPressed: () {
+              Navigator.push(context, MaterialPageRoute(builder: (_) => const WorkoutPlansScreen()));
+            },
+            icon: const Icon(Icons.map),
+            label: const Text('View All Quest Plans'),
+            style: OutlinedButton.styleFrom(
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              side: const BorderSide(color: Color(0xFF7C4DFF)),
+              foregroundColor: const Color(0xFF7C4DFF),
             ),
           ),
         ],
       ),
     );
+  }
+}
+
+// Quick card for displaying a workout plan as a quest
+class _PlanQuickCard extends StatelessWidget {
+  final WorkoutPlanModel plan;
+
+  const _PlanQuickCard({required this.plan});
+
+  @override
+  Widget build(BuildContext context) {
+    final difficultyColor = _getDifficultyColor(plan.difficulty);
+    
+    return Card(
+      margin: const EdgeInsets.only(bottom: 12),
+      color: const Color(0xFF1E1E1E),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+        side: BorderSide(
+          color: difficultyColor.withValues(alpha: 0.3),
+        ),
+      ),
+      child: InkWell(
+        onTap: () {
+          Navigator.push(context, MaterialPageRoute(builder: (_) => const WorkoutPlansScreen()));
+        },
+        borderRadius: BorderRadius.circular(12),
+        child: Padding(
+          padding: const EdgeInsets.all(12),
+          child: Row(
+            children: [
+              Container(
+                width: 48,
+                height: 48,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [difficultyColor, difficultyColor.withValues(alpha: 0.7)],
+                  ),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Center(
+                  child: Text(
+                    plan.imageIcon ?? '🏋️',
+                    style: const TextStyle(fontSize: 24),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      plan.title,
+                      style: GoogleFonts.spaceGrotesk(
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    Row(
+                      children: [
+                        Icon(Icons.timer, size: 12, color: Colors.grey[500]),
+                        const SizedBox(width: 4),
+                        Text(
+                          '${plan.estimatedMinutes} min',
+                          style: GoogleFonts.inter(
+                            fontSize: 11,
+                            color: Colors.grey[500],
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Icon(Icons.star, size: 12, color: Colors.purple[300]),
+                        const SizedBox(width: 4),
+                        Text(
+                          '+${plan.xpReward} XP',
+                          style: GoogleFonts.inter(
+                            fontSize: 11,
+                            color: Colors.purple[300],
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF7C4DFF),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Icon(Icons.play_arrow, size: 16, color: Colors.white),
+                    const SizedBox(width: 4),
+                    Text(
+                      'Start',
+                      style: GoogleFonts.inter(
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Color _getDifficultyColor(String difficulty) {
+    switch (difficulty) {
+      case 'BEGINNER':
+        return const Color(0xFF00E676);
+      case 'INTERMEDIATE':
+        return const Color(0xFFFFB300);
+      case 'ADVANCED':
+        return const Color(0xFFFF5252);
+      default:
+        return Colors.grey;
+    }
   }
 }
 

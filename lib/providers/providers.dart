@@ -712,3 +712,381 @@ final completeOnboardingProvider = FutureProvider<void>((ref) async {
   final prefs = await SharedPreferences.getInstance();
   await prefs.setBool('onboardingCompleted', true);
 });
+
+// Quest type for workout plans
+enum PlanQuestType {
+  completePlan('COMPLETE_PLAN', 'Complete a workout plan');
+
+  final String value;
+  final String label;
+  const PlanQuestType(this.value, this.label);
+}
+
+// Workout Plans Provider - manages pre-built workout plans
+final workoutPlansProvider = StateNotifierProvider<WorkoutPlansNotifier, List<WorkoutPlanModel>>((ref) {
+  return WorkoutPlansNotifier(ref);
+});
+
+class WorkoutPlansNotifier extends StateNotifier<List<WorkoutPlanModel>> {
+  WorkoutPlansNotifier() : super(_defaultPlans);
+  
+  static final List<WorkoutPlanModel> _defaultPlans = [
+    // BEGINNER PLANS
+    const WorkoutPlanModel(
+      id: 'plan_beginner_full_body',
+      title: 'Novice Warrior',
+      description: 'Start your journey with a full-body workout perfect for beginners. Master the basics and build your foundation.',
+      difficulty: 'BEGINNER',
+      category: 'STRENGTH',
+      estimatedMinutes: 30,
+      xpReward: 150,
+      goldReward: 50,
+      exercises: [
+        WorkoutPlanExercise(exerciseId: 'air_squat', targetSets: 3, targetReps: 12, restSeconds: 60),
+        WorkoutPlanExercise(exerciseId: 'push_up', targetSets: 3, targetReps: 8, restSeconds: 60),
+        WorkoutPlanExercise(exerciseId: 'plank', targetSets: 3, targetReps: 30, restSeconds: 45, isWarmup: true),
+        WorkoutPlanExercise(exerciseId: 'lunges', targetSets: 3, targetReps: 10, restSeconds: 60),
+      ],
+      muscleGroups: ['legs', 'chest', 'abs', 'shoulders'],
+      imageIcon: '🗡️',
+    ),
+    const WorkoutPlanModel(
+      id: 'plan_beginner_upper',
+      title: 'Armory Basics',
+      description: 'Build upper body strength with this beginner-friendly routine focusing on chest, arms, and shoulders.',
+      difficulty: 'BEGINNER',
+      category: 'STRENGTH',
+      estimatedMinutes: 25,
+      xpReward: 125,
+      goldReward: 40,
+      exercises: [
+        WorkoutPlanExercise(exerciseId: 'push_up', targetSets: 3, targetReps: 10, restSeconds: 60),
+        WorkoutPlanExercise(exerciseId: 'dumbbell_row', targetSets: 3, targetReps: 10, restSeconds: 60),
+        WorkoutPlanExercise(exerciseId: 'shoulder_press', targetSets: 3, targetReps: 10, restSeconds: 60),
+        WorkoutPlanExercise(exerciseId: 'bicep_curl', targetSets: 3, targetReps: 12, restSeconds: 45),
+      ],
+      muscleGroups: ['chest', 'back', 'shoulders', 'upper arms'],
+      imageIcon: '💪',
+    ),
+    const WorkoutPlanModel(
+      id: 'plan_beginner_lower',
+      title: 'Foundation Builder',
+      description: 'Strengthen your legs and glutes with this beginner lower body workout. Perfect for building a strong base.',
+      difficulty: 'BEGINNER',
+      category: 'STRENGTH',
+      estimatedMinutes: 25,
+      xpReward: 125,
+      goldReward: 40,
+      exercises: [
+        WorkoutPlanExercise(exerciseId: 'air_squat', targetSets: 3, targetReps: 15, restSeconds: 60),
+        WorkoutPlanExercise(exerciseId: 'lunges', targetSets: 3, targetReps: 12, restSeconds: 60),
+        WorkoutPlanExercise(exerciseId: 'glute_bridge', targetSets: 3, targetReps: 15, restSeconds: 45),
+        WorkoutPlanExercise(exerciseId: 'calf_raise', targetSets: 3, targetReps: 20, restSeconds: 30),
+      ],
+      muscleGroups: ['legs', 'glutes'],
+      imageIcon: '🦵',
+    ),
+
+    // INTERMEDIATE PLANS
+    const WorkoutPlanModel(
+      id: 'plan_intermediate_push',
+      title: 'Push Power',
+      description: 'An intermediate pushing workout targeting chest, shoulders, and triceps with progressive overload.',
+      difficulty: 'INTERMEDIATE',
+      category: 'STRENGTH',
+      estimatedMinutes: 40,
+      xpReward: 200,
+      goldReward: 75,
+      exercises: [
+        WorkoutPlanExercise(exerciseId: 'bench_press', targetSets: 4, targetReps: 10, restSeconds: 90),
+        WorkoutPlanExercise(exerciseId: 'overhead_press', targetSets: 4, targetReps: 8, restSeconds: 90),
+        WorkoutPlanExercise(exerciseId: 'incline_dumbbell_press', targetSets: 3, targetReps: 12, restSeconds: 60),
+        WorkoutPlanExercise(exerciseId: 'tricep_pushdown', targetSets: 3, targetReps: 12, restSeconds: 60),
+        WorkoutPlanExercise(exerciseId: 'lateral_raise', targetSets: 3, targetReps: 15, restSeconds: 45),
+      ],
+      muscleGroups: ['chest', 'shoulders', 'upper arms'],
+      imageIcon: '🏋️',
+    ),
+    const WorkoutPlanModel(
+      id: 'plan_intermediate_pull',
+      title: 'Pull Champion',
+      description: 'Master the pull workout with deadlifts, rows, and pull-ups to build a powerful back.',
+      difficulty: 'INTERMEDIATE',
+      category: 'STRENGTH',
+      estimatedMinutes: 45,
+      xpReward: 225,
+      goldReward: 80,
+      exercises: [
+        WorkoutPlanExercise(exerciseId: 'deadlift', targetSets: 4, targetReps: 6, restSeconds: 120),
+        WorkoutPlanExercise(exerciseId: 'barbell_row', targetSets: 4, targetReps: 8, restSeconds: 90),
+        WorkoutPlanExercise(exerciseId: 'pull_up', targetSets: 3, targetReps: 8, restSeconds: 90),
+        WorkoutPlanExercise(exerciseId: 'face_pull', targetSets: 3, targetReps: 15, restSeconds: 60),
+        WorkoutPlanExercise(exerciseId: 'hammer_curl', targetSets: 3, targetReps: 12, restSeconds: 60),
+      ],
+      muscleGroups: ['back', 'biceps', 'shoulders'],
+      imageIcon: '🦾',
+    ),
+    const WorkoutPlanModel(
+      id: 'plan_intermediate_legs',
+      title: 'Leg Day Legend',
+      description: 'Intense leg workout with squats, leg press, and isolation exercises for powerful legs.',
+      difficulty: 'INTERMEDIATE',
+      category: 'STRENGTH',
+      estimatedMinutes: 45,
+      xpReward: 225,
+      goldReward: 80,
+      exercises: [
+        WorkoutPlanExercise(exerciseId: 'squat', targetSets: 4, targetReps: 8, restSeconds: 120),
+        WorkoutPlanExercise(exerciseId: 'romanian_deadlift', targetSets: 4, targetReps: 10, restSeconds: 90),
+        WorkoutPlanExercise(exerciseId: 'leg_press', targetSets: 3, targetReps: 12, restSeconds: 90),
+        WorkoutPlanExercise(exerciseId: 'leg_curl', targetSets: 3, targetReps: 12, restSeconds: 60),
+        WorkoutPlanExercise(exerciseId: 'leg_extension', targetSets: 3, targetReps: 12, restSeconds: 60),
+      ],
+      muscleGroups: ['legs', 'glutes'],
+      imageIcon: '🦿',
+    ),
+
+    // ADVANCED PLANS
+    const WorkoutPlanModel(
+      id: 'plan_advanced_full_body',
+      title: 'Titan Transformation',
+      description: 'The ultimate full-body challenge for advanced athletes. Expect high volume and maximum gains.',
+      difficulty: 'ADVANCED',
+      category: 'HYBRID',
+      estimatedMinutes: 60,
+      xpReward: 350,
+      goldReward: 120,
+      exercises: [
+        WorkoutPlanExercise(exerciseId: 'squat', targetSets: 5, targetReps: 5, restSeconds: 180),
+        WorkoutPlanExercise(exerciseId: 'bench_press', targetSets: 5, targetReps: 5, restSeconds: 180),
+        WorkoutPlanExercise(exerciseId: 'barbell_row', targetSets: 5, targetReps: 5, restSeconds: 120),
+        WorkoutPlanExercise(exerciseId: 'overhead_press', targetSets: 4, targetReps: 6, restSeconds: 120),
+        WorkoutPlanExercise(exerciseId: 'pull_up', targetSets: 4, targetReps: 10, restSeconds: 90),
+        WorkoutPlanExercise(exerciseId: 'deadlift', targetSets: 3, targetReps: 5, restSeconds: 180),
+      ],
+      muscleGroups: ['legs', 'chest', 'back', 'shoulders', 'abs'],
+      imageIcon: '⚔️',
+    ),
+    const WorkoutPlanModel(
+      id: 'plan_advanced_hypertrophy',
+      title: 'Muscle Maximizer',
+      description: 'High-volume hypertrophy workout designed to maximize muscle growth through metabolic stress.',
+      difficulty: 'ADVANCED',
+      category: 'STRENGTH',
+      estimatedMinutes: 55,
+      xpReward: 300,
+      goldReward: 100,
+      exercises: [
+        WorkoutPlanExercise(exerciseId: 'bench_press', targetSets: 4, targetReps: 12, restSeconds: 90),
+        WorkoutPlanExercise(exerciseId: 'incline_dumbbell_press', targetSets: 4, targetReps: 12, restSeconds: 60),
+        WorkoutPlanExercise(exerciseId: 'cable_fly', targetSets: 4, targetReps: 15, restSeconds: 60),
+        WorkoutPlanExercise(exerciseId: 'tricep_pushdown', targetSets: 4, targetReps: 12, restSeconds: 45),
+        WorkoutPlanExercise(exerciseId: 'overhead_tricep_extension', targetSets: 3, targetReps: 15, restSeconds: 45),
+        WorkoutPlanExercise(exerciseId: 'lateral_raise', targetSets: 4, targetReps: 20, restSeconds: 45),
+      ],
+      muscleGroups: ['chest', 'upper arms', 'shoulders'],
+      imageIcon: '💎',
+    ),
+
+    // CARDIO PLANS
+    const WorkoutPlanModel(
+      id: 'plan_cardio_fat_burn',
+      title: 'Inferno Blaster',
+      description: 'High-intensity cardio workout to torch calories and improve cardiovascular endurance.',
+      difficulty: 'INTERMEDIATE',
+      category: 'CARDIO',
+      estimatedMinutes: 30,
+      xpReward: 175,
+      goldReward: 60,
+      exercises: [
+        WorkoutPlanExercise(exerciseId: 'burpee', targetSets: 4, targetReps: 10, restSeconds: 30),
+        WorkoutPlanExercise(exerciseId: 'jump_squat', targetSets: 4, targetReps: 15, restSeconds: 30),
+        WorkoutPlanExercise(exerciseId: 'mountain_climber', targetSets: 4, targetReps: 30, restSeconds: 30),
+        WorkoutPlanExercise(exerciseId: 'high_knees', targetSets: 4, targetReps: 30, restSeconds: 30),
+        WorkoutPlanExercise(exerciseId: 'jumping_jacks', targetSets: 3, targetReps: 50, restSeconds: 30),
+      ],
+      muscleGroups: ['cardio', 'full body'],
+      imageIcon: '🔥',
+    ),
+
+    // FLEXIBILITY PLANS
+    const WorkoutPlanModel(
+      id: 'plan_flexibility_recovery',
+      title: 'Zen Master',
+      description: 'Recovery-focused flexibility workout to improve mobility and prevent injuries.',
+      difficulty: 'BEGINNER',
+      category: 'FLEXIBILITY',
+      estimatedMinutes: 20,
+      xpReward: 100,
+      goldReward: 35,
+      exercises: [
+        WorkoutPlanExercise(exerciseId: 'stretch_chest', targetSets: 2, targetReps: 30, restSeconds: 15),
+        WorkoutPlanExercise(exerciseId: 'stretch_back', targetSets: 2, targetReps: 30, restSeconds: 15),
+        WorkoutPlanExercise(exerciseId: 'stretch_hamstring', targetSets: 2, targetReps: 30, restSeconds: 15),
+        WorkoutPlanExercise(exerciseId: 'stretch_quad', targetSets: 2, targetReps: 30, restSeconds: 15),
+        WorkoutPlanExercise(exerciseId: 'stretch_hip', targetSets: 2, targetReps: 30, restSeconds: 15),
+      ],
+      muscleGroups: ['full body'],
+      imageIcon: '🧘',
+    ),
+  ];
+}
+
+// Plan Progress Provider - tracks user progress on workout plans
+final planProgressProvider = StateNotifierProvider<PlanProgressNotifier, Map<String, PlanProgressModel>>((ref) {
+  return PlanProgressNotifier(ref);
+});
+
+class PlanProgressNotifier extends StateNotifier<Map<String, PlanProgressModel>> {
+  final Ref ref;
+  
+  PlanProgressNotifier(this.ref) : super({}) {
+    _loadProgress();
+  }
+  
+  Future<void> _loadProgress() async {
+    final prefs = await SharedPreferences.getInstance();
+    final String? progressJson = prefs.getString('plan_progress');
+    
+    if (progressJson != null) {
+      try {
+        final Map<String, dynamic> decoded = Map<String, dynamic>.from(
+          Uri.splitQueryString(progressJson).map((k, v) => MapEntry(k, v))
+        );
+        
+        // Parse from simple format - we'll use a different approach
+        final Map<String, PlanProgressModel> progress = {};
+        for (final entry in decoded.entries) {
+          if (entry.key.endsWith('_status')) {
+            final planId = entry.key.replaceAll('_status', '');
+            progress[planId] = PlanProgressModel(
+              planId: planId,
+              status: PlanStatus.values.firstWhere(
+                (s) => s.value == entry.value,
+                orElse: () => PlanStatus.available,
+              ),
+              startedAt: decoded['${planId}_started'] != null 
+                ? DateTime.tryParse(decoded['${planId}_started']!) 
+                : null,
+              completedAt: decoded['${planId}_completed'] != null 
+                ? DateTime.tryParse(decoded['${planId}_completed']!) 
+                : null,
+              timesCompleted: int.tryParse(decoded['${planId}_completed'] ?? '0') ?? 0,
+            );
+          }
+        }
+        state = progress;
+      } catch (e) {
+        // If parsing fails, start fresh
+        state = {};
+      }
+    }
+  }
+  
+  Future<void> _saveProgress() async {
+    final prefs = await SharedPreferences.getInstance();
+    final Map<String, String> data = {};
+    
+    for (final entry in state.entries) {
+      data['${entry.key}_status'] = entry.value.status.value;
+      if (entry.value.startedAt != null) {
+        data['${entry.key}_started'] = entry.value.startedAt!.toIso8601String();
+      }
+      if (entry.value.completedAt != null) {
+        data['${entry.key}_completed'] = entry.value.completedAt!.toIso8601String();
+      }
+      data['${entry.key}_times'] = entry.value.timesCompleted.toString();
+    }
+    
+    await prefs.setString('plan_progress', Uri(queryParameters: data).query);
+  }
+  
+  PlanStatus getStatus(String planId) {
+    return state[planId]?.status ?? PlanStatus.available;
+  }
+  
+  bool isCompleted(String planId) {
+    return state[planId]?.status == PlanStatus.completed;
+  }
+  
+  int getTimesCompleted(String planId) {
+    return state[planId]?.timesCompleted ?? 0;
+  }
+  
+  Future<void> startPlan(String planId) async {
+    final now = DateTime.now();
+    final current = state[planId];
+    
+    // If already in progress or completed, don't restart
+    if (current?.status == PlanStatus.inProgress) return;
+    if (current?.status == PlanStatus.completed) return;
+    
+    state = {
+      ...state,
+      planId: PlanProgressModel(
+        planId: planId,
+        status: PlanStatus.inProgress,
+        startedAt: now,
+        timesCompleted: current?.timesCompleted ?? 0,
+      ),
+    };
+    
+    await _saveProgress();
+  }
+  
+  Future<int> completePlan(String planId, int xpReward, int goldReward) async {
+    final now = DateTime.now();
+    final current = state[planId];
+    final timesCompleted = (current?.timesCompleted ?? 0) + 1;
+    
+    state = {
+      ...state,
+      planId: PlanProgressModel(
+        planId: planId,
+        status: PlanStatus.completed,
+        startedAt: current?.startedAt ?? now,
+        completedAt: now,
+        timesCompleted: timesCompleted,
+      ),
+    };
+    
+    await _saveProgress();
+    
+    // Award XP and update quest progress
+    await ref.read(playerProfileProvider.notifier).addXp(xpReward);
+    ref.read(dailyQuestsProvider.notifier).updateQuestProgress(QuestType.completeWorkout, 1);
+    
+    // Reset to available after completion (for repeatable quests)
+    Future.delayed(const Duration(seconds: 1), () async {
+      state = {
+        ...state,
+        planId: PlanProgressModel(
+          planId: planId,
+          status: PlanStatus.available,
+          timesCompleted: timesCompleted,
+        ),
+      };
+      await _saveProgress();
+    });
+    
+    return xpReward;
+  }
+}
+
+// Available workout plans (filtered by difficulty)
+final availablePlansProvider = Provider.family<List<WorkoutPlanModel>, String>((ref, difficulty) {
+  final plans = ref.watch(workoutPlansProvider);
+  if (difficulty.isEmpty || difficulty == 'ALL') return plans;
+  return plans.where((p) => p.difficulty == difficulty).toList();
+});
+
+// Featured/recommended plans
+final featuredPlansProvider = Provider<List<WorkoutPlanModel>>((ref) {
+  final plans = ref.watch(workoutPlansProvider);
+  // Return plans that are not yet completed
+  final progress = ref.watch(planProgressProvider);
+  return plans.where((p) {
+    final pStatus = progress[p.id]?.status;
+    return pStatus != PlanStatus.completed;
+  }).take(5).toList();
+});
