@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RPG Workout App - Download</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+      min-height: 100vh;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .container {
+      max-width: 600px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 20px;
+      padding: 40px;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.1);
+      text-align: center;
+    }
+    h1 {
+      font-size: 2.5em;
+      margin-bottom: 10px;
+      background: linear-gradient(90deg, #FFD700, #FFA500);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .subtitle {
+      color: #888;
+      margin-bottom: 30px;
+      font-size: 1.1em;
+    }
+    .badge {
+      display: inline-block;
+      background: #00E676;
+      color: #000;
+      padding: 5px 15px;
+      border-radius: 20px;
+      font-size: 0.85em;
+      font-weight: bold;
+      margin-bottom: 30px;
+    }
+    .downloads {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+    .download-btn {
+      display: block;
+      padding: 20px 30px;
+      background: linear-gradient(135deg, #00E676, #00C853);
+      color: #000;
+      text-decoration: none;
+      border-radius: 12px;
+      font-weight: bold;
+      font-size: 1.1em;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .download-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(0,230,118,0.3);
+    }
+    .download-btn.release {
+      background: linear-gradient(135deg, #FFD700, #FFA500);
+    }
+    .download-btn.release:hover {
+      box-shadow: 0 10px 30px rgba(255,215,0,0.3);
+    }
+    .download-btn .label {
+      font-size: 0.75em;
+      opacity: 0.8;
+      display: block;
+      margin-bottom: 5px;
+    }
+    .download-btn .size {
+      font-size: 0.8em;
+      opacity: 0.7;
+      margin-left: 10px;
+    }
+    .note {
+      margin-top: 30px;
+      color: #666;
+      font-size: 0.9em;
+      line-height: 1.6;
+    }
+    .features {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 15px;
+      margin: 30px 0;
+    }
+    .feature {
+      background: rgba(255,255,255,0.05);
+      padding: 15px;
+      border-radius: 10px;
+    }
+    .feature-icon {
+      font-size: 1.5em;
+      margin-bottom: 5px;
+    }
+    .feature-text {
+      font-size: 0.85em;
+      color: #aaa;
+    }
+    @media (max-width: 500px) {
+      .features { grid-template-columns: 1fr; }
+      h1 { font-size: 1.8em; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>⚔️ RPG Workout</h1>
+    <p class="subtitle">Turn your fitness journey into an epic adventure</p>
+    <span class="badge">✨ Latest Release</span>
+    
+    <div class="features">
+      <div class="feature">
+        <div class="feature-icon">🎮</div>
+        <div class="feature-text">RPG Gamification</div>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">💪</div>
+        <div class="feature-text">1324+ Exercises</div>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">🏆</div>
+        <div class="feature-text">Daily Quests</div>
+      </div>
+    </div>
+    
+    <div class="downloads">
+      <a href="https://github.com/owdvertsbot/Workout-flutter-app/releases/download/v1.0.0/app-release.apk" class="download-btn release">
+        <span class="label">📱 Download Release APK</span>
+        Recommended for most users
+        <span class="size">(~59 MB)</span>
+      </a>
+      <a href="https://github.com/owdvertsbot/Workout-flutter-app/releases/download/v1.0.0/app-debug.apk" class="download-btn">
+        <span class="label">🔧 Download Debug APK</span>
+        For testing & development
+        <span class="size">(~160 MB)</span>
+      </a>
+    </div>
+    
+    <p class="note">
+      ⚠️ This app requires Android 6.0 or higher.<br>
+      Enable "Install from unknown sources" in your device settings.<br>
+      Web version unavailable due to native SQLite dependencies.
+    </p>
+  </div>
+</body>
+</html>
