@@ -31,7 +31,6 @@ class _WorkoutSummaryScreenState extends ConsumerState<WorkoutSummaryScreen>
   late AnimationController _shimmerController;
   late Animation<double> _scaleAnimation;
   late Animation<double> _fadeAnimation;
-  late Animation<double> _shimmerAnimation;
 
   @override
   void initState() {
@@ -52,10 +51,6 @@ class _WorkoutSummaryScreenState extends ConsumerState<WorkoutSummaryScreen>
 
     _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(parent: _animationController, curve: Curves.easeIn),
-    );
-
-    _shimmerAnimation = Tween<double>(begin: -1.0, end: 2.0).animate(
-      CurvedAnimation(parent: _shimmerController, curve: Curves.linear),
     );
 
     _animationController.forward();
@@ -98,7 +93,7 @@ class _WorkoutSummaryScreenState extends ConsumerState<WorkoutSummaryScreen>
                             ),
                             boxShadow: [
                               BoxShadow(
-                                color: const Color(0xFFFFD700).withOpacity(0.5),
+                                color: const Color(0xFFFFD700).withValues(alpha: 0.5),
                                 blurRadius: 40,
                                 spreadRadius: 10,
                               ),
@@ -158,7 +153,7 @@ class _WorkoutSummaryScreenState extends ConsumerState<WorkoutSummaryScreen>
                     Text(
                       widget.workout.title ?? 'Training Session',
                       style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                        color: Colors.white.withOpacity(0.6),
+                        color: Colors.white.withValues(alpha: 0.6),
                       ),
                     ),
                     const SizedBox(height: 32),
@@ -226,7 +221,7 @@ class _WorkoutSummaryScreenState extends ConsumerState<WorkoutSummaryScreen>
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFF7C4DFF).withOpacity(0.3),
+            color: const Color(0xFF7C4DFF).withValues(alpha: 0.3),
             blurRadius: 20,
             offset: const Offset(0, 10),
           ),
@@ -277,7 +272,7 @@ class _WorkoutSummaryScreenState extends ConsumerState<WorkoutSummaryScreen>
   Widget _buildXPBreakdownItem(String label, String value, IconData icon) {
     return Column(
       children: [
-        Icon(icon, color: Colors.white.withOpacity(0.7), size: 20),
+        Icon(icon, color: Colors.white.withValues(alpha: 0.7), size: 20),
         const SizedBox(height: 4),
         Text(
           value,
@@ -290,7 +285,7 @@ class _WorkoutSummaryScreenState extends ConsumerState<WorkoutSummaryScreen>
         Text(
           label,
           style: TextStyle(
-            color: Colors.white.withOpacity(0.6),
+            color: Colors.white.withValues(alpha: 0.6),
             fontSize: 12,
           ),
         ),
@@ -340,9 +335,9 @@ class _WorkoutSummaryScreenState extends ConsumerState<WorkoutSummaryScreen>
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
+        color: color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: color.withOpacity(0.2)),
+        border: Border.all(color: color.withValues(alpha: 0.2)),
       ),
       child: Column(
         children: [
@@ -359,7 +354,7 @@ class _WorkoutSummaryScreenState extends ConsumerState<WorkoutSummaryScreen>
           Text(
             label,
             style: TextStyle(
-              color: Colors.white.withOpacity(0.6),
+              color: Colors.white.withValues(alpha: 0.6),
               fontSize: 12,
             ),
           ),
@@ -374,7 +369,7 @@ class _WorkoutSummaryScreenState extends ConsumerState<WorkoutSummaryScreen>
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.05),
+        color: Colors.white.withValues(alpha: 0.05),
         borderRadius: BorderRadius.circular(16),
       ),
       child: Column(
@@ -393,7 +388,7 @@ class _WorkoutSummaryScreenState extends ConsumerState<WorkoutSummaryScreen>
             Text(
               'No exercises logged',
               style: TextStyle(
-                color: Colors.white.withOpacity(0.5),
+                color: Colors.white.withValues(alpha: 0.5),
               ),
             )
           else
@@ -411,7 +406,7 @@ class _WorkoutSummaryScreenState extends ConsumerState<WorkoutSummaryScreen>
                       width: 32,
                       height: 32,
                       decoration: BoxDecoration(
-                        color: const Color(0xFF00E676).withOpacity(0.2),
+                        color: const Color(0xFF00E676).withValues(alpha: 0.2),
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Center(
@@ -436,7 +431,7 @@ class _WorkoutSummaryScreenState extends ConsumerState<WorkoutSummaryScreen>
                     Text(
                       '$completedSets sets',
                       style: TextStyle(
-                        color: Colors.white.withOpacity(0.6),
+                        color: Colors.white.withValues(alpha: 0.6),
                       ),
                     ),
                   ],

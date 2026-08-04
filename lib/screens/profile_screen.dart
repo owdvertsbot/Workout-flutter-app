@@ -58,7 +58,7 @@ class _CharacterCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFF6366F1).withOpacity(0.3),
+            color: const Color(0xFF6366F1).withValues(alpha: 0.3),
             blurRadius: 20,
             offset: const Offset(0, 10),
           ),
@@ -71,7 +71,7 @@ class _CharacterCard extends StatelessWidget {
             width: 100,
             height: 100,
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.2),
+              color: Colors.white.withValues(alpha: 0.2),
               shape: BoxShape.circle,
               border: Border.all(color: Colors.white, width: 3),
             ),
@@ -99,7 +99,7 @@ class _CharacterCard extends StatelessWidget {
           Text(
             _getTitle(profile.level),
             style: GoogleFonts.inter(
-              color: Colors.white.withOpacity(0.8),
+              color: Colors.white.withValues(alpha: 0.8),
               fontSize: 14,
             ),
           ),
@@ -122,7 +122,7 @@ class _CharacterCard extends StatelessWidget {
                   Text(
                     '${profile.currentXp} / ${profile.xpToNextLevel} XP',
                     style: GoogleFonts.inter(
-                      color: Colors.white.withOpacity(0.8),
+                      color: Colors.white.withValues(alpha: 0.8),
                     ),
                   ),
                 ],
@@ -132,7 +132,7 @@ class _CharacterCard extends StatelessWidget {
                 borderRadius: BorderRadius.circular(10),
                 child: LinearProgressIndicator(
                   value: profile.levelProgress.clamp(0.0, 1.0),
-                  backgroundColor: Colors.white.withOpacity(0.2),
+                  backgroundColor: Colors.white.withValues(alpha: 0.2),
                   valueColor: const AlwaysStoppedAnimation<Color>(Colors.white),
                   minHeight: 10,
                 ),
@@ -141,7 +141,7 @@ class _CharacterCard extends StatelessWidget {
               Text(
                 '${(profile.levelProgress * 100).toInt()}% to Level ${profile.level + 1}',
                 style: GoogleFonts.inter(
-                  color: Colors.white.withOpacity(0.6),
+                  color: Colors.white.withValues(alpha: 0.6),
                   fontSize: 12,
                 ),
               ),
@@ -279,7 +279,7 @@ class _StatRow extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: color.withOpacity(0.2),
+              color: color.withValues(alpha: 0.2),
               borderRadius: BorderRadius.circular(8),
             ),
             child: Icon(icon, color: color, size: 20),
@@ -376,7 +376,7 @@ class _AchievementBadge extends StatelessWidget {
           width: 56,
           height: 56,
           decoration: BoxDecoration(
-            color: earned ? Colors.amber.withOpacity(0.2) : Colors.grey.withOpacity(0.2),
+            color: earned ? Colors.amber.withValues(alpha: 0.2) : Colors.grey.withValues(alpha: 0.2),
             shape: BoxShape.circle,
             border: Border.all(
               color: earned ? Colors.amber : Colors.grey,

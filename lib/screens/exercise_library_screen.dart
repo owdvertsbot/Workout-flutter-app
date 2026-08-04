@@ -14,6 +14,20 @@ class ExerciseLibraryScreen extends ConsumerStatefulWidget {
 class _ExerciseLibraryScreenState extends ConsumerState<ExerciseLibraryScreen> {
   String? _selectedCategory;
   String? _selectedEquipment;
+  String? _selectedBodyPart; // FDS 3.5 - Body part filter
+  bool _showFavoritesOnly = false; // FDS 3.5 - Favorites toggle
+
+  // Body parts list
+  final List<String> _bodyParts = [
+    'All',
+    'Chest',
+    'Back',
+    'Shoulders',
+    'Arms',
+    'Core',
+    'Legs',
+    'Glutes',
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -24,6 +38,17 @@ class _ExerciseLibraryScreenState extends ConsumerState<ExerciseLibraryScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Exercise Library'),
+        actions: [
+          // Favorites toggle (FDS 3.5)
+          IconButton(
+            icon: Icon(
+              _showFavoritesOnly ? Icons.favorite : Icons.favorite_border,
+              color: _showFavoritesOnly ? Colors.red : null,
+            ),
+            tooltip: 'Show favorites only',
+            onPressed: () => setState(() => _showFavoritesOnly = !_showFavoritesOnly),
+          ),
+        ],
       ),
       body: Column(
         children: [
@@ -46,7 +71,33 @@ class _ExerciseLibraryScreenState extends ConsumerState<ExerciseLibraryScreen> {
             ),
           ),
           
-          // Filters
+          // Body Part Filter Chips (FDS 3.5)
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Row(
+              children: _bodyParts.map((part) {
+                final isSelected = _selectedBodyPart == part || (part == 'All' && _selectedBodyPart == null);
+                return Padding(
+                  padding: const EdgeInsets.only(right: 8),
+                  child: FilterChip(
+                    label: Text(part),
+                    selected: isSelected,
+                    onSelected: (selected) {
+                      setState(() {
+                        _selectedBodyPart = part == 'All' ? null : part;
+                      });
+                    },
+                    selectedColor: const Color(0xFF00E676).withValues(alpha: 0.3),
+                    checkmarkColor: const Color(0xFF00E676),
+                  ),
+                );
+              }).toList(),
+            ),
+          ),
+          const SizedBox(height: 12),
+          
+          // Category and Equipment Filters
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -90,6 +141,13 @@ class _ExerciseLibraryScreenState extends ConsumerState<ExerciseLibraryScreen> {
                 }
                 if (_selectedEquipment != null) {
                   filtered = filtered.where((e) => e.equipment == _selectedEquipment).toList();
+                }
+                // Body part filter (FDS 3.5)
+                if (_selectedBodyPart != null) {
+                  filtered = filtered.where((e) => 
+                    e.bodyPart.toLowerCase().contains(_selectedBodyPart!.toLowerCase()) ||
+                    e.muscleGroup?.toLowerCase().contains(_selectedBodyPart!.toLowerCase()) == true
+                  ).toList();
                 }
 
                 if (filtered.isEmpty) {
@@ -136,7 +194,7 @@ class _ExerciseLibraryScreenState extends ConsumerState<ExerciseLibraryScreen> {
   }
 }
 
-class _ExerciseListTile extends StatelessWidget {
+class _ExerciseListTile extends StatefulWidget {
   final ExerciseModel exercise;
   final VoidCallback onTap;
 
@@ -146,32 +204,53 @@ class _ExerciseListTile extends StatelessWidget {
   });
 
   @override
+  State<_ExerciseListTile> createState() => _ExerciseListTileState();
+}
+
+class _ExerciseListTileState extends State<_ExerciseListTile> {
+  bool _isFavorite = false;
+
+  @override
   Widget build(BuildContext context) {
     return Card(
       margin: const EdgeInsets.only(bottom: 8),
       child: ListTile(
-        onTap: onTap,
+        onTap: widget.onTap,
         leading: Container(
           width: 48,
           height: 48,
           decoration: BoxDecoration(
-            color: _getCategoryColor(exercise.category).withOpacity(0.2),
+            color: _getCategoryColor(widget.exercise.category).withValues(alpha: 0.2),
             borderRadius: BorderRadius.circular(8),
           ),
           child: Icon(
-            _getCategoryIcon(exercise.category),
-            color: _getCategoryColor(exercise.category),
+            _getCategoryIcon(widget.exercise.category),
+            color: _getCategoryColor(widget.exercise.category),
           ),
         ),
         title: Text(
-          exercise.name,
+          widget.exercise.name,
           style: GoogleFonts.inter(fontWeight: FontWeight.w600),
         ),
         subtitle: Text(
-          '${exercise.category} • ${exercise.equipment}',
+          '${widget.exercise.category} • ${widget.exercise.equipment}',
           style: GoogleFonts.inter(fontSize: 12, color: Colors.grey[600]),
         ),
-        trailing: const Icon(Icons.chevron_right),
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // Favorite toggle (FDS 3.5)
+            IconButton(
+              icon: Icon(
+                _isFavorite ? Icons.favorite : Icons.favorite_border,
+                color: _isFavorite ? Colors.red : Colors.grey,
+              ),
+              onPressed: () => setState(() => _isFavorite = !_isFavorite),
+              tooltip: _isFavorite ? 'Remove from favorites' : 'Add to favorites',
+            ),
+            const Icon(Icons.chevron_right),
+          ],
+        ),
       ),
     );
   }
@@ -261,7 +340,7 @@ class _ExerciseDetailsSheet extends StatelessWidget {
                 const SizedBox(height: 8),
                 Chip(
                   label: Text(exercise.muscleGroup!),
-                  backgroundColor: Colors.red.withOpacity(0.2),
+                  backgroundColor: Colors.red.withValues(alpha: 0.2),
                 ),
                 const SizedBox(height: 16),
               ],
@@ -276,11 +355,15 @@ class _ExerciseDetailsSheet extends StatelessWidget {
                   spacing: 8,
                   children: exercise.secondaryMuscles.map((m) => Chip(
                     label: Text(m),
-                    backgroundColor: Colors.grey.withOpacity(0.2),
+                    backgroundColor: Colors.grey.withValues(alpha: 0.2),
                   )).toList(),
                 ),
                 const SizedBox(height: 16),
               ],
+              
+              // 1RM Calculator (FDS 3.6)
+              const SizedBox(height: 16),
+              _OneRMCalculatorSection(),
               
               // Instructions
               if (exercise.instructions != null && exercise.instructions!.isNotEmpty) ...[
@@ -334,7 +417,7 @@ class _InfoChip extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       decoration: BoxDecoration(
-        color: Theme.of(context).primaryColor.withOpacity(0.1),
+        color: Theme.of(context).primaryColor.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(20),
       ),
       child: Column(
@@ -348,6 +431,134 @@ class _InfoChip extends StatelessWidget {
             style: GoogleFonts.inter(fontWeight: FontWeight.bold, fontSize: 12),
           ),
         ],
+      ),
+    );
+  }
+}
+
+// 1RM Calculator Section (FDS 3.6)
+class _OneRMCalculatorSection extends StatefulWidget {
+  @override
+  State<_OneRMCalculatorSection> createState() => _OneRMCalculatorSectionState();
+}
+
+class _OneRMCalculatorSectionState extends State<_OneRMCalculatorSection> {
+  final TextEditingController _weightController = TextEditingController();
+  final TextEditingController _repsController = TextEditingController(text: '5');
+  double? _calculatedOneRM;
+
+  // Brzycki formula for 1RM calculation
+  double _calculateOneRM(double weight, int reps) {
+    if (reps == 1) return weight;
+    return weight * (36 / (37 - reps));
+  }
+
+  @override
+  void dispose() {
+    _weightController.dispose();
+    _repsController.dispose();
+    super.dispose();
+  }
+
+  void _updateCalculation() {
+    final weight = double.tryParse(_weightController.text);
+    final reps = int.tryParse(_repsController.text);
+    
+    if (weight != null && reps != null && reps > 0 && reps <= 12) {
+      setState(() {
+        _calculatedOneRM = _calculateOneRM(weight, reps);
+      });
+    } else {
+      setState(() {
+        _calculatedOneRM = null;
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      color: const Color(0xFF00E676).withValues(alpha: 0.1),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(Icons.calculate, color: const Color(0xFF00E676), size: 20),
+                const SizedBox(width: 8),
+                Text(
+                  '1RM Calculator',
+                  style: GoogleFonts.inter(fontWeight: FontWeight.bold, fontSize: 16),
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    controller: _weightController,
+                    keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                    decoration: const InputDecoration(
+                      labelText: 'Weight (kg)',
+                      border: OutlineInputBorder(),
+                      isDense: true,
+                    ),
+                    onChanged: (_) => _updateCalculation(),
+                  ),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: TextField(
+                    controller: _repsController,
+                    keyboardType: TextInputType.number,
+                    decoration: const InputDecoration(
+                      labelText: 'Reps',
+                      border: OutlineInputBorder(),
+                      isDense: true,
+                    ),
+                    onChanged: (_) => _updateCalculation(),
+                  ),
+                ),
+              ],
+            ),
+            if (_calculatedOneRM != null) ...[
+              const SizedBox(height: 16),
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF00E676).withValues(alpha: 0.2),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Column(
+                  children: [
+                    Text(
+                      'Estimated 1RM',
+                      style: GoogleFonts.inter(fontSize: 12, color: Colors.grey[600]),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      '${_calculatedOneRM!.toStringAsFixed(1)} kg',
+                      style: GoogleFonts.jetBrainsMono(
+                        fontSize: 28,
+                        fontWeight: FontWeight.bold,
+                        color: const Color(0xFF00E676),
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      'Based on Brzycki formula',
+                      style: GoogleFonts.inter(fontSize: 10, color: Colors.grey[600]),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ],
+        ),
       ),
     );
   }

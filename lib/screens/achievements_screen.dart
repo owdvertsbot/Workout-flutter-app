@@ -80,10 +80,10 @@ class _AchievementCard extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
-          color: isUnlocked ? tierColor.withOpacity(0.15) : Colors.grey.withOpacity(0.1),
+          color: isUnlocked ? tierColor.withValues(alpha: 0.15) : Colors.grey.withValues(alpha: 0.1),
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
-            color: isUnlocked ? tierColor.withOpacity(0.5) : Colors.grey.withOpacity(0.3),
+            color: isUnlocked ? tierColor.withValues(alpha: 0.5) : Colors.grey.withValues(alpha: 0.3),
             width: 2,
           ),
         ),
@@ -94,7 +94,7 @@ class _AchievementCard extends StatelessWidget {
               width: 48,
               height: 48,
               decoration: BoxDecoration(
-                color: isUnlocked ? tierColor.withOpacity(0.3) : Colors.grey.withOpacity(0.2),
+                color: isUnlocked ? tierColor.withValues(alpha: 0.3) : Colors.grey.withValues(alpha: 0.2),
                 shape: BoxShape.circle,
               ),
               child: Icon(
@@ -119,8 +119,8 @@ class _AchievementCard extends StatelessWidget {
             if (!isUnlocked && progress > 0)
               LinearProgressIndicator(
                 value: progress,
-                backgroundColor: Colors.grey.withOpacity(0.3),
-                valueColor: AlwaysStoppedAnimation<Color>(tierColor.withOpacity(0.5)),
+                backgroundColor: Colors.grey.withValues(alpha: 0.3),
+                valueColor: AlwaysStoppedAnimation<Color>(tierColor.withValues(alpha: 0.5)),
                 minHeight: 4,
               ),
           ],
@@ -152,7 +152,7 @@ class _AchievementCard extends StatelessWidget {
               width: 80,
               height: 80,
               decoration: BoxDecoration(
-                color: isUnlocked ? tierColor.withOpacity(0.3) : Colors.grey.withOpacity(0.2),
+                color: isUnlocked ? tierColor.withValues(alpha: 0.3) : Colors.grey.withValues(alpha: 0.2),
                 shape: BoxShape.circle,
                 border: Border.all(color: tierColor, width: 3),
               ),
@@ -177,7 +177,7 @@ class _AchievementCard extends StatelessWidget {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               decoration: BoxDecoration(
-                color: tierColor.withOpacity(0.2),
+                color: tierColor.withValues(alpha: 0.2),
                 borderRadius: BorderRadius.circular(20),
                 border: Border.all(color: tierColor),
               ),

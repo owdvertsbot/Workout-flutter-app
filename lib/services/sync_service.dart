@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'package:flutter/foundation.dart';
 
 /// Sync service for background synchronization (FDS Section 9)
 /// Implements local-first operations with background sync queue
