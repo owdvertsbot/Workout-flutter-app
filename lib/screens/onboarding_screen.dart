@@ -440,7 +440,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     );
   }
 
-  void _onNext() {
+  void _onNext() async {
     if (_currentPage < 2) {
       _pageController.nextPage(
         duration: const Duration(milliseconds: 300),
@@ -450,11 +450,16 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
       // Save settings
       ref.read(userSettingsProvider.notifier).setUseMetric(_useMetric);
       
+      // Mark onboarding as completed
+      await ref.read(completeOnboardingProvider.future);
+      
       // Navigate to main app
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (_) => const MainNavigationScreen()),
-      );
+      if (mounted) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (_) => const MainNavigationScreen()),
+        );
+      }
     }
   }
 

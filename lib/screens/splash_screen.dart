@@ -21,9 +21,11 @@ class SplashScreen extends ConsumerStatefulWidget {
 }
 
 class _SplashScreenState extends ConsumerState<SplashScreen>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _animationController;
+    with TickerProviderStateMixin {
+  late AnimationController _pulseController;
+  late AnimationController _glowController;
   late Animation<double> _pulseAnimation;
+  late Animation<double> _glowAnimation;
   String _statusMessage = 'Initializing...';
   bool _hasError = false;
 
@@ -32,13 +34,24 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
     super.initState();
     AnalyticsService.log('app_cold_boot_started');
     
-    _animationController = AnimationController(
+    // Pulse animation for scale
+    _pulseController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 1500),
     )..repeat(reverse: true);
 
     _pulseAnimation = Tween<double>(begin: 0.95, end: 1.05).animate(
-      CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
+      CurvedAnimation(parent: _pulseController, curve: Curves.easeInOut),
+    );
+
+    // Glow animation for aura effect
+    _glowController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 2000),
+    )..repeat(reverse: true);
+
+    _glowAnimation = Tween<double>(begin: 0.4, end: 0.8).animate(
+      CurvedAnimation(parent: _glowController, curve: Curves.easeInOut),
     );
 
     _initializeApp();
@@ -58,6 +71,18 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
       AnalyticsService.log('app_initialization_completed', {'schema_version': 1});
 
       if (mounted) {
+        // Check if onboarding is completed
+        final prefs = await ref.read(onboardingCompletedProvider.future);
+        
+        if (!prefs) {
+          // First time user - show onboarding
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (_) => const OnboardingScreen()),
+          );
+          return;
+        }
+        
         final activeWorkout = ref.read(activeWorkoutProvider);
         
         if (activeWorkout != null) {
@@ -68,7 +93,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
         } else {
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (_) => const OnboardingScreen()),
+            MaterialPageRoute(builder: (_) => const MainNavigationScreen()),
           );
         }
       }
@@ -81,6 +106,13 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
   }
 
   @override
+  void dispose() {
+    _pulseController.dispose();
+    _glowController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFF121212),
@@ -88,35 +120,61 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // Animated Logo
-            ScaleTransition(
-              scale: _pulseAnimation,
-              child: Container(
-                width: 120,
-                height: 120,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  gradient: const LinearGradient(
-                    colors: [Color(0xFF00E676), Color(0xFF7C4DFF)],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: const Color(0xFF00E676).withOpacity(0.5),
-                      blurRadius: 30,
-                      spreadRadius: 5,
+            // Animated Logo with Glowing Aura
+            AnimatedBuilder(
+              animation: Listenable.merge([_pulseAnimation, _glowAnimation]),
+              builder: (context, child) {
+                return Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    // Outer glow aura
+                    Container(
+                      width: 160,
+                      height: 160,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        boxShadow: [
+                          // Primary green glow
+                          BoxShadow(
+                            color: const Color(0xFF00E676).withValues(alpha: _glowAnimation.value),
+                            blurRadius: 40,
+                            spreadRadius: 10,
+                          ),
+                          // Secondary purple glow
+                          BoxShadow(
+                            color: const Color(0xFF7C4DFF).withValues(alpha: _glowAnimation.value * 0.6),
+                            blurRadius: 30,
+                            spreadRadius: 5,
+                          ),
+                        ],
+                      ),
+                    ),
+                    // Pulsing logo
+                    ScaleTransition(
+                      scale: _pulseAnimation,
+                      child: Container(
+                        width: 120,
+                        height: 120,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          gradient: const LinearGradient(
+                            colors: [Color(0xFF00E676), Color(0xFF7C4DFF)],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          ),
+                        ),
+                        child: const Center(
+                          child: Icon(
+                            Icons.fitness_center,
+                            size: 60,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
                     ),
                   ],
-                ),
-                child: const Center(
-                  child: Icon(
-                    Icons.fitness_center,
-                    size: 60,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
+                );
+              },
             ),
             const SizedBox(height: 32),
             Text(
@@ -131,7 +189,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
             Text(
               'Level Up Your Fitness',
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: Colors.white.withOpacity(0.7),
+                color: Colors.white.withValues(alpha: 0.7),
               ),
             ),
             const SizedBox(height: 32),
@@ -162,7 +220,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                     child: CircularProgressIndicator(
                       strokeWidth: 2,
                       valueColor: AlwaysStoppedAnimation<Color>(
-                        Colors.white.withOpacity(0.5),
+                        Colors.white.withValues(alpha: 0.5),
                       ),
                     ),
                   ),
@@ -170,7 +228,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                   Text(
                     _statusMessage,
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: Colors.white.withOpacity(0.5),
+                      color: Colors.white.withValues(alpha: 0.5),
                     ),
                   ),
                 ],
@@ -180,7 +238,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
             Text(
               'v2.4.0 (Build 182)',
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: Colors.white.withOpacity(0.3),
+                color: Colors.white.withValues(alpha: 0.3),
               ),
             ),
           ],
@@ -218,7 +276,7 @@ class _WorkoutRecoveryScreen extends StatelessWidget {
             Text(
               'We found an active workout session.',
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: Colors.white.withOpacity(0.7),
+                color: Colors.white.withValues(alpha: 0.7),
               ),
             ),
             const SizedBox(height: 32),
