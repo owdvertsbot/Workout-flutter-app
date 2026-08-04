@@ -298,24 +298,42 @@ class ActiveWorkoutNotifier extends StateNotifier<WorkoutSessionModel?> {
     await _loadActiveWorkout();
   }
   
-  Future<void> finishWorkout() async {
-    if (state == null) return;
+  Future<WorkoutCompletionResult?> finishWorkout() async {
+    if (state == null) return null;
     
     final db = ref.read(databaseProvider);
+    final workoutToComplete = state!;
+    final levelBefore = ref.read(playerProfileProvider).level;
     
     await db.updateWorkoutSession(WorkoutSessionsCompanion(
-      id: Value(state!.id),
-      title: Value(state!.title),
-      startTime: Value(state!.startTime),
+      id: Value(workoutToComplete.id),
+      title: Value(workoutToComplete.title),
+      startTime: Value(workoutToComplete.startTime),
       endTime: Value(DateTime.now()),
       status: const Value('COMPLETED'),
-      templateId: Value(state!.templateId),
+      templateId: Value(workoutToComplete.templateId),
     ));
     
-    // Update player stats
-    await ref.read(playerProfileProvider.notifier).onWorkoutComplete(state!.totalVolume);
+    // Update player stats - this calculates XP internally
+    await ref.read(playerProfileProvider.notifier).onWorkoutComplete(workoutToComplete.totalVolume);
+    
+    // Get updated profile state
+    final updatedProfile = ref.read(playerProfileProvider);
+    
+    // Calculate XP earned (matching the formula in onWorkoutComplete)
+    // XP = (volume / 100).round() + streakDays * 5
+    final xpEarned = (workoutToComplete.totalVolume / 100).round() + 
+                      updatedProfile.streakDays * 5;
     
     state = null;
+    
+    return WorkoutCompletionResult(
+      workout: workoutToComplete,
+      xpEarned: xpEarned,
+      levelBefore: levelBefore,
+      levelAfter: updatedProfile.level,
+      streakDays: updatedProfile.streakDays,
+    );
   }
   
   Future<void> abandonWorkout() async {

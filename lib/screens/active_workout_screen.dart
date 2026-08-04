@@ -209,41 +209,23 @@ class _ActiveWorkoutScreenState extends ConsumerState<ActiveWorkoutScreen> {
           ),
         );
         if (confirm == true) {
-          // Capture workout data before finishing
-          final workout = ref.read(activeWorkoutProvider);
-          if (workout != null) {
-            // Calculate XP from completed sets
-            final profile = ref.read(playerProfileProvider);
-            int xpFromSets = 0;
-            for (final set in workout.sets.where((s) => s.isCompleted)) {
-              xpFromSets += set.calculateXp(streakDays: profile.streakDays);
-            }
-            
-            // Calculate PR bonus (simplified - would need actual PR detection)
-            final prBonusXp = 0;
-            
-            // Update database first
-            await ref.read(activeWorkoutProvider.notifier).finishWorkout();
-            
-            // Get updated profile for level check
-            final updatedProfile = ref.read(playerProfileProvider);
-            
-            // Navigate to summary screen
-            if (context.mounted) {
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => WorkoutSummaryScreen(
-                    workout: workout,
-                    totalXpEarned: xpFromSets + prBonusXp,
-                    xpFromSets: xpFromSets,
-                    prBonusXp: prBonusXp,
-                    leveledUp: updatedProfile.level > profile.level,
-                    newLevel: updatedProfile.level,
-                  ),
+          // Finish workout - notifier returns completion result with calculated XP
+          final result = await ref.read(activeWorkoutProvider.notifier).finishWorkout();
+          
+          if (result != null && context.mounted) {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (_) => WorkoutSummaryScreen(
+                  workout: result.workout,
+                  totalXpEarned: result.xpEarned,
+                  xpFromSets: (result.workout.totalVolume / 100).round(),
+                  prBonusXp: 0,
+                  leveledUp: result.leveledUp,
+                  newLevel: result.levelAfter,
                 ),
-              );
-            }
+              ),
+            );
           }
         }
         break;

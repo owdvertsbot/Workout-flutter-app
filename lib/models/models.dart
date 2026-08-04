@@ -492,3 +492,22 @@ class WorkoutSessionModel {
     );
   }
 }
+
+// Workout completion result returned by the notifier
+class WorkoutCompletionResult {
+  final WorkoutSessionModel workout;
+  final int xpEarned;
+  final int levelBefore;
+  final int levelAfter;
+  final int streakDays;
+
+  WorkoutCompletionResult({
+    required this.workout,
+    required this.xpEarned,
+    required this.levelBefore,
+    required this.levelAfter,
+    required this.streakDays,
+  });
+
+  bool get leveledUp => levelAfter > levelBefore;
+}
