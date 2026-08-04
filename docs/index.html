@@ -3,157 +3,703 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>RPG Workout App - Download</title>
+  <title>RPG Workout App - Turn Your Fitness Into an Epic Adventure</title>
+  <meta name="description" content="Download the RPG Workout App - Transform your fitness journey with gamification, 1324+ exercises, and daily quests. Available for Android.">
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg-primary: #0a0a0f;
+      --bg-secondary: #12121a;
+      --bg-card: rgba(255, 255, 255, 0.03);
+      --bg-card-hover: rgba(255, 255, 255, 0.06);
+      --accent-primary: #a855f7;
+      --accent-secondary: #6366f1;
+      --accent-gold: #fbbf24;
+      --accent-emerald: #34d399;
+      --text-primary: #ffffff;
+      --text-secondary: #94a3b8;
+      --text-muted: #64748b;
+      --border-color: rgba(255, 255, 255, 0.08);
+      --glow-purple: rgba(168, 85, 247, 0.4);
+      --glow-gold: rgba(251, 191, 36, 0.4);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
       min-height: 100vh;
-      color: #fff;
+      overflow-x: hidden;
+      line-height: 1.6;
+    }
+
+    /* Animated Background */
+    .bg-animation {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .bg-animation::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: 
+        radial-gradient(ellipse at 20% 20%, var(--glow-purple) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 80%, var(--glow-gold) 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 50%, rgba(99, 102, 241, 0.2) 0%, transparent 60%);
+      animation: bgPulse 15s ease-in-out infinite;
+    }
+
+    @keyframes bgPulse {
+      0%, 100% { transform: translate(0, 0) scale(1); opacity: 1; }
+      33% { transform: translate(2%, 2%) scale(1.05); opacity: 0.8; }
+      66% { transform: translate(-2%, 1%) scale(0.95); opacity: 0.9; }
+    }
+
+    /* Grid Pattern Overlay */
+    .grid-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: 
+        linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+      background-size: 60px 60px;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* Floating Particles */
+    .particles {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .particle {
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      background: var(--accent-gold);
+      border-radius: 50%;
+      opacity: 0.6;
+      animation: float 20s infinite;
+    }
+
+    .particle:nth-child(2) { left: 20%; animation-delay: -5s; background: var(--accent-primary); }
+    .particle:nth-child(3) { left: 40%; animation-delay: -10s; background: var(--accent-emerald); }
+    .particle:nth-child(4) { left: 60%; animation-delay: -15s; }
+    .particle:nth-child(5) { left: 80%; animation-delay: -7s; background: var(--accent-secondary); }
+
+    @keyframes float {
+      0%, 100% { 
+        transform: translateY(100vh) rotate(0deg); 
+        opacity: 0;
+      }
+      10% { opacity: 0.6; }
+      90% { opacity: 0.6; }
+      100% { 
+        transform: translateY(-100vh) rotate(720deg); 
+        opacity: 0;
+      }
+    }
+
+    /* Main Container */
+    .container {
+      position: relative;
+      z-index: 10;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 60px 24px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    /* Header Section */
+    .hero {
+      text-align: center;
+      margin-bottom: 60px;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+      padding: 8px 20px;
+      border-radius: 100px;
+      font-size: 0.875rem;
+      font-weight: 600;
+      margin-bottom: 32px;
+      animation: badgePulse 3s ease-in-out infinite;
+    }
+
+    @keyframes badgePulse {
+      0%, 100% { box-shadow: 0 0 20px var(--glow-purple); }
+      50% { box-shadow: 0 0 40px var(--glow-purple); }
+    }
+
+    .hero-badge i {
+      font-size: 0.75rem;
+    }
+
+    .hero h1 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(2.5rem, 8vw, 4.5rem);
+      font-weight: 700;
+      line-height: 1.1;
+      margin-bottom: 20px;
+      background: linear-gradient(135deg, #fff 0%, #e2e8f0 50%, var(--accent-gold) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero h1 span {
+      background: linear-gradient(135deg, var(--accent-gold), #f59e0b);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero p {
+      font-size: clamp(1rem, 2.5vw, 1.25rem);
+      color: var(--text-secondary);
+      max-width: 600px;
+      margin: 0 auto 40px;
+    }
+
+    /* Stats Bar */
+    .stats-bar {
+      display: flex;
+      justify-content: center;
+      gap: 48px;
+      flex-wrap: wrap;
+      margin-bottom: 60px;
+    }
+
+    .stat {
+      text-align: center;
+    }
+
+    .stat-value {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 2rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--accent-gold), var(--accent-primary));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .stat-label {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    /* Features Grid */
+    .features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 24px;
+      margin-bottom: 60px;
+    }
+
+    .feature-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      padding: 32px 24px;
+      text-align: center;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .feature-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--accent-primary), transparent);
+      opacity: 0;
+      transition: opacity 0.4s;
+    }
+
+    .feature-card:hover {
+      background: var(--bg-card-hover);
+      border-color: rgba(168, 85, 247, 0.3);
+      transform: translateY(-8px);
+    }
+
+    .feature-card:hover::before {
+      opacity: 1;
+    }
+
+    .feature-icon {
+      width: 64px;
+      height: 64px;
+      margin: 0 auto 20px;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 20px;
+      font-size: 1.75rem;
+      background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+      border-radius: 16px;
+      box-shadow: 0 8px 32px rgba(168, 85, 247, 0.3);
     }
-    .container {
-      max-width: 600px;
-      background: rgba(255,255,255,0.05);
-      border-radius: 20px;
-      padding: 40px;
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(255,255,255,0.1);
-      text-align: center;
+
+    .feature-card h3 {
+      font-size: 1.125rem;
+      font-weight: 600;
+      margin-bottom: 8px;
     }
-    h1 {
-      font-size: 2.5em;
-      margin-bottom: 10px;
-      background: linear-gradient(90deg, #FFD700, #FFA500);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+
+    .feature-card p {
+      font-size: 0.875rem;
+      color: var(--text-muted);
     }
-    .subtitle {
-      color: #888;
-      margin-bottom: 30px;
-      font-size: 1.1em;
-    }
-    .badge {
-      display: inline-block;
-      background: #00E676;
-      color: #000;
-      padding: 5px 15px;
-      border-radius: 20px;
-      font-size: 0.85em;
-      font-weight: bold;
-      margin-bottom: 30px;
-    }
+
+    /* Download Section */
     .downloads {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 24px;
+      padding: 40px;
+      margin-bottom: 40px;
+    }
+
+    .downloads h2 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.75rem;
+      text-align: center;
+      margin-bottom: 32px;
+    }
+
+    .download-buttons {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+    }
+
+    .download-btn {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      padding: 24px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      text-decoration: none;
+      color: var(--text-primary);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .download-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, var(--glow-purple), transparent);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .download-btn:hover {
+      border-color: var(--accent-primary);
+      transform: scale(1.02);
+      box-shadow: 0 8px 32px rgba(168, 85, 247, 0.2);
+    }
+
+    .download-btn:hover::before {
+      opacity: 0.1;
+    }
+
+    .download-btn.release {
+      background: linear-gradient(135deg, var(--accent-gold), #f59e0b);
+      border-color: transparent;
+    }
+
+    .download-btn.release:hover {
+      border-color: transparent;
+      box-shadow: 0 8px 32px var(--glow-gold);
+    }
+
+    .download-btn.release .btn-content {
+      color: #0a0a0f;
+    }
+
+    .download-btn.release .btn-label {
+      color: rgba(10, 10, 15, 0.7);
+    }
+
+    .download-btn.release .btn-size {
+      color: rgba(10, 10, 15, 0.5);
+    }
+
+    .download-btn.release .btn-icon {
+      background: rgba(0, 0, 0, 0.2);
+      color: #0a0a0f;
+    }
+
+    .btn-icon {
+      width: 56px;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+      border-radius: 12px;
+      font-size: 1.5rem;
+      flex-shrink: 0;
+      transition: transform 0.3s;
+    }
+
+    .download-btn:hover .btn-icon {
+      transform: scale(1.1) rotate(5deg);
+    }
+
+    .btn-content {
+      flex: 1;
+    }
+
+    .btn-label {
+      display: block;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 4px;
+    }
+
+    .btn-title {
+      display: block;
+      font-size: 1.125rem;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .btn-size {
+      display: block;
+      font-size: 0.875rem;
+      color: var(--text-muted);
+    }
+
+    .btn-arrow {
+      font-size: 1.25rem;
+      color: var(--text-muted);
+      transition: transform 0.3s, color 0.3s;
+    }
+
+    .download-btn:hover .btn-arrow {
+      transform: translateX(4px);
+      color: var(--accent-primary);
+    }
+
+    .download-btn.release:hover .btn-arrow {
+      color: #0a0a0f;
+    }
+
+    /* Notes Section */
+    .notes {
+      background: rgba(251, 191, 36, 0.1);
+      border: 1px solid rgba(251, 191, 36, 0.2);
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 40px;
+    }
+
+    .notes-title {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 600;
+      color: var(--accent-gold);
+      margin-bottom: 12px;
+    }
+
+    .notes-title i {
+      font-size: 1.25rem;
+    }
+
+    .notes ul {
+      list-style: none;
       display: flex;
       flex-direction: column;
-      gap: 15px;
+      gap: 8px;
     }
-    .download-btn {
-      display: block;
-      padding: 20px 30px;
-      background: linear-gradient(135deg, #00E676, #00C853);
-      color: #000;
+
+    .notes li {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+    }
+
+    .notes li i {
+      color: var(--accent-gold);
+      font-size: 0.75rem;
+    }
+
+    /* Footer */
+    .footer {
+      text-align: center;
+      padding-top: 40px;
+      border-top: 1px solid var(--border-color);
+    }
+
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 32px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+    }
+
+    .footer-links a {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--text-secondary);
       text-decoration: none;
-      border-radius: 12px;
-      font-weight: bold;
-      font-size: 1.1em;
-      transition: transform 0.2s, box-shadow 0.2s;
+      font-size: 0.875rem;
+      transition: color 0.3s;
     }
-    .download-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 10px 30px rgba(0,230,118,0.3);
+
+    .footer-links a:hover {
+      color: var(--accent-primary);
     }
-    .download-btn.release {
-      background: linear-gradient(135deg, #FFD700, #FFA500);
+
+    .footer-links a i {
+      font-size: 1.125rem;
     }
-    .download-btn.release:hover {
-      box-shadow: 0 10px 30px rgba(255,215,0,0.3);
+
+    .footer-text {
+      font-size: 0.875rem;
+      color: var(--text-muted);
     }
-    .download-btn .label {
-      font-size: 0.75em;
-      opacity: 0.8;
-      display: block;
-      margin-bottom: 5px;
+
+    /* Responsive */
+    @media (max-width: 640px) {
+      .container {
+        padding: 40px 16px;
+      }
+
+      .stats-bar {
+        gap: 32px;
+      }
+
+      .downloads {
+        padding: 24px;
+      }
+
+      .download-btn {
+        padding: 20px;
+      }
+
+      .btn-icon {
+        width: 48px;
+        height: 48px;
+        font-size: 1.25rem;
+      }
+
+      .footer-links {
+        flex-direction: column;
+        align-items: center;
+        gap: 16px;
+      }
     }
-    .download-btn .size {
-      font-size: 0.8em;
-      opacity: 0.7;
-      margin-left: 10px;
+
+    /* Animation on load */
+    .fade-in {
+      animation: fadeIn 0.8s ease-out forwards;
+      opacity: 0;
     }
-    .note {
-      margin-top: 30px;
-      color: #666;
-      font-size: 0.9em;
-      line-height: 1.6;
-    }
-    .features {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 15px;
-      margin: 30px 0;
-    }
-    .feature {
-      background: rgba(255,255,255,0.05);
-      padding: 15px;
-      border-radius: 10px;
-    }
-    .feature-icon {
-      font-size: 1.5em;
-      margin-bottom: 5px;
-    }
-    .feature-text {
-      font-size: 0.85em;
-      color: #aaa;
-    }
-    @media (max-width: 500px) {
-      .features { grid-template-columns: 1fr; }
-      h1 { font-size: 1.8em; }
+
+    .fade-in:nth-child(1) { animation-delay: 0.1s; }
+    .fade-in:nth-child(2) { animation-delay: 0.2s; }
+    .fade-in:nth-child(3) { animation-delay: 0.3s; }
+    .fade-in:nth-child(4) { animation-delay: 0.4s; }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
   </style>
 </head>
 <body>
+  <!-- Background Effects -->
+  <div class="bg-animation"></div>
+  <div class="grid-overlay"></div>
+  <div class="particles">
+    <div class="particle" style="left: 10%;"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+  </div>
+
   <div class="container">
-    <h1>⚔️ RPG Workout</h1>
-    <p class="subtitle">Turn your fitness journey into an epic adventure</p>
-    <span class="badge">✨ Latest Release</span>
-    
-    <div class="features">
-      <div class="feature">
-        <div class="feature-icon">🎮</div>
-        <div class="feature-text">RPG Gamification</div>
+    <!-- Hero Section -->
+    <section class="hero fade-in">
+      <div class="hero-badge">
+        <i class="fas fa-sparkles"></i>
+        <span>Latest Release Available</span>
       </div>
-      <div class="feature">
-        <div class="feature-icon">💪</div>
-        <div class="feature-text">1324+ Exercises</div>
+      <h1><span>⚔️</span> RPG Workout</h1>
+      <p>Transform your fitness journey into an epic adventure. Level up your workouts, complete daily quests, and become the hero of your own story.</p>
+    </section>
+
+    <!-- Stats Bar -->
+    <div class="stats-bar fade-in">
+      <div class="stat">
+        <div class="stat-value">1324+</div>
+        <div class="stat-label">Exercises</div>
       </div>
-      <div class="feature">
-        <div class="feature-icon">🏆</div>
-        <div class="feature-text">Daily Quests</div>
+      <div class="stat">
+        <div class="stat-value">50+</div>
+        <div class="stat-label">Workout Types</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value">∞</div>
+        <div class="stat-label">Quests</div>
       </div>
     </div>
-    
-    <div class="downloads">
-      <a href="https://github.com/owdvertsbot/Workout-flutter-app/releases/download/v1.0.0/app-release.apk" class="download-btn release">
-        <span class="label">📱 Download Release APK</span>
-        Recommended for most users
-        <span class="size">(~59 MB)</span>
-      </a>
-      <a href="https://github.com/owdvertsbot/Workout-flutter-app/releases/download/v1.0.0/app-debug.apk" class="download-btn">
-        <span class="label">🔧 Download Debug APK</span>
-        For testing & development
-        <span class="size">(~160 MB)</span>
-      </a>
-    </div>
-    
-    <p class="note">
-      ⚠️ This app requires Android 6.0 or higher.<br>
-      Enable "Install from unknown sources" in your device settings.<br>
-      Web version unavailable due to native SQLite dependencies.
-    </p>
+
+    <!-- Features Grid -->
+    <section class="features fade-in">
+      <div class="feature-card">
+        <div class="feature-icon">
+          <i class="fas fa-gamepad"></i>
+        </div>
+        <h3>RPG Gamification</h3>
+        <p>Level up, earn XP, unlock achievements, and progress through an immersive storyline</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">
+          <i class="fas fa-dumbbell"></i>
+        </div>
+        <h3>1324+ Exercises</h3>
+        <p>Comprehensive exercise library covering cardio, strength, flexibility, and more</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">
+          <i class="fas fa-calendar-check"></i>
+        </div>
+        <h3>Daily Quests</h3>
+        <p>Stay motivated with daily challenges and quests that keep you coming back</p>
+      </div>
+    </section>
+
+    <!-- Downloads Section -->
+    <section class="downloads fade-in">
+      <h2>📥 Download Now</h2>
+      <div class="download-buttons">
+        <a href="https://github.com/owdvertsbot/Workout-flutter-app/releases/download/v1.0.0/app-release.apk" class="download-btn release">
+          <div class="btn-icon">
+            <i class="fas fa-rocket"></i>
+          </div>
+          <div class="btn-content">
+            <span class="btn-label">Recommended</span>
+            <span class="btn-title">Release APK</span>
+            <span class="btn-size">~59 MB • Stable version</span>
+          </div>
+          <i class="fas fa-arrow-right btn-arrow"></i>
+        </a>
+        <a href="https://github.com/owdvertsbot/Workout-flutter-app/releases/download/v1.0.0/app-debug.apk" class="download-btn">
+          <div class="btn-icon">
+            <i class="fas fa-flask"></i>
+          </div>
+          <div class="btn-content">
+            <span class="btn-label">For Developers</span>
+            <span class="btn-title">Debug APK</span>
+            <span class="btn-size">~160 MB • Testing version</span>
+          </div>
+          <i class="fas fa-arrow-right btn-arrow"></i>
+        </a>
+      </div>
+    </section>
+
+    <!-- Notes Section -->
+    <section class="notes fade-in">
+      <div class="notes-title">
+        <i class="fas fa-info-circle"></i>
+        <span>Before You Download</span>
+      </div>
+      <ul>
+        <li><i class="fas fa-check"></i> Requires Android 6.0 (Marshmallow) or higher</li>
+        <li><i class="fas fa-check"></i> Enable "Install from unknown sources" in your device settings</li>
+        <li><i class="fas fa-check"></i> Web version unavailable due to native SQLite dependencies</li>
+      </ul>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer fade-in">
+      <div class="footer-links">
+        <a href="https://github.com/owdvertsbot/Workout-flutter-app">
+          <i class="fab fa-github"></i>
+          View on GitHub
+        </a>
+        <a href="https://github.com/owdvertsbot/Workout-flutter-app/releases">
+          <i class="fas fa-box-open"></i>
+          All Releases
+        </a>
+        <a href="https://github.com/owdvertsbot/Workout-flutter-app/issues">
+          <i class="fas fa-bug"></i>
+          Report an Issue
+        </a>
+      </div>
+      <p class="footer-text">Made with <i class="fas fa-heart" style="color: #ef4444;"></i> for fitness enthusiasts everywhere</p>
+    </footer>
   </div>
 </body>
 </html>
