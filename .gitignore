@@ -43,3 +43,51 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Environment variables and secrets - NEVER commit these
+.env
+.env.*
+.env.local
+.env.development
+.env.production
+*.env
+
+# API keys and credentials - NEVER commit these
+api_keys.dart
+credentials.dart
+secrets.dart
+lib/config/credentials.dart
+lib/config/api_keys.dart
+lib/core/secrets.dart
+assets/credentials/
+
+# Local configuration overrides (for local development)
+lib/config/local.dart
+lib/config/local_config.dart
+config.local.json
+config.local.yaml
+
+# Crash reports and analytics (may contain sensitive data)
+/lib/crash_reports/
+*.crash
+
+# Firebase/Google Services (contains configuration with API keys)
+google-services.json
+google-services_dev.json
+google-services_prod.json
+ios/Runner/GoogleService-Info.plist
+android/app/google-services.json
+
+# Certificate files
+*.p12
+*.pfx
+*.pem
+*.key
+*.crt
+*.cer
+
+# SSH keys
+.ssh/
+
+# iOS signing
+ios/Runner/Keys/

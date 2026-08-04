@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
+import '../core/errors.dart';
 import '../database/database.dart';
 import '../models/models.dart';
 
@@ -17,6 +18,12 @@ final databaseProvider = Provider<AppDatabase>((ref) {
 
 // UUID generator
 final uuidProvider = Provider<Uuid>((ref) => const Uuid());
+
+// Error state provider for UI feedback
+final appErrorProvider = StateProvider<AppException?>((ref) => null);
+
+// Loading state provider
+final isLoadingProvider = StateProvider<bool>((ref) => false);
 
 // Exercises provider
 final exercisesProvider = FutureProvider<List<ExerciseModel>>((ref) async {
@@ -102,255 +109,325 @@ class ActiveWorkoutNotifier extends StateNotifier<WorkoutSessionModel?> {
   }
   
   Future<void> _loadActiveWorkout() async {
-    final db = ref.read(databaseProvider);
-    final sessions = await db.getAllWorkouts();
-    final active = sessions.where((s) => s.status == 'IN_PROGRESS').toList();
-    
-    if (active.isNotEmpty) {
-      final session = active.first;
-      final sets = await db.getSetsForSession(session.id);
+    try {
+      final db = ref.read(databaseProvider);
+      final sessions = await db.getAllWorkouts();
+      final active = sessions.where((s) => s.status == 'IN_PROGRESS').toList();
       
-      state = WorkoutSessionModel(
-        id: session.id,
-        title: session.title,
-        startTime: session.startTime,
-        endTime: session.endTime,
-        status: WorkoutStatus.fromString(session.status),
-        templateId: session.templateId,
-        sets: sets.map((s) => SetEntryModel(
-          id: s.id,
-          sessionId: s.sessionId,
-          exerciseId: s.exerciseId,
-          weightKg: s.weightKg,
-          reps: s.reps,
-          rpe: s.rpe,
-          setType: SetType.fromString(s.setType),
-          notes: s.notes,
-          isCompleted: s.isCompleted,
-          completedAt: s.completedAt,
-        )).toList(),
-        exerciseIds: sets.map((s) => s.exerciseId).toSet().toList(),
+      if (active.isNotEmpty) {
+        final session = active.first;
+        final sets = await db.getSetsForSession(session.id);
+        
+        state = WorkoutSessionModel(
+          id: session.id,
+          title: session.title,
+          startTime: session.startTime,
+          endTime: session.endTime,
+          status: WorkoutStatus.fromString(session.status),
+          templateId: session.templateId,
+          sets: sets.map((s) => SetEntryModel(
+            id: s.id,
+            sessionId: s.sessionId,
+            exerciseId: s.exerciseId,
+            weightKg: s.weightKg,
+            reps: s.reps,
+            rpe: s.rpe,
+            setType: SetType.fromString(s.setType),
+            notes: s.notes,
+            isCompleted: s.isCompleted,
+            completedAt: s.completedAt,
+          )).toList(),
+          exerciseIds: sets.map((s) => s.exerciseId).toSet().toList(),
+        );
+      }
+    } on DatabaseException catch (e) {
+      ref.read(appErrorProvider.notifier).state = e;
+    } catch (e) {
+      ref.read(appErrorProvider.notifier).state = DatabaseException(
+        message: 'Failed to load active workout: $e',
+        originalError: e,
       );
     }
   }
   
   Future<void> startWorkout({String? title}) async {
-    final db = ref.read(databaseProvider);
-    final uuid = ref.read(uuidProvider);
-    
-    final session = WorkoutSessionsCompanion(
-      id: Value(uuid.v4()),
-      title: Value(title ?? 'Workout ${DateTime.now().toString().substring(0, 10)}'),
-      startTime: Value(DateTime.now()),
-      status: const Value('IN_PROGRESS'),
-    );
-    
-    await db.insertWorkoutSession(session);
-    await _loadActiveWorkout();
+    try {
+      ref.read(isLoadingProvider.notifier).state = true;
+      final db = ref.read(databaseProvider);
+      final uuid = ref.read(uuidProvider);
+      
+      final session = WorkoutSessionsCompanion(
+        id: Value(uuid.v4()),
+        title: Value(title ?? 'Workout ${DateTime.now().toString().substring(0, 10)}'),
+        startTime: Value(DateTime.now()),
+        status: const Value('IN_PROGRESS'),
+      );
+      
+      await db.insertWorkoutSession(session);
+      await _loadActiveWorkout();
+    } catch (e) {
+      ref.read(appErrorProvider.notifier).state = DatabaseException(
+        message: 'Failed to start workout: $e',
+        originalError: e,
+      );
+    } finally {
+      ref.read(isLoadingProvider.notifier).state = false;
+    }
   }
   
   Future<void> addExercise(String exerciseId) async {
     if (state == null) return;
     
-    final db = ref.read(databaseProvider);
-    final uuid = ref.read(uuidProvider);
-    
-    // Add first set entry for this exercise
-    final setEntry = SetEntriesCompanion(
-      id: Value(uuid.v4()),
-      sessionId: Value(state!.id),
-      exerciseId: Value(exerciseId),
-      setType: const Value('WORKING'),
-      isCompleted: const Value(false),
-    );
-    
-    await db.insertSetEntry(setEntry);
-    await _loadActiveWorkout();
+    try {
+      ref.read(isLoadingProvider.notifier).state = true;
+      final db = ref.read(databaseProvider);
+      final uuid = ref.read(uuidProvider);
+      
+      // Add first set entry for this exercise
+      final setEntry = SetEntriesCompanion(
+        id: Value(uuid.v4()),
+        sessionId: Value(state!.id),
+        exerciseId: Value(exerciseId),
+        setType: const Value('WORKING'),
+        isCompleted: const Value(false),
+      );
+      
+      await db.insertSetEntry(setEntry);
+      await _loadActiveWorkout();
+    } catch (e) {
+      ref.read(appErrorProvider.notifier).state = DatabaseException(
+        message: 'Failed to add exercise: $e',
+        originalError: e,
+      );
+    } finally {
+      ref.read(isLoadingProvider.notifier).state = false;
+    }
   }
   
   Future<void> updateSet(SetEntryModel set) async {
     if (state == null) return;
     
-    final db = ref.read(databaseProvider);
-    
-    await db.updateSetEntry(SetEntriesCompanion(
-      id: Value(set.id),
-      sessionId: Value(set.sessionId),
-      exerciseId: Value(set.exerciseId),
-      weightKg: Value(set.weightKg),
-      reps: Value(set.reps),
-      rpe: Value(set.rpe),
-      setType: Value(set.setType.value),
-      notes: Value(set.notes),
-      isCompleted: Value(set.isCompleted),
-      completedAt: Value(set.completedAt),
-    ));
-    
-    await _loadActiveWorkout();
+    try {
+      final db = ref.read(databaseProvider);
+      
+      await db.updateSetEntry(SetEntriesCompanion(
+        id: Value(set.id),
+        sessionId: Value(set.sessionId),
+        exerciseId: Value(set.exerciseId),
+        weightKg: Value(set.weightKg),
+        reps: Value(set.reps),
+        rpe: Value(set.rpe),
+        setType: Value(set.setType.value),
+        notes: Value(set.notes),
+        isCompleted: Value(set.isCompleted),
+        completedAt: Value(set.completedAt),
+      ));
+      
+      await _loadActiveWorkout();
+    } catch (e) {
+      ref.read(appErrorProvider.notifier).state = DatabaseException(
+        message: 'Failed to update set: $e',
+        originalError: e,
+      );
+    }
   }
   
   Future<void> completeSet(String setId) async {
     if (state == null) return;
     
-    final set = state!.sets.firstWhere((s) => s.id == setId);
-    final updatedSet = set.copyWith(
-      isCompleted: true,
-      completedAt: DateTime.now(),
-    );
-    
-    await updateSet(updatedSet);
-    
-    // Get player streak for XP calculation
-    final profile = ref.read(playerProfileProvider);
-    
-    // Update player XP with streak multiplier
-    await ref.read(playerProfileProvider.notifier).addXp(
-      set.calculateXp(streakDays: profile.streakDays)
-    );
-    
-    // Update quest progress
-    ref.read(dailyQuestsProvider.notifier).updateQuestProgress(QuestType.logSets, 1);
-    
-    // Check for PRs
-    await _checkForPRs(set);
+    try {
+      final set = state!.sets.firstWhere((s) => s.id == setId);
+      final updatedSet = set.copyWith(
+        isCompleted: true,
+        completedAt: DateTime.now(),
+      );
+      
+      await updateSet(updatedSet);
+      
+      // Get player streak for XP calculation
+      final profile = ref.read(playerProfileProvider);
+      
+      // Update player XP with streak multiplier
+      await ref.read(playerProfileProvider.notifier).addXp(
+        set.calculateXp(streakDays: profile.streakDays)
+      );
+      
+      // Update quest progress
+      ref.read(dailyQuestsProvider.notifier).updateQuestProgress(QuestType.logSets, 1);
+      
+      // Check for PRs
+      await _checkForPRs(set);
+    } catch (e) {
+      ref.read(appErrorProvider.notifier).state = DatabaseException(
+        message: 'Failed to complete set: $e',
+        originalError: e,
+      );
+    }
   }
   
   Future<void> _checkForPRs(SetEntryModel set) async {
     if (set.weightKg == null || set.reps == null) return;
     
-    final db = ref.read(databaseProvider);
-    final currentPRs = await db.getPRsForExercise(set.exerciseId);
-    final volume = set.volume;
-    bool prDetected = false;
-    
-    // Check all-time weight PR (+250 XP per FDS)
-    final allTimePR = currentPRs.where((r) => r.recordType == 'ALL_TIME_WEIGHT').toList();
-    if (allTimePR.isEmpty || (allTimePR.first.value < set.weightKg!)) {
-      await db.upsertPersonalRecord(PersonalRecordsCompanion(
-        id: Value(ref.read(uuidProvider).v4()),
-        exerciseId: Value(set.exerciseId),
-        recordType: const Value('ALL_TIME_WEIGHT'),
-        value: Value(set.weightKg!),
-        achievedAt: Value(DateTime.now()),
-      ));
-      prDetected = true;
-      // Award PR bonus XP
-      await ref.read(playerProfileProvider.notifier).addXp(250);
-    }
-    
-    // Check rolling 2-month best PR (+100 XP per FDS)
-    final rollingPR = currentPRs.where((r) => r.recordType == 'ROLLING_2MO').toList();
-    // For rolling PR, we check if this is higher than any weight in the last 2 months
-    // If no rolling PR exists or current weight beats it, award XP
-    if (rollingPR.isEmpty || (rollingPR.first.value < set.weightKg!)) {
-      await db.upsertPersonalRecord(PersonalRecordsCompanion(
-        id: Value(ref.read(uuidProvider).v4()),
-        exerciseId: Value(set.exerciseId),
-        recordType: const Value('ROLLING_2MO'),
-        value: Value(set.weightKg!),
-        achievedAt: Value(DateTime.now()),
-      ));
-      prDetected = true;
-      await ref.read(playerProfileProvider.notifier).addXp(100);
-    }
-    
-    // Check volume PR (+150 XP per FDS)
-    final volumePR = currentPRs.where((r) => r.recordType == 'VOLUME_PR').toList();
-    if (volumePR.isEmpty || (volumePR.first.value < volume)) {
-      await db.upsertPersonalRecord(PersonalRecordsCompanion(
-        id: Value(ref.read(uuidProvider).v4()),
-        exerciseId: Value(set.exerciseId),
-        recordType: const Value('VOLUME_PR'),
-        value: Value(volume),
-        achievedAt: Value(DateTime.now()),
-      ));
-      prDetected = true;
-      await ref.read(playerProfileProvider.notifier).addXp(150);
-    }
-    
-    // Update PR quest if detected
-    if (prDetected) {
-      ref.read(dailyQuestsProvider.notifier).updateQuestProgress(QuestType.hitPR, 1);
+    try {
+      final db = ref.read(databaseProvider);
+      final currentPRs = await db.getPRsForExercise(set.exerciseId);
+      final volume = set.volume;
+      bool prDetected = false;
+      
+      // Check all-time weight PR (+250 XP per FDS)
+      final allTimePR = currentPRs.where((r) => r.recordType == 'ALL_TIME_WEIGHT').toList();
+      if (allTimePR.isEmpty || (allTimePR.first.value < set.weightKg!)) {
+        await db.upsertPersonalRecord(PersonalRecordsCompanion(
+          id: Value(ref.read(uuidProvider).v4()),
+          exerciseId: Value(set.exerciseId),
+          recordType: const Value('ALL_TIME_WEIGHT'),
+          value: Value(set.weightKg!),
+          achievedAt: Value(DateTime.now()),
+        ));
+        prDetected = true;
+        // Award PR bonus XP
+        await ref.read(playerProfileProvider.notifier).addXp(250);
+      }
+      
+      // Check rolling 2-month best PR (+100 XP per FDS)
+      final rollingPR = currentPRs.where((r) => r.recordType == 'ROLLING_2MO').toList();
+      // For rolling PR, we check if this is higher than any weight in the last 2 months
+      // If no rolling PR exists or current weight beats it, award XP
+      if (rollingPR.isEmpty || (rollingPR.first.value < set.weightKg!)) {
+        await db.upsertPersonalRecord(PersonalRecordsCompanion(
+          id: Value(ref.read(uuidProvider).v4()),
+          exerciseId: Value(set.exerciseId),
+          recordType: const Value('ROLLING_2MO'),
+          value: Value(set.weightKg!),
+          achievedAt: Value(DateTime.now()),
+        ));
+        prDetected = true;
+        await ref.read(playerProfileProvider.notifier).addXp(100);
+      }
+      
+      // Check volume PR (+150 XP per FDS)
+      final volumePR = currentPRs.where((r) => r.recordType == 'VOLUME_PR').toList();
+      if (volumePR.isEmpty || (volumePR.first.value < volume)) {
+        await db.upsertPersonalRecord(PersonalRecordsCompanion(
+          id: Value(ref.read(uuidProvider).v4()),
+          exerciseId: Value(set.exerciseId),
+          recordType: const Value('VOLUME_PR'),
+          value: Value(volume),
+          achievedAt: Value(DateTime.now()),
+        ));
+        prDetected = true;
+        await ref.read(playerProfileProvider.notifier).addXp(150);
+      }
+      
+      // Update PR quest if detected
+      if (prDetected) {
+        ref.read(dailyQuestsProvider.notifier).updateQuestProgress(QuestType.hitPR, 1);
+      }
+    } catch (e) {
+      // PR checks are non-critical - don't show error to user
+      debugPrint('PR check failed: $e');
     }
   }
   
   Future<void> addSetToExercise(String exerciseId) async {
     if (state == null) return;
     
-    final db = ref.read(databaseProvider);
-    final uuid = ref.read(uuidProvider);
-    
-    // Get previous set for prefill
-    final previousSets = await db.getPreviousSetsForExercise(exerciseId, limit: 1);
-    final previous = previousSets.isNotEmpty ? previousSets.first : null;
-    
-    final setEntry = SetEntriesCompanion(
-      id: Value(uuid.v4()),
-      sessionId: Value(state!.id),
-      exerciseId: Value(exerciseId),
-      weightKg: Value(previous?.weightKg),
-      reps: Value(previous?.reps),
-      setType: const Value('WORKING'),
-      isCompleted: const Value(false),
-    );
-    
-    await db.insertSetEntry(setEntry);
-    await _loadActiveWorkout();
+    try {
+      final db = ref.read(databaseProvider);
+      final uuid = ref.read(uuidProvider);
+      
+      // Get previous set for prefill
+      final previousSets = await db.getPreviousSetsForExercise(exerciseId, limit: 1);
+      final previous = previousSets.isNotEmpty ? previousSets.first : null;
+      
+      final setEntry = SetEntriesCompanion(
+        id: Value(uuid.v4()),
+        sessionId: Value(state!.id),
+        exerciseId: Value(exerciseId),
+        weightKg: Value(previous?.weightKg),
+        reps: Value(previous?.reps),
+        setType: const Value('WORKING'),
+        isCompleted: const Value(false),
+      );
+      
+      await db.insertSetEntry(setEntry);
+      await _loadActiveWorkout();
+    } catch (e) {
+      ref.read(appErrorProvider.notifier).state = DatabaseException(
+        message: 'Failed to add set: $e',
+        originalError: e,
+      );
+    }
   }
   
   Future<WorkoutCompletionResult?> finishWorkout() async {
     if (state == null) return null;
     
-    final db = ref.read(databaseProvider);
-    final workoutToComplete = state!;
-    final levelBefore = ref.read(playerProfileProvider).level;
-    
-    await db.updateWorkoutSession(WorkoutSessionsCompanion(
-      id: Value(workoutToComplete.id),
-      title: Value(workoutToComplete.title),
-      startTime: Value(workoutToComplete.startTime),
-      endTime: Value(DateTime.now()),
-      status: const Value('COMPLETED'),
-      templateId: Value(workoutToComplete.templateId),
-    ));
-    
-    // Update player stats - this calculates XP internally
-    await ref.read(playerProfileProvider.notifier).onWorkoutComplete(workoutToComplete.totalVolume);
-    
-    // Get updated profile state
-    final updatedProfile = ref.read(playerProfileProvider);
-    
-    // Calculate XP earned (matching the formula in onWorkoutComplete)
-    // XP = (volume / 100).round() + streakDays * 5
-    final xpEarned = (workoutToComplete.totalVolume / 100).round() + 
-                      updatedProfile.streakDays * 5;
-    
-    state = null;
-    
-    return WorkoutCompletionResult(
-      workout: workoutToComplete,
-      xpEarned: xpEarned,
-      levelBefore: levelBefore,
-      levelAfter: updatedProfile.level,
-      streakDays: updatedProfile.streakDays,
-    );
+    try {
+      final db = ref.read(databaseProvider);
+      final workoutToComplete = state!;
+      final levelBefore = ref.read(playerProfileProvider).level;
+      
+      await db.updateWorkoutSession(WorkoutSessionsCompanion(
+        id: Value(workoutToComplete.id),
+        title: Value(workoutToComplete.title),
+        startTime: Value(workoutToComplete.startTime),
+        endTime: Value(DateTime.now()),
+        status: const Value('COMPLETED'),
+        templateId: Value(workoutToComplete.templateId),
+      ));
+      
+      // Update player stats - this calculates XP internally
+      await ref.read(playerProfileProvider.notifier).onWorkoutComplete(workoutToComplete.totalVolume);
+      
+      // Get updated profile state
+      final updatedProfile = ref.read(playerProfileProvider);
+      
+      // Calculate XP earned (matching the formula in onWorkoutComplete)
+      // XP = (volume / 100).round() + streakDays * 5
+      final xpEarned = (workoutToComplete.totalVolume / 100).round() + 
+                        updatedProfile.streakDays * 5;
+      
+      state = null;
+      
+      return WorkoutCompletionResult(
+        workout: workoutToComplete,
+        xpEarned: xpEarned,
+        levelBefore: levelBefore,
+        levelAfter: updatedProfile.level,
+        streakDays: updatedProfile.streakDays,
+      );
+    } catch (e) {
+      ref.read(appErrorProvider.notifier).state = DatabaseException(
+        message: 'Failed to finish workout: $e',
+        originalError: e,
+      );
+      return null;
+    }
   }
   
   Future<void> abandonWorkout() async {
     if (state == null) return;
     
-    final db = ref.read(databaseProvider);
-    
-    await db.updateWorkoutSession(WorkoutSessionsCompanion(
-      id: Value(state!.id),
-      title: Value(state!.title),
-      startTime: Value(state!.startTime),
-      endTime: Value(DateTime.now()),
-      status: const Value('ABANDONED'),
-      templateId: Value(state!.templateId),
-    ));
-    
-    state = null;
+    try {
+      final db = ref.read(databaseProvider);
+      
+      await db.updateWorkoutSession(WorkoutSessionsCompanion(
+        id: Value(state!.id),
+        title: Value(state!.title),
+        startTime: Value(state!.startTime),
+        endTime: Value(DateTime.now()),
+        status: const Value('ABANDONED'),
+        templateId: Value(state!.templateId),
+      ));
+      
+      state = null;
+    } catch (e) {
+      ref.read(appErrorProvider.notifier).state = DatabaseException(
+        message: 'Failed to abandon workout: $e',
+        originalError: e,
+      );
+    }
   }
 }
 

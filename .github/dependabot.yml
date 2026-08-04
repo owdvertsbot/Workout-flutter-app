@@ -1,0 +1,52 @@
+version: 2
+updates:
+  # Enable version updates for Flutter/Dart dependencies
+  - package-ecosystem: "pub"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "UTC"
+    open-pull-requests-limit: 10
+    commit-message:
+      prefix: "deps"
+    labels:
+      - "dependencies"
+      - "dart"
+    allow:
+      # Allow updates for all packages
+      - dependency-name: "*"
+    ignore:
+      # Ignore major updates initially to allow testing
+      - dependency-name: "flutter_riverpod"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "drift"
+        update-types: ["version-update:semver-major"]
+
+  # Security updates (runs more frequently)
+  - package-ecosystem: "pub"
+    directory: "/"
+    schedule:
+      interval: "daily"
+      time: "08:00"
+      timezone: "UTC"
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: "security"
+    labels:
+      - "dependencies"
+      - "security"
+      - "dart"
+    # Focus on security-relevant packages
+    allow:
+      - dependency-name: "drift"
+      - dependency-name: "sqlite3_flutter_libs"
+      - dependency-name: "shared_preferences"
+      - dependency-name: "google_fonts"
+    # Always check for security updates regardless of ignore rules
+    versioning-strategy: "increase"
+
+# Enable dependency reviews (requires GitHub Advanced Security)
+# dependency-review:
+#   enabled: true
