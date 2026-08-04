@@ -47,7 +47,7 @@ class RPGWorkoutApp extends ConsumerWidget {
         backgroundColor: isDark ? const Color(0xFF121212) : Colors.white,
         foregroundColor: isDark ? Colors.white : Colors.black,
       ),
-      cardTheme: CardThemeDataData(
+      cardTheme: CardThemeData(
         elevation: 0,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),
