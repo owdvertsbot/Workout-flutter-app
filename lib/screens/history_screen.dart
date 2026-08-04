@@ -1,12 +1,8 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:intl/intl.dart';
-import 'package:path_provider/path_provider.dart';
 import '../providers/providers.dart';
 import '../models/models.dart';
-import 'active_workout_screen.dart';
 
 class HistoryScreen extends ConsumerStatefulWidget {
   const HistoryScreen({super.key});
@@ -18,81 +14,6 @@ class HistoryScreen extends ConsumerStatefulWidget {
 class _HistoryScreenState extends ConsumerState<HistoryScreen> {
   DateTime _selectedMonth = DateTime.now();
   bool _showCalendar = false;
-
-  void _editWorkout(WorkoutSessionModel workout) {
-    Navigator.push(context, MaterialPageRoute(builder: (_) => const ActiveWorkoutScreen()));
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Edit mode coming soon')),
-    );
-  }
-
-  void _duplicateWorkout(WorkoutSessionModel workout) {
-    ref.read(activeWorkoutProvider.notifier).startWorkout();
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Workout duplicated as template')),
-    );
-  }
-
-  Future<void> _exportWorkoutCSV(WorkoutSessionModel workout) async {
-    try {
-      final csv = _generateCSV(workout);
-      final directory = await getApplicationDocumentsDirectory();
-      final file = File('${directory.path}/workout_${workout.id}.csv');
-      await file.writeAsString(csv);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Exported to ${file.path}')),
-      );
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Export failed: $e')),
-      );
-    }
-  }
-
-  String _generateCSV(WorkoutSessionModel workout) {
-    final buffer = StringBuffer();
-    buffer.writeln('Date,Exercise,Set,Weight,Reps,RPE,Type');
-    for (final set in workout.sets) {
-      buffer.writeln('${workout.startTime.toIso8601String()},${set.exerciseId},${set.setNumber},${set.weight},${set.reps},${set.rpe ?? ""},${set.setType.name}');
-    }
-    return buffer.toString();
-  }
-
-  Future<void> _deleteWorkout(WorkoutSessionModel workout) async {
-    final confirm = await showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Delete Workout'),
-        content: const Text('Are you sure you want to delete this workout?'),
-        actions: [
-          TextButton(onPressed: () => Navigator.pop(context, false), child: const Text('Cancel')),
-          TextButton(
-            onPressed: () => Navigator.pop(context, true),
-            style: TextButton.styleFrom(foregroundColor: Colors.red),
-            child: const Text('Delete'),
-          ),
-        ],
-      ),
-    );
-    if (confirm == true) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Workout deleted')));
-    }
-  }
-
-  void _showWorkoutOptions(WorkoutSessionModel workout) {
-    showModalBottomSheet(
-      context: context,
-      builder: (context) => Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          ListTile(leading: const Icon(Icons.edit), title: const Text('Edit'), onTap: () { Navigator.pop(context); _editWorkout(workout); }),
-          ListTile(leading: const Icon(Icons.copy), title: const Text('Duplicate'), onTap: () { Navigator.pop(context); _duplicateWorkout(workout); }),
-          ListTile(leading: const Icon(Icons.file_download), title: const Text('Export CSV'), onTap: () { Navigator.pop(context); _exportWorkoutCSV(workout); }),
-          ListTile(leading: const Icon(Icons.delete, color: Colors.red), title: const Text('Delete', style: TextStyle(color: Colors.red)), onTap: () { Navigator.pop(context); _deleteWorkout(workout); }),
-        ],
-      ),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -170,7 +91,7 @@ class _MonthSelector extends StatelessWidget {
       decoration: BoxDecoration(
         color: Theme.of(context).cardColor,
         border: Border(
-          bottom: BorderSide(color: Colors.grey.withOpacity(0.2)),
+          bottom: BorderSide(color: Colors.grey.withValues(alpha: 0.2)),
         ),
       ),
       child: Row(
@@ -266,7 +187,7 @@ class _CalendarView extends StatelessWidget {
                 margin: const EdgeInsets.all(2),
                 decoration: BoxDecoration(
                   color: hasWorkout
-                      ? const Color(0xFF00E676).withOpacity(0.2)
+                      ? const Color(0xFF00E676).withValues(alpha: 0.2)
                       : null,
                   borderRadius: BorderRadius.circular(8),
                   border: isToday
@@ -448,7 +369,7 @@ class _WorkoutHistoryCard extends StatelessWidget {
                 width: 48,
                 height: 48,
                 decoration: BoxDecoration(
-                  color: _getStatusColor(workout.status).withOpacity(0.2),
+                  color: _getStatusColor(workout.status).withValues(alpha: 0.2),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Icon(
@@ -493,7 +414,7 @@ class _WorkoutHistoryCard extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                     decoration: BoxDecoration(
-                      color: _getStatusColor(workout.status).withOpacity(0.2),
+                      color: _getStatusColor(workout.status).withValues(alpha: 0.2),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Text(
