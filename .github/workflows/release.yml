@@ -41,7 +41,7 @@ jobs:
           draft: true
           generate_release_notes: true
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ env.GITHUB_TOKEN }}
 
   build-android:
     name: Build Android APK
@@ -71,7 +71,7 @@ jobs:
           assets: |
             app-release.apk
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ env.GITHUB_TOKEN }}
 
   build-debug-apk:
     name: Build Debug APK
@@ -101,7 +101,7 @@ jobs:
           assets: |
             app-debug.apk
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ env.GITHUB_TOKEN }}
 
   build-ipa:
     name: Build iOS
@@ -137,4 +137,4 @@ jobs:
           assets: |
             rpg-workout-app-${{ needs.release.outputs.version }}-ios.zip
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ env.GITHUB_TOKEN }}
