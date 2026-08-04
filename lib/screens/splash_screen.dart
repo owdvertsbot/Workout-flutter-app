@@ -248,11 +248,11 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
   }
 }
 
-class _WorkoutRecoveryScreen extends StatelessWidget {
+class _WorkoutRecoveryScreen extends ConsumerWidget {
   const _WorkoutRecoveryScreen();
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       backgroundColor: const Color(0xFF121212),
       body: Center(
@@ -299,14 +299,17 @@ class _WorkoutRecoveryScreen extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             TextButton(
-              onPressed: () {
+              onPressed: () async {
                 // Discard and go to dashboard
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => const MainNavigationScreen(),
-                  ),
-                );
+                await ref.read(activeWorkoutProvider.notifier).abandonWorkout();
+                if (context.mounted) {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const MainNavigationScreen(),
+                    ),
+                  );
+                }
               },
               child: const Text(
                 'Discard & Start Fresh',

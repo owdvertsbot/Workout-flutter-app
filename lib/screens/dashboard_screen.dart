@@ -6,6 +6,7 @@ import '../providers/providers.dart';
 import '../models/models.dart';
 import 'active_workout_screen.dart';
 import 'history_screen.dart';
+import 'missions_screen.dart';
 
 // Connectivity state provider
 final connectivityProvider = StreamProvider<List<ConnectivityResult>>((ref) {
@@ -109,7 +110,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                         const SizedBox(height: 12),
                         _RoutineCards(),
                         const SizedBox(height: 24),
-                        _SectionHeader(title: 'Daily Missions', action: TextButton(onPressed: () {}, child: const Text('All Quests'))),
+                        _SectionHeader(title: 'Daily Missions', action: TextButton(onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const MissionsScreen())), child: const Text('All Quests'))),
                         const SizedBox(height: 12),
                         ...quests.take(3).map((quest) => _QuestCard(quest: quest)),
                         const SizedBox(height: 24),
