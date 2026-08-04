@@ -39,7 +39,7 @@ jobs:
         with:
           body_path: .github/release_body.md
           draft: true
-          generate_release_notes: true
+          generate_release_notes: false
         env:
           GITHUB_TOKEN: ${{ env.GITHUB_TOKEN }}
 
