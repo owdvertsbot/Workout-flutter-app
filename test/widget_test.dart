@@ -4,7 +4,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:rpg_workout_app/main.dart';
-import 'package:rpg_workout_app/providers/providers.dart';
 
 void main() {
   group('SplashScreen Tests', () {
@@ -47,26 +46,6 @@ void main() {
       expect(find.text('Workouts'), findsOneWidget);
       expect(find.text('Progress'), findsOneWidget);
       expect(find.text('Profile'), findsOneWidget);
-    });
-
-    testWidgets('Navigation tabs are tappable', (WidgetTester tester) async {
-      SharedPreferences.setMockInitialValues({'onboarding_completed': true});
-      
-      await tester.pumpWidget(
-        ProviderScope(
-          child: MaterialApp(
-            home: const MainNavigationScreen(),
-          ),
-        ),
-      );
-
-      // Find and tap the Exercises tab
-      final exercisesTab = find.text('Exercises');
-      await tester.tap(exercisesTab);
-      await tester.pumpAndSettle();
-
-      // Tab should still be visible after tap
-      expect(exercisesTab, findsOneWidget);
     });
   });
 

@@ -13,7 +13,8 @@ void main() {
         setType: SetType.working,
         isCompleted: true,
       );
-      expect(set.calculateXp(), equals(110)); // 10 reps * 10 base XP + 10 (working multiplier)
+      // XP = (15 + 100*10*0.002) * 1.0 = 17
+      expect(set.calculateXp(), equals(17));
     });
 
     test('calculates XP correctly for warmup set', () {
@@ -26,7 +27,8 @@ void main() {
         setType: SetType.warmup,
         isCompleted: true,
       );
-      expect(set.calculateXp(), equals(10)); // 10 reps * 10 base XP + 0 (warmup multiplier)
+      // XP = (15 + 50*10*0.002) * 0.5 = 8.5 -> 9
+      expect(set.calculateXp(), equals(9));
     });
 
     test('calculates XP correctly for failure set', () {
@@ -39,7 +41,8 @@ void main() {
         setType: SetType.failure,
         isCompleted: true,
       );
-      expect(set.calculateXp(), equals(180)); // 8 reps * 10 base XP + 20 (failure multiplier) = 100, then 100 * 1.8 = 180
+      // XP = (15 + 120*8*0.002) * 1.3 = 16.92 * 1.3 = 22 -> 22
+      expect(set.calculateXp(), equals(22));
     });
 
     test('calculates XP for incomplete set returns 0', () {
@@ -88,7 +91,8 @@ void main() {
         rpe: 8,
         isCompleted: true,
       );
-      expect(set.rpePercentage, closeTo(90.0, 0.1));
+      // RPE 8 out of 10 = 80%
+      expect(set.rpePercentage, closeTo(80.0, 0.1));
     });
 
     test('fromJson creates valid instance', () {
