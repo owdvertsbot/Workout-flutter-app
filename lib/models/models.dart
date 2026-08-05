@@ -309,6 +309,39 @@ class SetEntryModel {
 
   double get volume => (weightKg ?? 0) * (reps ?? 0);
   
+  // RPE as a percentage (RPE 1-10 maps to 0-100%)
+  double get rpePercentage => rpe != null ? (rpe! / 10.0) * 100.0 : 0.0;
+  
+  factory SetEntryModel.fromJson(Map<String, dynamic> json) {
+    return SetEntryModel(
+      id: json['id']?.toString() ?? '',
+      sessionId: json['session_id']?.toString() ?? json['sessionId']?.toString() ?? '',
+      exerciseId: json['exercise_id']?.toString() ?? json['exerciseId']?.toString() ?? '',
+      weightKg: (json['weight_kg'] ?? json['weightKg'])?.toDouble(),
+      reps: json['reps']?.toInt(),
+      rpe: json['rpe']?.toInt(),
+      setType: SetType.fromString(json['set_type']?.toString() ?? json['setType']?.toString() ?? 'WORKING'),
+      notes: json['notes']?.toString(),
+      isCompleted: json['is_completed'] ?? json['isCompleted'] ?? false,
+      completedAt: json['completed_at'] != null 
+          ? DateTime.tryParse(json['completed_at'].toString())
+          : (json['completedAt'] != null ? DateTime.tryParse(json['completedAt'].toString()) : null),
+    );
+  }
+  
+  Map<String, dynamic> toJson() => {
+    'id': id,
+    'sessionId': sessionId,
+    'exerciseId': exerciseId,
+    'weightKg': weightKg,
+    'reps': reps,
+    'rpe': rpe,
+    'setType': setType.value,
+    'notes': notes,
+    'isCompleted': isCompleted,
+    'completedAt': completedAt?.toIso8601String(),
+  };
+  
   // FDS XP Formula:
   // Set XP = (Base XP + (Weight × Reps × α)) × μType × μStreak × μRPE
   // Base XP = 15, α = 0.002
@@ -659,6 +692,7 @@ class PlanProgressModel {
   final DateTime? completedAt;
   final int currentSetIndex;
   final int xpEarned;
+  final int timesCompleted;
 
   const PlanProgressModel({
     required this.planId,
@@ -667,6 +701,7 @@ class PlanProgressModel {
     this.completedAt,
     this.currentSetIndex = 0,
     this.xpEarned = 0,
+    this.timesCompleted = 0,
   });
 
   PlanProgressModel copyWith({
@@ -676,6 +711,7 @@ class PlanProgressModel {
     DateTime? completedAt,
     int? currentSetIndex,
     int? xpEarned,
+    int? timesCompleted,
   }) {
     return PlanProgressModel(
       planId: planId ?? this.planId,
@@ -684,6 +720,7 @@ class PlanProgressModel {
       completedAt: completedAt ?? this.completedAt,
       currentSetIndex: currentSetIndex ?? this.currentSetIndex,
       xpEarned: xpEarned ?? this.xpEarned,
+      timesCompleted: timesCompleted ?? this.timesCompleted,
     );
   }
 }
