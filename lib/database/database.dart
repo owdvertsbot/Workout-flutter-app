@@ -94,7 +94,32 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2; // Incremented for migration support
+
+  // Migration strategy for future schema changes
+  @override
+  MigrationStrategy get migration {
+    return MigrationStrategy(
+      onCreate: (Migrator m) async {
+        await m.createAll();
+      },
+      onUpgrade: (Migrator m, int from, int to) async {
+        // Future migrations will be handled here
+        // Example:
+        // if (from < 2) {
+        //   await m.addColumn(exercises, exercises.newColumn);
+        // }
+        if (from < 2) {
+          // Migration from v1 to v2 would go here
+          // Currently no changes needed, but framework is in place
+        }
+      },
+      beforeOpen: (details) async {
+        // Enable foreign keys
+        await customStatement('PRAGMA foreign_keys = ON');
+      },
+    );
+  }
 
   // Exercise queries
   Future<List<Exercise>> getAllExercises() => select(exercises).get();

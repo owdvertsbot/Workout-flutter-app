@@ -15,19 +15,22 @@ jobs:
       
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.44.8'
+          flutter-version: '3.27.0'
           channel: 'stable'
           cache: true
-          cache-key: flutter-3.44.8
+          cache-key: flutter-3.27.0
       
       - run: flutter pub get
       
       - name: Run flutter analyze
         run: |
-          flutter analyze --no-fatal-infos --no-fatal-warnings 2>&1 | tee analyze.log || true
-          echo "--- Flutter analyze output ---"
+          echo "--- Running flutter analyze ---"
+          set -o pipefail
+          flutter analyze --no-fatal-infos --no-fatal-warnings 2>&1 | tee analyze.log
+          EXIT_CODE=${PIPESTATUS[0]}
+          echo "--- Flutter analyze exit code: $EXIT_CODE ---"
           cat analyze.log
-          echo "--- End of analyze output ---"
+          exit $EXIT_CODE
       
       - name: Upload analyze log
         uses: actions/upload-artifact@v4
@@ -45,12 +48,18 @@ jobs:
       
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.44.8'
+          flutter-version: '3.27.0'
           channel: 'stable'
           cache: true
-          cache-key: flutter-3.44.8
+          cache-key: flutter-3.27.0
       
       - run: flutter pub get
       
       - name: Run tests
-        run: flutter test || true
+        run: |
+          echo "--- Running flutter test ---"
+          set -o pipefail
+          flutter test 2>&1 | tee test.log
+          EXIT_CODE=${PIPESTATUS[0]}
+          echo "--- Test exit code: $EXIT_CODE ---"
+          exit $EXIT_CODE
