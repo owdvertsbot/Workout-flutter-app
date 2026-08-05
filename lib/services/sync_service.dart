@@ -1,7 +1,11 @@
 import 'dart:async';
+import 'package:flutter/foundation.dart';
 
 /// Sync service for background synchronization (FDS Section 9)
 /// Implements local-first operations with background sync queue
+///
+/// Note: This is a stub implementation. Real sync to cloud backend
+/// requires implementing _transmitToServer() with actual API calls.
 class SyncService {
   static final SyncService _instance = SyncService._internal();
   factory SyncService() => _instance;
@@ -26,6 +30,7 @@ class SyncService {
     if (_isInitialized) return;
     _isInitialized = true;
     _startBackgroundSync();
+    debugPrint('SyncService: Initialized');
   }
 
   /// Start background sync polling
@@ -85,13 +90,23 @@ class SyncService {
     }
   }
 
+  /// Transmit operation to cloud backend
+  /// 
+  /// TODO(#P2): Implement actual API calls when cloud backend is ready
+  /// - Use HTTPS POST to secure endpoint
+  /// - Encrypt payloads per FDS 9.1
+  /// - Handle authentication tokens
   Future<void> _transmitToServer(_SyncOperation op) async {
-    // In production, this would make HTTPS POST to cloud API
-    // Using encrypted JSON payloads per FDS 9.1
+    // Stub: Simulate network delay
     await Future.delayed(const Duration(milliseconds: 100));
     
-    // Simulate occasional failures for testing
-    // throw Exception('Network error');
+    // TODO: Replace with actual API call:
+    // final response = await http.post(
+    //   Uri.parse('$API_BASE_URL/sync'),
+    //   headers: {'Authorization': 'Bearer $token'},
+    //   body: jsonEncode(op.payload),
+    // );
+    // if (response.statusCode != 200) throw Exception('Sync failed');
   }
 
   void _scheduleRetry(_SyncOperation op) {
@@ -109,6 +124,7 @@ class SyncService {
   void dispose() {
     _syncTimer?.cancel();
     _isInitialized = false;
+    debugPrint('SyncService: Disposed');
   }
 }
 
@@ -128,10 +144,4 @@ class _SyncOperation {
     this.retryCount = 0,
     this.status = _SyncStatus.pending,
   });
-}
-
-// Helper for debug printing
-void debugPrint(String message) {
-  // ignore: avoid_print
-  print(message);
 }
