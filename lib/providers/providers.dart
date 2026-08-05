@@ -801,7 +801,7 @@ enum PlanQuestType {
 
 // Workout Plans Provider - manages pre-built workout plans
 final workoutPlansProvider = StateNotifierProvider<WorkoutPlansNotifier, List<WorkoutPlanModel>>((ref) {
-  return WorkoutPlansNotifier(ref);
+  return WorkoutPlansNotifier();
 });
 
 class WorkoutPlansNotifier extends StateNotifier<List<WorkoutPlanModel>> {
