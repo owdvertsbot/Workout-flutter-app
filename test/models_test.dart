@@ -27,8 +27,8 @@ void main() {
         setType: SetType.warmup,
         isCompleted: true,
       );
-      // XP = (15 + 50*10*0.002) * 0.5 = 8.5 -> 9
-      expect(set.calculateXp(), equals(9));
+      // XP = (15 + 50*10*0.002) * 0.5 = 8
+      expect(set.calculateXp(), equals(8));
     });
 
     test('calculates XP correctly for failure set', () {

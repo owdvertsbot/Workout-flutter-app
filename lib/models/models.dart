@@ -348,6 +348,9 @@ class SetEntryModel {
   // μType: Warmup=0.5, Working=1.0, Drop=1.2, Failure=1.3
   // μRPE: ≤6=1.0, 7-8=1.1, 9-10=1.25
   int calculateXp({int streakDays = 0}) {
+    // Incomplete sets don't earn XP
+    if (!isCompleted) return 0;
+    
     const double baseXp = 15.0;
     const double alpha = 0.002;
     
