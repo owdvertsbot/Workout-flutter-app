@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'core/app_colors.dart';
 import 'providers/providers.dart';
 import 'screens/screens.dart';
 import 'models/models.dart';
@@ -33,27 +34,27 @@ class RPGWorkoutApp extends ConsumerWidget {
       useMaterial3: true,
       brightness: brightness,
       colorScheme: ColorScheme.fromSeed(
-        seedColor: const Color(0xFF00E676),
+        seedColor: AppColors.primary,
         brightness: brightness,
-        primary: const Color(0xFF00E676),
-        secondary: const Color(0xFF7C4DFF),
-        tertiary: const Color(0xFFFFD700),
-        surface: isDark ? const Color(0xFF1E1E1E) : Colors.white,
+        primary: AppColors.primary,
+        secondary: AppColors.secondary,
+        tertiary: AppColors.tertiary,
+        surface: isDark ? AppColors.surfaceDark : AppColors.surfaceLight,
       ),
-      scaffoldBackgroundColor: isDark ? const Color(0xFF121212) : const Color(0xFFF5F5F5),
+      scaffoldBackgroundColor: isDark ? AppColors.backgroundDark : AppColors.backgroundLight,
       textTheme: GoogleFonts.interTextTheme(ThemeData(brightness: brightness).textTheme),
       appBarTheme: AppBarTheme(
         centerTitle: true,
         elevation: 0,
-        backgroundColor: isDark ? const Color(0xFF121212) : Colors.white,
-        foregroundColor: isDark ? Colors.white : Colors.black,
+        backgroundColor: isDark ? AppColors.backgroundDark : AppColors.surfaceLight,
+        foregroundColor: isDark ? AppColors.textPrimaryDark : AppColors.textPrimaryLight,
       ),
       cardTheme: CardTheme(
         elevation: 0,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),
         ),
-        color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
+        color: isDark ? AppColors.cardDark : AppColors.cardLight,
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
@@ -65,7 +66,7 @@ class RPGWorkoutApp extends ConsumerWidget {
       ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: isDark ? const Color(0xFF1E1E1E) : Colors.grey[100],
+        fillColor: isDark ? AppColors.surfaceDark : Colors.grey[100],
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
           borderSide: BorderSide.none,
@@ -162,7 +163,7 @@ class _WorkoutHubScreen extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('⚔️ Quest Missions'),
-        backgroundColor: const Color(0xFF121212),
+        backgroundColor: AppColors.backgroundDark,
         actions: [
           IconButton(
             icon: const Icon(Icons.list),
@@ -183,7 +184,7 @@ class _WorkoutHubScreen extends ConsumerWidget {
             Container(
               padding: const EdgeInsets.all(24),
               decoration: BoxDecoration(
-                color: Colors.grey[900],
+                color: AppColors.surfaceDark,
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Column(
@@ -193,7 +194,7 @@ class _WorkoutHubScreen extends ConsumerWidget {
                   Text(
                     'All quests completed!',
                     style: GoogleFonts.inter(
-                      color: Colors.grey[400],
+                      color: AppColors.textSecondaryDark,
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
                     ),
@@ -202,7 +203,7 @@ class _WorkoutHubScreen extends ConsumerWidget {
                   Text(
                     'Check back tomorrow for new quests',
                     style: GoogleFonts.inter(
-                      color: Colors.grey[600],
+                      color: AppColors.textMutedDark,
                       fontSize: 12,
                     ),
                   ),
@@ -219,7 +220,7 @@ class _WorkoutHubScreen extends ConsumerWidget {
             title: 'Quick Start',
             subtitle: 'Start an empty workout',
             icon: Icons.play_arrow,
-            color: const Color(0xFF00E676),
+            color: AppColors.primary,
             onTap: () {
               ref.read(activeWorkoutProvider.notifier).startWorkout();
               Navigator.push(context, MaterialPageRoute(builder: (_) => const ActiveWorkoutScreen()));
@@ -232,7 +233,7 @@ class _WorkoutHubScreen extends ConsumerWidget {
             title: 'Active Workout',
             subtitle: activeWorkout != null ? 'Workout in progress' : 'No active workout',
             icon: Icons.fitness_center,
-            color: activeWorkout != null ? const Color(0xFFFFD700) : Colors.grey,
+            color: activeWorkout != null ? AppColors.xpGold : Colors.grey,
             onTap: () {
               if (activeWorkout != null) {
                 Navigator.push(context, MaterialPageRoute(builder: (_) => const ActiveWorkoutScreen()));
@@ -250,8 +251,8 @@ class _WorkoutHubScreen extends ConsumerWidget {
             label: const Text('View All Quest Plans'),
             style: OutlinedButton.styleFrom(
               padding: const EdgeInsets.symmetric(vertical: 16),
-              side: const BorderSide(color: Color(0xFF7C4DFF)),
-              foregroundColor: const Color(0xFF7C4DFF),
+              side: const BorderSide(color: AppColors.secondary),
+              foregroundColor: AppColors.secondary,
             ),
           ),
         ],
@@ -268,11 +269,11 @@ class _PlanQuickCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final difficultyColor = _getDifficultyColor(plan.difficulty);
+    final difficultyColor = AppColors.getDifficultyColor(plan.difficulty);
     
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
-      color: const Color(0xFF1E1E1E),
+      color: AppColors.cardDark,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
         side: BorderSide(
@@ -314,29 +315,29 @@ class _PlanQuickCard extends StatelessWidget {
                       style: GoogleFonts.spaceGrotesk(
                         fontSize: 15,
                         fontWeight: FontWeight.bold,
-                        color: Colors.white,
+                        color: AppColors.textPrimaryDark,
                       ),
                     ),
                     const SizedBox(height: 2),
                     Row(
                       children: [
-                        Icon(Icons.timer, size: 12, color: Colors.grey[500]),
+                        Icon(Icons.timer, size: 12, color: AppColors.textMutedDark),
                         const SizedBox(width: 4),
                         Text(
                           '${plan.estimatedMinutes} min',
                           style: GoogleFonts.inter(
                             fontSize: 11,
-                            color: Colors.grey[500],
+                            color: AppColors.textMutedDark,
                           ),
                         ),
                         const SizedBox(width: 12),
-                        Icon(Icons.star, size: 12, color: Colors.purple[300]),
+                        Icon(Icons.star, size: 12, color: AppColors.secondary.withOpacity(0.8)),
                         const SizedBox(width: 4),
                         Text(
                           '+${plan.xpReward} XP',
                           style: GoogleFonts.inter(
                             fontSize: 11,
-                            color: Colors.purple[300],
+                            color: AppColors.secondary.withOpacity(0.8),
                             fontWeight: FontWeight.w600,
                           ),
                         ),
@@ -348,7 +349,7 @@ class _PlanQuickCard extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF7C4DFF),
+                  color: AppColors.secondary,
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Row(
@@ -372,19 +373,6 @@ class _PlanQuickCard extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  Color _getDifficultyColor(String difficulty) {
-    switch (difficulty) {
-      case 'BEGINNER':
-        return const Color(0xFF00E676);
-      case 'INTERMEDIATE':
-        return const Color(0xFFFFB300);
-      case 'ADVANCED':
-        return const Color(0xFFFF5252);
-      default:
-        return Colors.grey;
-    }
   }
 }
 
@@ -421,12 +409,12 @@ class _HubCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(title, style: GoogleFonts.inter(fontWeight: FontWeight.bold, fontSize: 16)),
-                  Text(subtitle, style: GoogleFonts.inter(color: Colors.grey, fontSize: 14)),
+                  Text(title, style: GoogleFonts.inter(fontWeight: FontWeight.bold, fontSize: 16, color: AppColors.textPrimaryDark)),
+                  Text(subtitle, style: GoogleFonts.inter(color: AppColors.textMutedDark, fontSize: 14)),
                 ],
               ),
             ),
-            Icon(Icons.chevron_right, color: Colors.grey[600]),
+            Icon(Icons.chevron_right, color: AppColors.textMutedDark),
           ],
         ),
       ),
@@ -442,7 +430,7 @@ class _SectionHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
-      child: Text(title, style: GoogleFonts.inter(fontSize: 18, fontWeight: FontWeight.bold)),
+      child: Text(title, style: GoogleFonts.inter(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.textPrimaryDark)),
     );
   }
 }
