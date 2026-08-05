@@ -136,13 +136,13 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                         boxShadow: [
                           // Primary green glow
                           BoxShadow(
-                            color: const Color(0xFF00E676).withValues(alpha: _glowAnimation.value),
+                            color: const Color(0xFF00E676).withOpacity(_glowAnimation.value),
                             blurRadius: 40,
                             spreadRadius: 10,
                           ),
                           // Secondary purple glow
                           BoxShadow(
-                            color: const Color(0xFF7C4DFF).withValues(alpha: _glowAnimation.value * 0.6),
+                            color: const Color(0xFF7C4DFF).withOpacity(_glowAnimation.value * 0.6),
                             blurRadius: 30,
                             spreadRadius: 5,
                           ),
@@ -189,7 +189,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
             Text(
               'Level Up Your Fitness',
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: Colors.white.withValues(alpha: 0.7),
+                color: Colors.white.withOpacity(0.7),
               ),
             ),
             const SizedBox(height: 32),
@@ -220,7 +220,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                     child: CircularProgressIndicator(
                       strokeWidth: 2,
                       valueColor: AlwaysStoppedAnimation<Color>(
-                        Colors.white.withValues(alpha: 0.5),
+                        Colors.white.withOpacity(0.5),
                       ),
                     ),
                   ),
@@ -228,7 +228,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                   Text(
                     _statusMessage,
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: Colors.white.withValues(alpha: 0.5),
+                      color: Colors.white.withOpacity(0.5),
                     ),
                   ),
                 ],
@@ -238,7 +238,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
             Text(
               'v2.4.0 (Build 182)',
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: Colors.white.withValues(alpha: 0.3),
+                color: Colors.white.withOpacity(0.3),
               ),
             ),
           ],
@@ -276,7 +276,7 @@ class _WorkoutRecoveryScreen extends ConsumerWidget {
             Text(
               'We found an active workout session.',
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: Colors.white.withValues(alpha: 0.7),
+                color: Colors.white.withOpacity(0.7),
               ),
             ),
             const SizedBox(height: 32),

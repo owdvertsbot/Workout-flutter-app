@@ -223,7 +223,7 @@ class _ExerciseBuilderCard extends StatelessWidget {
                   width: 32,
                   height: 32,
                   decoration: BoxDecoration(
-                    color: const Color(0xFF00E676).withValues(alpha: 0.2),
+                    color: const Color(0xFF00E676).withOpacity(0.2),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Center(child: Text('${index + 1}', style: GoogleFonts.inter(color: const Color(0xFF00E676), fontWeight: FontWeight.bold))),
@@ -241,7 +241,7 @@ class _ExerciseBuilderCard extends StatelessWidget {
                 if (exercise.isSuperset)
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                    decoration: BoxDecoration(color: const Color(0xFF7C4DFF).withValues(alpha: 0.2), borderRadius: BorderRadius.circular(8)),
+                    decoration: BoxDecoration(color: const Color(0xFF7C4DFF).withOpacity(0.2), borderRadius: BorderRadius.circular(8)),
                     child: const Text('Superset', style: TextStyle(fontSize: 10, color: Color(0xFF7C4DFF))),
                   ),
                 PopupMenuButton<String>(
@@ -298,7 +298,7 @@ class _TargetField extends StatelessWidget {
           const SizedBox(height: 4),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 8),
-            decoration: BoxDecoration(color: Colors.grey.withValues(alpha: 0.2), borderRadius: BorderRadius.circular(8)),
+            decoration: BoxDecoration(color: Colors.grey.withOpacity(0.2), borderRadius: BorderRadius.circular(8)),
             child: Row(
               children: [
                 IconButton(icon: const Icon(Icons.remove, size: 16), onPressed: value > 1 ? () => onChanged(value - 1) : null, padding: EdgeInsets.zero, constraints: const BoxConstraints()),

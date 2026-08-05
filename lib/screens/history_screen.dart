@@ -91,7 +91,7 @@ class _MonthSelector extends StatelessWidget {
       decoration: BoxDecoration(
         color: Theme.of(context).cardColor,
         border: Border(
-          bottom: BorderSide(color: Colors.grey.withValues(alpha: 0.2)),
+          bottom: BorderSide(color: Colors.grey.withOpacity(0.2)),
         ),
       ),
       child: Row(
@@ -187,7 +187,7 @@ class _CalendarView extends StatelessWidget {
                 margin: const EdgeInsets.all(2),
                 decoration: BoxDecoration(
                   color: hasWorkout
-                      ? const Color(0xFF00E676).withValues(alpha: 0.2)
+                      ? const Color(0xFF00E676).withOpacity(0.2)
                       : null,
                   borderRadius: BorderRadius.circular(8),
                   border: isToday
@@ -369,7 +369,7 @@ class _WorkoutHistoryCard extends StatelessWidget {
                 width: 48,
                 height: 48,
                 decoration: BoxDecoration(
-                  color: _getStatusColor(workout.status).withValues(alpha: 0.2),
+                  color: _getStatusColor(workout.status).withOpacity(0.2),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Icon(
@@ -414,7 +414,7 @@ class _WorkoutHistoryCard extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                     decoration: BoxDecoration(
-                      color: _getStatusColor(workout.status).withValues(alpha: 0.2),
+                      color: _getStatusColor(workout.status).withOpacity(0.2),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Text(

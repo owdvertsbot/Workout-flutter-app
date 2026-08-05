@@ -92,7 +92,7 @@ class _InstructionsTab extends StatelessWidget {
             children: [
               Chip(
                 label: Text(exercise.muscleGroup ?? exercise.bodyPart),
-                backgroundColor: const Color(0xFF00E676).withValues(alpha: 0.2),
+                backgroundColor: const Color(0xFF00E676).withOpacity(0.2),
                 labelStyle: const TextStyle(color: Color(0xFF00E676)),
               ),
               ...exercise.secondaryMuscles.map(
@@ -331,9 +331,9 @@ class _PRCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.1),
+        color: color.withOpacity(0.1),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: color.withValues(alpha: 0.3)),
+        border: Border.all(color: color.withOpacity(0.3)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -385,16 +385,16 @@ class _PlateauCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: data['color'].withValues(alpha: 0.1),
+        color: data['color'].withOpacity(0.1),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: data['color'].withValues(alpha: 0.3)),
+        border: Border.all(color: data['color'].withOpacity(0.3)),
       ),
       child: Row(
         children: [
           Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: data['color'].withValues(alpha: 0.2),
+              color: data['color'].withOpacity(0.2),
               borderRadius: BorderRadius.circular(12),
             ),
             child: Icon(
@@ -492,7 +492,7 @@ class _HistoryTab extends StatelessWidget {
               width: 48,
               height: 48,
               decoration: BoxDecoration(
-                color: const Color(0xFF00E676).withValues(alpha: 0.2),
+                color: const Color(0xFF00E676).withOpacity(0.2),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Center(

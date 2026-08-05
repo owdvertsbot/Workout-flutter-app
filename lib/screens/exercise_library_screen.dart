@@ -88,7 +88,7 @@ class _ExerciseLibraryScreenState extends ConsumerState<ExerciseLibraryScreen> {
                         _selectedBodyPart = part == 'All' ? null : part;
                       });
                     },
-                    selectedColor: const Color(0xFF00E676).withValues(alpha: 0.3),
+                    selectedColor: const Color(0xFF00E676).withOpacity(0.3),
                     checkmarkColor: const Color(0xFF00E676),
                   ),
                 );
@@ -220,7 +220,7 @@ class _ExerciseListTileState extends State<_ExerciseListTile> {
           width: 48,
           height: 48,
           decoration: BoxDecoration(
-            color: _getCategoryColor(widget.exercise.category).withValues(alpha: 0.2),
+            color: _getCategoryColor(widget.exercise.category).withOpacity(0.2),
             borderRadius: BorderRadius.circular(8),
           ),
           child: Icon(
@@ -340,7 +340,7 @@ class _ExerciseDetailsSheet extends StatelessWidget {
                 const SizedBox(height: 8),
                 Chip(
                   label: Text(exercise.muscleGroup!),
-                  backgroundColor: Colors.red.withValues(alpha: 0.2),
+                  backgroundColor: Colors.red.withOpacity(0.2),
                 ),
                 const SizedBox(height: 16),
               ],
@@ -355,7 +355,7 @@ class _ExerciseDetailsSheet extends StatelessWidget {
                   spacing: 8,
                   children: exercise.secondaryMuscles.map((m) => Chip(
                     label: Text(m),
-                    backgroundColor: Colors.grey.withValues(alpha: 0.2),
+                    backgroundColor: Colors.grey.withOpacity(0.2),
                   )).toList(),
                 ),
                 const SizedBox(height: 16),
@@ -417,7 +417,7 @@ class _InfoChip extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       decoration: BoxDecoration(
-        color: Theme.of(context).primaryColor.withValues(alpha: 0.1),
+        color: Theme.of(context).primaryColor.withOpacity(0.1),
         borderRadius: BorderRadius.circular(20),
       ),
       child: Column(
@@ -478,7 +478,7 @@ class _OneRMCalculatorSectionState extends State<_OneRMCalculatorSection> {
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: const Color(0xFF00E676).withValues(alpha: 0.1),
+      color: const Color(0xFF00E676).withOpacity(0.1),
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -530,7 +530,7 @@ class _OneRMCalculatorSectionState extends State<_OneRMCalculatorSection> {
                 width: double.infinity,
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF00E676).withValues(alpha: 0.2),
+                  color: const Color(0xFF00E676).withOpacity(0.2),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Column(

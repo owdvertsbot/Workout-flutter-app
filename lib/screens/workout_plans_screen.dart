@@ -214,8 +214,8 @@ class _PlanCard extends ConsumerWidget {
         borderRadius: BorderRadius.circular(16),
         side: BorderSide(
           color: isCompleted 
-            ? const Color(0xFF00E676).withValues(alpha: 0.5)
-            : difficultyColor.withValues(alpha: 0.3),
+            ? const Color(0xFF00E676).withOpacity(0.5)
+            : difficultyColor.withOpacity(0.3),
           width: 1,
         ),
       ),
@@ -235,7 +235,7 @@ class _PlanCard extends ConsumerWidget {
                     height: 56,
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
-                        colors: [difficultyColor, difficultyColor.withValues(alpha: 0.7)],
+                        colors: [difficultyColor, difficultyColor.withOpacity(0.7)],
                       ),
                       borderRadius: BorderRadius.circular(12),
                     ),
@@ -267,7 +267,7 @@ class _PlanCard extends ConsumerWidget {
                               Container(
                                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                                 decoration: BoxDecoration(
-                                  color: const Color(0xFF00E676).withValues(alpha: 0.2),
+                                  color: const Color(0xFF00E676).withOpacity(0.2),
                                   borderRadius: BorderRadius.circular(8),
                                 ),
                                 child: Row(
@@ -376,7 +376,7 @@ class _PlanCard extends ConsumerWidget {
                   onPressed: () => _showPlanDetails(context, ref),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: isCompleted 
-                      ? const Color(0xFF00E676).withValues(alpha: 0.2)
+                      ? const Color(0xFF00E676).withOpacity(0.2)
                       : const Color(0xFF7C4DFF),
                     foregroundColor: Colors.white,
                     padding: const EdgeInsets.symmetric(vertical: 12),
@@ -456,9 +456,9 @@ class _DifficultyBadge extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.2),
+        color: color.withOpacity(0.2),
         borderRadius: BorderRadius.circular(6),
-        border: Border.all(color: color.withValues(alpha: 0.5)),
+        border: Border.all(color: color.withOpacity(0.5)),
       ),
       child: Text(
         difficulty,
@@ -525,7 +525,7 @@ class _StatChip extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.1),
+        color: color.withOpacity(0.1),
         borderRadius: BorderRadius.circular(6),
       ),
       child: Row(
@@ -680,13 +680,13 @@ class _PlanDetailsSheet extends ConsumerWidget {
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
                           colors: [
-                            const Color(0xFF7C4DFF).withValues(alpha: 0.2),
-                            const Color(0xFFFFD700).withValues(alpha: 0.1),
+                            const Color(0xFF7C4DFF).withOpacity(0.2),
+                            const Color(0xFFFFD700).withOpacity(0.1),
                           ],
                         ),
                         borderRadius: BorderRadius.circular(16),
                         border: Border.all(
-                          color: const Color(0xFF7C4DFF).withValues(alpha: 0.3),
+                          color: const Color(0xFF7C4DFF).withOpacity(0.3),
                         ),
                       ),
                       child: Row(
@@ -764,7 +764,7 @@ class _PlanDetailsSheet extends ConsumerWidget {
                           color: const Color(0xFF2A2A2A),
                           borderRadius: BorderRadius.circular(12),
                           border: exercise.isWarmup 
-                            ? Border.all(color: Colors.orange.withValues(alpha: 0.3))
+                            ? Border.all(color: Colors.orange.withOpacity(0.3))
                             : null,
                         ),
                         child: Row(
@@ -774,8 +774,8 @@ class _PlanDetailsSheet extends ConsumerWidget {
                               height: 32,
                               decoration: BoxDecoration(
                                 color: exercise.isWarmup 
-                                  ? Colors.orange.withValues(alpha: 0.2)
-                                  : const Color(0xFF7C4DFF).withValues(alpha: 0.2),
+                                  ? Colors.orange.withOpacity(0.2)
+                                  : const Color(0xFF7C4DFF).withOpacity(0.2),
                                 borderRadius: BorderRadius.circular(8),
                               ),
                               child: Center(
@@ -809,7 +809,7 @@ class _PlanDetailsSheet extends ConsumerWidget {
                                         Container(
                                           padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                                           decoration: BoxDecoration(
-                                            color: Colors.orange.withValues(alpha: 0.2),
+                                            color: Colors.orange.withOpacity(0.2),
                                             borderRadius: BorderRadius.circular(4),
                                           ),
                                           child: Text(

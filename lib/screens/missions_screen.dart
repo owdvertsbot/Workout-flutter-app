@@ -36,7 +36,7 @@ class MissionsScreen extends ConsumerWidget {
           children: [
             // Tab bar
             Container(
-              color: Theme.of(context).primaryColor.withValues(alpha: 0.1),
+              color: Theme.of(context).primaryColor.withOpacity(0.1),
               child: const TabBar(
                 tabs: [
                   Tab(text: 'Daily'),
@@ -122,7 +122,7 @@ class _QuestCard extends StatelessWidget {
       label: '${quest.title}. Progress: ${quest.currentValue} of ${quest.targetValue}. ${isCompleted ? "Completed" : ""}',
       child: Card(
         margin: const EdgeInsets.only(bottom: 12),
-        color: isCompleted ? Colors.green.withValues(alpha: 0.1) : null,
+        color: isCompleted ? Colors.green.withOpacity(0.1) : null,
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: Column(
@@ -135,7 +135,7 @@ class _QuestCard extends StatelessWidget {
                     width: 48,
                     height: 48,
                     decoration: BoxDecoration(
-                      color: _getQuestColor(quest.type).withValues(alpha: 0.2),
+                      color: _getQuestColor(quest.type).withOpacity(0.2),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Icon(
@@ -338,7 +338,7 @@ class _AchievementCard extends StatelessWidget {
       label: '${achievement.title}. ${achievement.isUnlocked ? "Unlocked" : "Locked"}. ${achievement.description}',
       child: Card(
         margin: const EdgeInsets.only(bottom: 12),
-        color: achievement.isUnlocked ? Colors.amber.withValues(alpha: 0.1) : Colors.grey.withValues(alpha: 0.1),
+        color: achievement.isUnlocked ? Colors.amber.withOpacity(0.1) : Colors.grey.withOpacity(0.1),
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: Row(
@@ -348,8 +348,8 @@ class _AchievementCard extends StatelessWidget {
                 height: 56,
                 decoration: BoxDecoration(
                   color: achievement.isUnlocked
-                      ? Colors.amber.withValues(alpha: 0.2)
-                      : Colors.grey.withValues(alpha: 0.2),
+                      ? Colors.amber.withOpacity(0.2)
+                      : Colors.grey.withOpacity(0.2),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Icon(

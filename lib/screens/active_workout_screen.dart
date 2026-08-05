@@ -266,7 +266,7 @@ class _ActiveWorkoutScreenState extends ConsumerState<ActiveWorkoutScreen> {
           children: [
             Container(
               width: 48, height: 48,
-              decoration: BoxDecoration(color: const Color(0xFF00E676).withValues(alpha: 0.2), borderRadius: BorderRadius.circular(12)),
+              decoration: BoxDecoration(color: const Color(0xFF00E676).withOpacity(0.2), borderRadius: BorderRadius.circular(12)),
               child: const Icon(Icons.fitness_center, color: Color(0xFF00E676)),
             ),
             const SizedBox(width: 12),
@@ -350,7 +350,7 @@ class _WorkoutStatsBar extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
-        color: Theme.of(context).primaryColor.withValues(alpha: 0.1),
+        color: Theme.of(context).primaryColor.withOpacity(0.1),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -533,7 +533,7 @@ class _ExerciseCard extends StatelessWidget {
             Container(
               width: double.infinity,
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-              color: Colors.amber.withValues(alpha: 0.1),
+              color: Colors.amber.withOpacity(0.1),
               child: Row(
                 children: [
                   Icon(Icons.history, size: 14, color: Colors.amber[700]),
@@ -673,7 +673,7 @@ class _SetRowState extends State<_SetRow> with SingleTickerProviderStateMixin {
                     end: Alignment.centerRight,
                     colors: [
                       Colors.transparent,
-                      Colors.amber.withValues(alpha: 0.3 * _prShimmerAnimation.value),
+                      Colors.amber.withOpacity(0.3 * _prShimmerAnimation.value),
                       Colors.transparent,
                     ],
                     stops: [
@@ -933,7 +933,7 @@ class _RunningTimerDialogState extends State<_RunningTimerDialog> {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               decoration: BoxDecoration(
-                color: const Color(0xFFFFD700).withValues(alpha: 0.2),
+                color: const Color(0xFFFFD700).withOpacity(0.2),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: const Row(
@@ -998,7 +998,7 @@ class _FloatingRestTimerOverlay extends StatelessWidget {
         ),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFF00E676).withValues(alpha: 0.4),
+            color: const Color(0xFF00E676).withOpacity(0.4),
             blurRadius: 12,
             offset: const Offset(0, 4),
           ),
@@ -1242,7 +1242,7 @@ class _PlateCalculatorSheetState extends State<_PlateCalculatorSheet> {
             runSpacing: 8,
             children: plates.map((p) => Chip(
               label: Text('${p}kg'),
-              backgroundColor: Theme.of(context).primaryColor.withValues(alpha: 0.2),
+              backgroundColor: Theme.of(context).primaryColor.withOpacity(0.2),
             )).toList(),
           ),
           const SizedBox(height: 16),

@@ -85,7 +85,7 @@ class _PeriodSelector extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(4),
       decoration: BoxDecoration(
-        color: Colors.grey.withValues(alpha: 0.1),
+        color: Colors.grey.withOpacity(0.1),
         borderRadius: BorderRadius.circular(12),
       ),
       child: Row(
@@ -218,7 +218,7 @@ class _WeeklyStat extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Icon(icon, color: Colors.white.withValues(alpha: 0.8), size: 24),
+        Icon(icon, color: Colors.white.withOpacity(0.8), size: 24),
         const SizedBox(height: 8),
         Text(
           value,
@@ -231,7 +231,7 @@ class _WeeklyStat extends StatelessWidget {
         Text(
           label,
           style: GoogleFonts.inter(
-            color: Colors.white.withValues(alpha: 0.7),
+            color: Colors.white.withOpacity(0.7),
             fontSize: 12,
           ),
         ),
@@ -553,7 +553,7 @@ class _PRRow extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: const Color(0xFFFFD700).withValues(alpha: 0.2),
+              color: const Color(0xFFFFD700).withOpacity(0.2),
               borderRadius: BorderRadius.circular(8),
             ),
             child: Icon(icon, color: const Color(0xFFFFD700), size: 20),
@@ -621,7 +621,7 @@ class _MeasurementRow extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
             decoration: BoxDecoration(
-              color: (isPositive ? Colors.green : Colors.red).withValues(alpha: 0.2),
+              color: (isPositive ? Colors.green : Colors.red).withOpacity(0.2),
               borderRadius: BorderRadius.circular(4),
             ),
             child: Text(

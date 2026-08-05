@@ -83,7 +83,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                     decoration: BoxDecoration(
                       color: _currentPage == index
                           ? const Color(0xFF00E676)
-                          : Colors.white.withValues(alpha: 0.2),
+                          : Colors.white.withOpacity(0.2),
                       borderRadius: BorderRadius.circular(4),
                     ),
                   ),
@@ -180,7 +180,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
           Text(
             'Welcome to',
             style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-              color: Colors.white.withValues(alpha: 0.7),
+              color: Colors.white.withOpacity(0.7),
             ),
           ),
           const SizedBox(height: 8),
@@ -203,7 +203,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                     width: 56,
                     height: 56,
                     decoration: BoxDecoration(
-                      color: (feature['color'] as Color).withValues(alpha: 0.2),
+                      color: (feature['color'] as Color).withOpacity(0.2),
                       borderRadius: BorderRadius.circular(16),
                     ),
                     child: Icon(
@@ -228,7 +228,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                         Text(
                           feature['description'] as String,
                           style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: Colors.white.withValues(alpha: 0.6),
+                            color: Colors.white.withOpacity(0.6),
                           ),
                         ),
                       ],
@@ -266,13 +266,13 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
           Text(
             'Select your preferred measurement system',
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: Colors.white.withValues(alpha: 0.6),
+              color: Colors.white.withOpacity(0.6),
             ),
           ),
           const SizedBox(height: 48),
           Container(
             decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.1),
+              color: Colors.white.withOpacity(0.1),
               borderRadius: BorderRadius.circular(16),
             ),
             child: Row(
@@ -303,8 +303,8 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                             'Metric',
                             style: TextStyle(
                               color: _useMetric
-                                  ? Colors.black.withValues(alpha: 0.7)
-                                  : Colors.white.withValues(alpha: 0.5),
+                                  ? Colors.black.withOpacity(0.7)
+                                  : Colors.white.withOpacity(0.5),
                               fontSize: 12,
                             ),
                           ),
@@ -339,8 +339,8 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                             'Imperial',
                             style: TextStyle(
                               color: !_useMetric
-                                  ? Colors.black.withValues(alpha: 0.7)
-                                  : Colors.white.withValues(alpha: 0.5),
+                                  ? Colors.black.withOpacity(0.7)
+                                  : Colors.white.withOpacity(0.5),
                               fontSize: 12,
                             ),
                           ),
@@ -380,7 +380,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
           Text(
             'This helps us personalize your experience',
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: Colors.white.withValues(alpha: 0.6),
+              color: Colors.white.withOpacity(0.6),
             ),
           ),
           const SizedBox(height: 48),
@@ -395,13 +395,13 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                   padding: const EdgeInsets.all(20),
                   decoration: BoxDecoration(
                     color: isSelected
-                        ? const Color(0xFF7C4DFF).withValues(alpha: 0.2)
-                        : Colors.white.withValues(alpha: 0.05),
+                        ? const Color(0xFF7C4DFF).withOpacity(0.2)
+                        : Colors.white.withOpacity(0.05),
                     borderRadius: BorderRadius.circular(16),
                     border: Border.all(
                       color: isSelected
                           ? const Color(0xFF7C4DFF)
-                          : Colors.white.withValues(alpha: 0.1),
+                          : Colors.white.withOpacity(0.1),
                       width: 2,
                     ),
                   ),
