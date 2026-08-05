@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 // Exercise model for UI
 class ExerciseModel {
   final String id;
@@ -216,8 +218,7 @@ class PlayerProfileModel {
   }
   
   static double _pow(int base, double exponent) {
-    // Simple power function
-    return base.toDouble();
+    return math.pow(base, exponent);
   }
   
   // Get XP required for next level

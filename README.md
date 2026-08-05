@@ -2,7 +2,7 @@
 
 A gamified workout tracking app that transforms fitness into an RPG-like experience. Track your workouts, earn XP, level up your character, and complete quests!
 
-![RPG Workout](https://img.shields.io/badge/version-2.4.0-blue) ![Flutter](https://img.shields.io/badge/Flutter-3.27.0-green) ![License](https://img.shields.io/badge/license-MIT-purple)
+![RPG Workout](https://img.shields.io/badge/version-2.4.0-blue) ![Flutter](https://img.shields.io/badge/Flutter-3.22.0-green) ![License](https://img.shields.io/badge/license-MIT-purple)
 
 ## ✨ Features
 
@@ -36,8 +36,8 @@ A gamified workout tracking app that transforms fitness into an RPG-like experie
 ## 🚀 Getting Started
 
 ### Prerequisites
-- Flutter SDK 3.27.0 or higher
-- Dart 3.6.0 or higher
+- Flutter SDK 3.22.0 or higher
+- Dart 3.4.0 or higher
 - Android Studio / VS Code with Flutter extensions
 
 ### Installation
@@ -96,11 +96,15 @@ lib/
 
 | Source | XP Formula |
 |--------|-----------|
-| Set Completed | `reps × 10 + set_type_multiplier` |
-| Workout Complete | `volume / 100 + streak_days × 5` |
+| Set Completed | `(15 + weight × reps × 0.002) × type_mult × streak_mult × rpe_mult` |
+| Workout Complete | Sum of all set XP |
 | All-Time PR | +250 XP |
 | 2-Month PR | +100 XP |
 | Volume PR | +50 XP |
+
+**Set Type Multipliers**: Warmup=0.5, Working=1.0, Drop=1.2, Failure=1.3
+**Streak Multiplier**: 1.0 to 1.5 over 30 days
+**RPE Multipliers**: ≤6=1.0, 7-8=1.1, 9-10=1.25
 
 **Level Formula**: `250 × level^1.5 + 500` XP per level
 
