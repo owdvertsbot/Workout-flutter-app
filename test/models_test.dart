@@ -150,6 +150,38 @@ void main() {
       expect(profile.characterTitle, equals('Legendary Champion'));
     });
 
+    test('xpForLevel calculates correctly using power function', () {
+      // Formula: 250 × level^1.5 + 500
+      // Level 1: 250 * 1^1.5 + 500 = 750
+      expect(PlayerProfileModel.xpForLevel(1), equals(750));
+      
+      // Level 2: 250 * 2^1.5 + 500 = 250 * 2.828 + 500 ≈ 1207
+      expect(PlayerProfileModel.xpForLevel(2), equals(1207));
+      
+      // Level 3: 250 * 3^1.5 + 500 = 250 * 5.196 + 500 ≈ 1799
+      expect(PlayerProfileModel.xpForLevel(3), equals(1799));
+      
+      // Level 5: 250 * 5^1.5 + 500 = 250 * 11.18 + 500 ≈ 3295
+      expect(PlayerProfileModel.xpForLevel(5), equals(3295));
+      
+      // Level 10: 250 * 10^1.5 + 500 = 250 * 31.62 + 500 = 8406 (rounded)
+      expect(PlayerProfileModel.xpForLevel(10), equals(8406));
+    });
+
+    test('xpForLevel handles level less than 1', () {
+      // Should treat levels < 1 as level 1
+      expect(PlayerProfileModel.xpForLevel(0), equals(750));
+      expect(PlayerProfileModel.xpForLevel(-5), equals(750));
+    });
+
+    test('xpRequiredForLevel returns correct value', () {
+      // xpRequiredForLevel(level) = xpForLevel(level + 1)
+      expect(
+        PlayerProfileModel.xpRequiredForLevel(1),
+        equals(PlayerProfileModel.xpForLevel(2)),
+      );
+    });
+
     test('levelProgress calculates correctly', () {
       final profile = PlayerProfileModel(
         id: 'test',
