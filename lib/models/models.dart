@@ -218,7 +218,7 @@ class PlayerProfileModel {
   }
   
   static double _pow(int base, double exponent) {
-    return math.pow(base, exponent);
+    return math.pow(base, exponent).toDouble();
   }
   
   // Get XP required for next level
