@@ -1,3 +1,17 @@
+// This file is the main barrel export for all providers.
+// For modular organization, providers have been split into:
+// - core_providers.dart: Database, UUID, error, loading state
+// - exercise_providers.dart: Exercise-related providers
+// - workout_providers.dart: Workout session providers (TODO)
+// - player_providers.dart: Player profile providers (TODO)
+// - quest_providers.dart: Quest and workout plan providers (TODO)
+// - settings_providers.dart: Theme and user settings (TODO)
+//
+// TODO: Complete the migration to modular provider files (Issue #3)
+
+export 'core_providers.dart';
+export 'exercise_providers.dart';
+
 import 'dart:convert';
 import 'package:drift/drift.dart';
 import 'package:flutter/material.dart';
@@ -8,22 +22,7 @@ import 'package:uuid/uuid.dart';
 import '../core/errors.dart';
 import '../database/database.dart';
 import '../models/models.dart';
-
-// Database provider
-final databaseProvider = Provider<AppDatabase>((ref) {
-  final db = AppDatabase();
-  ref.onDispose(() => db.close());
-  return db;
-});
-
-// UUID generator
-final uuidProvider = Provider<Uuid>((ref) => const Uuid());
-
-// Error state provider for UI feedback
-final appErrorProvider = StateProvider<AppException?>((ref) => null);
-
-// Loading state provider
-final isLoadingProvider = StateProvider<bool>((ref) => false);
+import 'core_providers.dart';
 
 // Exercises provider
 final exercisesProvider = FutureProvider<List<ExerciseModel>>((ref) async {
