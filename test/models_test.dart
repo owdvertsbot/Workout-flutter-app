@@ -164,8 +164,8 @@ void main() {
       // Level 5: 250 * 5^1.5 + 500 = 250 * 11.18 + 500 ≈ 3295
       expect(PlayerProfileModel.xpForLevel(5), equals(3295));
       
-      // Level 10: 250 * 10^1.5 + 500 = 250 * 31.62 + 500 ≈ 8405
-      expect(PlayerProfileModel.xpForLevel(10), equals(8405));
+      // Level 10: 250 * 10^1.5 + 500 = 250 * 31.62 + 500 = 8406 (rounded)
+      expect(PlayerProfileModel.xpForLevel(10), equals(8406));
     });
 
     test('xpForLevel handles level less than 1', () {
