@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../core/app_colors.dart';
 import '../providers/providers.dart';
 
 class SettingsScreen extends ConsumerWidget {
@@ -190,7 +191,7 @@ class SettingsScreen extends ConsumerWidget {
         style: const TextStyle(
           fontSize: 14,
           fontWeight: FontWeight.bold,
-          color: Color(0xFF00E676),
+          color: AppColors.primary,
         ),
       ),
     );

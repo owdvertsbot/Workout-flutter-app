@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../core/app_colors.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../models/models.dart';
 
@@ -92,8 +93,8 @@ class _InstructionsTab extends StatelessWidget {
             children: [
               Chip(
                 label: Text(exercise.muscleGroup ?? exercise.bodyPart),
-                backgroundColor: const Color(0xFF00E676).withOpacity(0.2),
-                labelStyle: const TextStyle(color: Color(0xFF00E676)),
+                backgroundColor: AppColors.primary.withOpacity(0.2),
+                labelStyle: const TextStyle(color: AppColors.primary),
               ),
               ...exercise.secondaryMuscles.map(
                 (m) => Chip(
@@ -193,7 +194,7 @@ class _AnalyticsTab extends StatelessWidget {
                   value: '100 kg',
                   date: 'Jan 15',
                   icon: Icons.emoji_events,
-                  color: const Color(0xFFFFD700),
+                  color: AppColors.xpGold,
                 ),
               ),
               const SizedBox(width: 12),
@@ -203,7 +204,7 @@ class _AnalyticsTab extends StatelessWidget {
                   value: '95 kg',
                   date: 'Feb 10',
                   icon: Icons.trending_up,
-                  color: const Color(0xFF00E676),
+                  color: AppColors.primary,
                 ),
               ),
             ],
@@ -248,7 +249,7 @@ class _PeriodSelectorState extends State<_PeriodSelector> {
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
             margin: const EdgeInsets.only(right: 8),
             decoration: BoxDecoration(
-              color: isSelected ? const Color(0xFF00E676) : Colors.grey[800],
+              color: isSelected ? AppColors.primary : Colors.grey[800],
               borderRadius: BorderRadius.circular(16),
             ),
             child: Text(
@@ -270,7 +271,7 @@ class _ProgressChartPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = const Color(0xFF00E676)
+      ..color = AppColors.primary
       ..strokeWidth = 3
       ..style = PaintingStyle.stroke
       ..strokeCap = StrokeCap.round;
@@ -434,7 +435,7 @@ class _PlateauCard extends StatelessWidget {
     switch (status) {
       case 'getting_stronger':
         return {
-          'color': const Color(0xFF00E676),
+          'color': AppColors.primary,
           'icon': Icons.trending_up,
           'title': 'Getting Stronger',
           'description': 'Your recent performance shows consistent progress',
@@ -492,14 +493,14 @@ class _HistoryTab extends StatelessWidget {
               width: 48,
               height: 48,
               decoration: BoxDecoration(
-                color: const Color(0xFF00E676).withOpacity(0.2),
+                color: AppColors.primary.withOpacity(0.2),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Center(
                 child: Text(
                   '${index + 1}',
                   style: GoogleFonts.inter(
-                    color: const Color(0xFF00E676),
+                    color: AppColors.primary,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -556,7 +557,7 @@ class _InstructionStep extends StatelessWidget {
             width: 24,
             height: 24,
             decoration: const BoxDecoration(
-              color: Color(0xFF00E676),
+              color: AppColors.primary,
               shape: BoxShape.circle,
             ),
             child: Center(
@@ -622,7 +623,7 @@ class _TipItem extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: 8),
       child: Row(
         children: [
-          const Icon(Icons.lightbulb, color: Color(0xFFFFD700), size: 16),
+          const Icon(Icons.lightbulb, color: AppColors.xpGold, size: 16),
           const SizedBox(width: 8),
           Expanded(
             child: Text(

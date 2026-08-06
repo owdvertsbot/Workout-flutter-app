@@ -34,7 +34,14 @@ class AppColors {
 
   // XP & Level Colors
   static const Color xpGold = Color(0xFFFFD700);
+  static const Color xpOrange = Color(0xFFFF8C00);
+  static const Color primaryDark = Color(0xFF00C853);
   static const Color levelPurple = Color(0xFF7C4DFF);
+
+  // Medal Colors
+  static const Color medalGold = Color(0xFFFFD700);
+  static const Color medalSilver = Color(0xFFC0C0C0);
+  static const Color medalBronze = Color(0xFFCD7F32);
 
   // Text Colors
   static const Color textPrimaryDark = Colors.white;
