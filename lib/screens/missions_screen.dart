@@ -174,7 +174,7 @@ class _QuestCard extends StatelessWidget {
                     Text(
                       '+${quest.xpReward} XP',
                       style: GoogleFonts.inter(
-                        color: const AppColors.primary,
+                        color: AppColors.primary,
                         fontWeight: FontWeight.bold,
                         fontSize: 12,
                       ),

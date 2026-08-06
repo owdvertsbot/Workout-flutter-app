@@ -69,8 +69,8 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                             height: 44,
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
-                              border: Border.all(color: const AppColors.secondary, width: 2.5),
-                              gradient: const LinearGradient(colors: [AppColors.secondary, AppColors.levelPurple]),
+                              border: Border.all(color: AppColors.secondary, width: 2.5),
+                              gradient: LinearGradient(colors: [AppColors.secondary, AppColors.levelPurple]),
                             ),
                             child: Center(child: Text('${profile.level}', style: GoogleFonts.inter(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16))),
                           ),
@@ -82,7 +82,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               Text(profile.characterTitle, style: GoogleFonts.inter(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16)),
-                              Text('Level ${profile.level}', style: GoogleFonts.inter(color: const AppColors.secondary, fontSize: 12)),
+                              Text('Level ${profile.level}', style: GoogleFonts.inter(color: AppColors.secondary, fontSize: 12)),
                             ],
                           ),
                         ),
@@ -138,7 +138,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
   void _showNotificationsSheet(BuildContext context) {
     showModalBottomSheet(
       context: context,
-      backgroundColor: const AppColors.surfaceDark,
+      backgroundColor: AppColors.surfaceDark,
       shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
       isScrollControlled: true,
       builder: (context) => DraggableScrollableSheet(
@@ -169,7 +169,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
   }
 
   void _showProfileSheet(BuildContext context, PlayerProfileModel profile) {
-    showModalBottomSheet(context: context, backgroundColor: const AppColors.surfaceDark, shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
+    showModalBottomSheet(context: context, backgroundColor: AppColors.surfaceDark, shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
       builder: (context) => Padding(padding: const EdgeInsets.all(24), child: Column(mainAxisSize: MainAxisSize.min, children: [
         Container(width: 80, height: 80, decoration: BoxDecoration(shape: BoxShape.circle, gradient: const LinearGradient(colors: [AppColors.secondary, AppColors.levelPurple]), boxShadow: [BoxShadow(color: AppColors.secondary.withOpacity(0.5), blurRadius: 20)]), child: Center(child: Text('${profile.level}', style: GoogleFonts.inter(color: Colors.white, fontSize: 32, fontWeight: FontWeight.bold)))),
         const SizedBox(height: 16),
@@ -222,7 +222,7 @@ class _HeroBannerCard extends StatelessWidget {
       Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
           Text('XP Progress', style: GoogleFonts.inter(color: Colors.white.withOpacity(0.7), fontSize: 12)),
-          Text('${profile.currentXp} / ${profile.xpToNextLevel}', style: GoogleFonts.inter(color: const AppColors.xpGold, fontSize: 12, fontWeight: FontWeight.bold))]),
+          Text('${profile.currentXp} / ${profile.xpToNextLevel}', style: GoogleFonts.inter(color: AppColors.xpGold, fontSize: 12, fontWeight: FontWeight.bold))]),
         const SizedBox(height: 8),
         ClipRRect(borderRadius: BorderRadius.circular(6), child: LinearProgressIndicator(value: profile.levelProgress, backgroundColor: Colors.white.withOpacity(0.2), valueColor: const AlwaysStoppedAnimation<Color>(AppColors.xpGold), minHeight: 12)),
       ]),
@@ -247,7 +247,7 @@ class _StartWorkoutCard extends StatelessWidget {
       onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const ActiveWorkoutScreen())),
       icon: const Icon(Icons.play_arrow_rounded, size: 28),
       label: Text(activeWorkout != null ? 'Resume Workout' : 'Start Empty Workout', style: GoogleFonts.inter(fontSize: 16, fontWeight: FontWeight.bold)),
-      style: ElevatedButton.styleFrom(backgroundColor: const AppColors.primary, foregroundColor: Colors.black, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)), elevation: 4),
+      style: ElevatedButton.styleFrom(backgroundColor: AppColors.primary, foregroundColor: Colors.black, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)), elevation: 4),
     ),
   );
 }
@@ -281,7 +281,7 @@ class _QuestCard extends ConsumerWidget {
       onTap: quest.canClaim && !quest.isCompleted ? () => ref.read(dailyQuestsProvider.notifier).claimQuest(quest.id) : null,
       borderRadius: BorderRadius.circular(12),
       child: Padding(padding: const EdgeInsets.all(16), child: Row(children: [
-        Container(width: 44, height: 44, decoration: BoxDecoration(color: const AppColors.xpGold.withOpacity(0.2), borderRadius: BorderRadius.circular(12)), child: Icon(quest.isCompleted ? Icons.check_circle : Icons.emoji_events, color: const AppColors.xpGold)),
+        Container(width: 44, height: 44, decoration: BoxDecoration(color: AppColors.xpGold.withOpacity(0.2), borderRadius: BorderRadius.circular(12)), child: Icon(quest.isCompleted ? Icons.check_circle : Icons.emoji_events, color: AppColors.xpGold)),
         const SizedBox(width: 12),
         Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Row(children: [Expanded(child: Text(quest.title, style: GoogleFonts.inter(fontWeight: FontWeight.bold))), if (quest.isCompleted) Container(padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2), decoration: BoxDecoration(color: Colors.green.withOpacity(0.2), borderRadius: BorderRadius.circular(8)), child: Text('✓', style: GoogleFonts.inter(color: Colors.green, fontWeight: FontWeight.bold)))]),
@@ -289,7 +289,7 @@ class _QuestCard extends ConsumerWidget {
           Row(children: [Expanded(child: LinearProgressIndicator(value: quest.progress, backgroundColor: Colors.grey[800], valueColor: const AlwaysStoppedAnimation<Color>(AppColors.primary), minHeight: 6)), const SizedBox(width: 12), Text('${quest.currentValue}/${quest.targetValue}', style: GoogleFonts.inter(fontSize: 12, color: Colors.grey))]),
         ])),
         const SizedBox(width: 12),
-        Container(padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6), decoration: BoxDecoration(color: const AppColors.xpGold.withOpacity(0.2), borderRadius: BorderRadius.circular(8)), child: Text(quest.isCompleted ? 'Claimed' : '+${quest.xpReward} XP', style: GoogleFonts.inter(color: const AppColors.xpGold, fontWeight: FontWeight.bold, fontSize: 12))),
+        Container(padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6), decoration: BoxDecoration(color: AppColors.xpGold.withOpacity(0.2), borderRadius: BorderRadius.circular(8)), child: Text(quest.isCompleted ? 'Claimed' : '+${quest.xpReward} XP', style: GoogleFonts.inter(color: AppColors.xpGold, fontWeight: FontWeight.bold, fontSize: 12))),
       ])),
     ),
   );
@@ -331,14 +331,14 @@ class _WeeklyHypertrophySummary extends ConsumerWidget {
           Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: List.generate(7, (index) {
             final hasWorkout = weekData[index];
             return Column(children: [
-              Container(width: 40, height: 40, decoration: BoxDecoration(color: hasWorkout ? const AppColors.primary.withOpacity(0.2) : Colors.grey.withOpacity(0.1), borderRadius: BorderRadius.circular(10), border: hasWorkout ? Border.all(color: const AppColors.primary, width: 2) : null), child: Icon(hasWorkout ? Icons.check : Icons.close, color: hasWorkout ? const AppColors.primary : Colors.grey, size: 20)),
+              Container(width: 40, height: 40, decoration: BoxDecoration(color: hasWorkout ? AppColors.primary.withOpacity(0.2) : Colors.grey.withOpacity(0.1), borderRadius: BorderRadius.circular(10), border: hasWorkout ? Border.all(color: AppColors.primary, width: 2) : null), child: Icon(hasWorkout ? Icons.check : Icons.close, color: hasWorkout ? AppColors.primary : Colors.grey, size: 20)),
               const SizedBox(height: 4),
               Text(days[index], style: GoogleFonts.inter(fontSize: 10, color: Colors.grey)),
             ]);
           })),
           const SizedBox(height: 16),
           Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
-            _SummaryStatItem(value: '$workoutCount', label: 'Workouts', color: const AppColors.primary),
+            _SummaryStatItem(value: '$workoutCount', label: 'Workouts', color: AppColors.primary),
             _SummaryStatItem(value: '${(profile.totalVolumeKg / 1000).toStringAsFixed(1)}t', label: 'Total Volume', color: Colors.orange),
             _SummaryStatItem(value: '${profile.streakDays}', label: 'Day Streak', color: Colors.blue),
           ]),
@@ -365,10 +365,10 @@ class _RecentWorkoutsSection extends ConsumerWidget {
       data: (workouts) {
         if (workouts.isEmpty) return Card(child: Padding(padding: const EdgeInsets.all(32), child: Column(children: [Icon(Icons.fitness_center, size: 48, color: Colors.grey[600]), const SizedBox(height: 16), Text('No workouts yet', style: GoogleFonts.inter(color: Colors.grey[600])), const SizedBox(height: 8), Text('Start your first workout!', style: GoogleFonts.inter(color: Colors.grey[700], fontSize: 12))])));
         return Column(children: workouts.take(3).map((workout) => Card(margin: const EdgeInsets.only(bottom: 8), child: ListTile(
-          leading: Container(width: 44, height: 44, decoration: BoxDecoration(color: const AppColors.primary.withOpacity(0.2), borderRadius: BorderRadius.circular(10)), child: const Icon(Icons.fitness_center, color: AppColors.primary)),
+          leading: Container(width: 44, height: 44, decoration: BoxDecoration(color: AppColors.primary.withOpacity(0.2), borderRadius: BorderRadius.circular(10)), child: const Icon(Icons.fitness_center, color: AppColors.primary)),
           title: Text(workout.title ?? 'Workout', style: GoogleFonts.inter(fontWeight: FontWeight.bold)),
           subtitle: Text(_formatDate(workout.startTime), style: GoogleFonts.inter(fontSize: 12, color: Colors.grey)),
-          trailing: Text(_formatDuration(workout.duration), style: GoogleFonts.inter(color: const AppColors.primary, fontWeight: FontWeight.bold)),
+          trailing: Text(_formatDuration(workout.duration), style: GoogleFonts.inter(color: AppColors.primary, fontWeight: FontWeight.bold)),
           onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const ActiveWorkoutScreen())),
         ))).toList());
       },
