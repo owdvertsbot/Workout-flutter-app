@@ -38,6 +38,11 @@ class AppColors {
   static const Color primaryDark = Color(0xFF00C853);
   static const Color levelPurple = Color(0xFF7C4DFF);
 
+  // Gradient Colors
+  static const Color gradientPurple = Color(0xFF6366F1);
+  static const Color gradientViolet = Color(0xFF8B5CF6);
+  static const Color borderDark = Color(0xFF2D2D2D);
+
   // Medal Colors
   static const Color medalGold = Color(0xFFFFD700);
   static const Color medalSilver = Color(0xFFC0C0C0);
