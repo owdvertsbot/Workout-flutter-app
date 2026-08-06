@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../core/app_colors.dart';
 import '../providers/providers.dart';
 import '../models/models.dart';
 
@@ -40,21 +41,21 @@ class _WorkoutPlansScreenState extends ConsumerState<WorkoutPlansScreen> with Si
     final advancedPlans = allPlans.where((p) => p.difficulty == 'ADVANCED').toList();
 
     return Scaffold(
-      backgroundColor: const Color(0xFF0A0A0F),
+      backgroundColor: AppColors.backgroundDarkest,
       body: NestedScrollView(
         headerSliverBuilder: (context, innerBoxIsScrolled) => [
           SliverAppBar(
             expandedHeight: 160,
             floating: true,
             pinned: true,
-            backgroundColor: const Color(0xFF121212),
+            backgroundColor: AppColors.backgroundDark,
             flexibleSpace: FlexibleSpaceBar(
               background: Container(
                 decoration: const BoxDecoration(
                   gradient: LinearGradient(
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
-                    colors: [Color(0xFF1A1A2E), Color(0xFF16213E)],
+                    colors: [AppColors.backgroundLight, AppColors.backgroundMedium],
                   ),
                 ),
                 child: SafeArea(
@@ -91,7 +92,7 @@ class _WorkoutPlansScreenState extends ConsumerState<WorkoutPlansScreen> with Si
             delegate: _TabBarDelegate(
               TabBar(
                 controller: _tabController,
-                indicatorColor: const Color(0xFF7C4DFF),
+                indicatorColor: AppColors.secondary,
                 labelColor: Colors.white,
                 unselectedLabelColor: Colors.grey,
                 tabs: [
@@ -123,7 +124,7 @@ class _TabBarDelegate extends SliverPersistentHeaderDelegate {
   @override
   Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
     return Container(
-      color: const Color(0xFF121212),
+      color: AppColors.backgroundDark,
       child: tabBar,
     );
   }
@@ -209,12 +210,12 @@ class _PlanCard extends ConsumerWidget {
     
     return Card(
       margin: const EdgeInsets.only(bottom: 16),
-      color: const Color(0xFF1E1E1E),
+      color: AppColors.backgroundSecondary,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
         side: BorderSide(
           color: isCompleted 
-            ? const Color(0xFF00E676).withOpacity(0.5)
+            ? AppColors.primary.withOpacity(0.5)
             : difficultyColor.withOpacity(0.3),
           width: 1,
         ),
@@ -267,20 +268,20 @@ class _PlanCard extends ConsumerWidget {
                               Container(
                                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                                 decoration: BoxDecoration(
-                                  color: const Color(0xFF00E676).withOpacity(0.2),
+                                  color: AppColors.primary.withOpacity(0.2),
                                   borderRadius: BorderRadius.circular(8),
                                 ),
                                 child: Row(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
-                                    const Icon(Icons.check_circle, color: Color(0xFF00E676), size: 14),
+                                    const Icon(Icons.check_circle, color: AppColors.primary, size: 14),
                                     const SizedBox(width: 4),
                                     Text(
                                       'Complete',
                                       style: GoogleFonts.inter(
                                         fontSize: 10,
                                         fontWeight: FontWeight.bold,
-                                        color: const Color(0xFF00E676),
+                                        color: AppColors.primary,
                                       ),
                                     ),
                                   ],
@@ -334,7 +335,7 @@ class _PlanCard extends ConsumerWidget {
                   _StatChip(
                     icon: Icons.star,
                     label: '+${plan.xpReward} XP',
-                    color: const Color(0xFF7C4DFF),
+                    color: AppColors.secondary,
                   ),
                   if (timesCompleted > 0) ...[
                     const SizedBox(width: 8),
@@ -376,8 +377,8 @@ class _PlanCard extends ConsumerWidget {
                   onPressed: () => _showPlanDetails(context, ref),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: isCompleted 
-                      ? const Color(0xFF00E676).withOpacity(0.2)
-                      : const Color(0xFF7C4DFF),
+                      ? AppColors.primary.withOpacity(0.2)
+                      : AppColors.secondary,
                     foregroundColor: Colors.white,
                     padding: const EdgeInsets.symmetric(vertical: 12),
                     shape: RoundedRectangleBorder(
@@ -420,11 +421,11 @@ class _PlanCard extends ConsumerWidget {
   Color _getDifficultyColor(String difficulty) {
     switch (difficulty) {
       case 'BEGINNER':
-        return const Color(0xFF00E676);
+        return AppColors.primary;
       case 'INTERMEDIATE':
-        return const Color(0xFFFFB300);
+        return AppColors.xpGold;
       case 'ADVANCED':
-        return const Color(0xFFFF5252);
+        return AppColors.errorRed;
       default:
         return Colors.grey;
     }
@@ -474,11 +475,11 @@ class _DifficultyBadge extends StatelessWidget {
   Color _getColor() {
     switch (difficulty) {
       case 'BEGINNER':
-        return const Color(0xFF00E676);
+        return AppColors.primary;
       case 'INTERMEDIATE':
-        return const Color(0xFFFFB300);
+        return AppColors.xpGold;
       case 'ADVANCED':
-        return const Color(0xFFFF5252);
+        return AppColors.errorRed;
       default:
         return Colors.grey;
     }
@@ -569,7 +570,7 @@ class _PlanDetailsSheet extends ConsumerWidget {
       builder: (context, scrollController) {
         return Container(
           decoration: const BoxDecoration(
-            color: Color(0xFF1E1E1E),
+            color: AppColors.backgroundSecondary,
             borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
           ),
           child: Column(
@@ -597,7 +598,7 @@ class _PlanDetailsSheet extends ConsumerWidget {
                           height: 64,
                           decoration: BoxDecoration(
                             gradient: const LinearGradient(
-                              colors: [Color(0xFF7C4DFF), Color(0xFF536DFE)],
+                              colors: [AppColors.secondary, AppColors.accentBlue],
                             ),
                             borderRadius: BorderRadius.circular(16),
                           ),
@@ -680,13 +681,13 @@ class _PlanDetailsSheet extends ConsumerWidget {
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
                           colors: [
-                            const Color(0xFF7C4DFF).withOpacity(0.2),
-                            const Color(0xFFFFD700).withOpacity(0.1),
+                            AppColors.secondary.withOpacity(0.2),
+                            AppColors.xpGold.withOpacity(0.1),
                           ],
                         ),
                         borderRadius: BorderRadius.circular(16),
                         border: Border.all(
-                          color: const Color(0xFF7C4DFF).withOpacity(0.3),
+                          color: AppColors.secondary.withOpacity(0.3),
                         ),
                       ),
                       child: Row(
@@ -694,14 +695,14 @@ class _PlanDetailsSheet extends ConsumerWidget {
                         children: [
                           Column(
                             children: [
-                              const Icon(Icons.star, color: Color(0xFF7C4DFF), size: 28),
+                              const Icon(Icons.star, color: AppColors.secondary, size: 28),
                               const SizedBox(height: 4),
                               Text(
                                 '+${plan.xpReward} XP',
                                 style: GoogleFonts.inter(
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold,
-                                  color: const Color(0xFF7C4DFF),
+                                  color: AppColors.secondary,
                                 ),
                               ),
                               Text(
@@ -720,14 +721,14 @@ class _PlanDetailsSheet extends ConsumerWidget {
                           ),
                           Column(
                             children: [
-                              const Icon(Icons.military_tech, color: Color(0xFFFFD700), size: 28),
+                              const Icon(Icons.military_tech, color: AppColors.xpGold, size: 28),
                               const SizedBox(height: 4),
                               Text(
                                 '+${plan.goldReward}',
                                 style: GoogleFonts.inter(
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold,
-                                  color: const Color(0xFFFFD700),
+                                  color: AppColors.xpGold,
                                 ),
                               ),
                               Text(
@@ -761,7 +762,7 @@ class _PlanDetailsSheet extends ConsumerWidget {
                         margin: const EdgeInsets.only(bottom: 8),
                         padding: const EdgeInsets.all(12),
                         decoration: BoxDecoration(
-                          color: const Color(0xFF2A2A2A),
+                          color: AppColors.backgroundTertiary,
                           borderRadius: BorderRadius.circular(12),
                           border: exercise.isWarmup 
                             ? Border.all(color: Colors.orange.withOpacity(0.3))
@@ -775,7 +776,7 @@ class _PlanDetailsSheet extends ConsumerWidget {
                               decoration: BoxDecoration(
                                 color: exercise.isWarmup 
                                   ? Colors.orange.withOpacity(0.2)
-                                  : const Color(0xFF7C4DFF).withOpacity(0.2),
+                                  : AppColors.secondary.withOpacity(0.2),
                                 borderRadius: BorderRadius.circular(8),
                               ),
                               child: Center(
@@ -783,7 +784,7 @@ class _PlanDetailsSheet extends ConsumerWidget {
                                   '${index + 1}',
                                   style: GoogleFonts.inter(
                                     fontWeight: FontWeight.bold,
-                                    color: exercise.isWarmup ? Colors.orange : const Color(0xFF7C4DFF),
+                                    color: exercise.isWarmup ? Colors.orange : AppColors.secondary,
                                   ),
                                 ),
                               ),
@@ -856,7 +857,7 @@ class _PlanDetailsSheet extends ConsumerWidget {
                       children: plan.muscleGroups.map((muscle) => Container(
                         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                         decoration: BoxDecoration(
-                          color: const Color(0xFF2A2A2A),
+                          color: AppColors.backgroundTertiary,
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: Text(
@@ -878,7 +879,7 @@ class _PlanDetailsSheet extends ConsumerWidget {
                       child: ElevatedButton(
                         onPressed: () => _startPlan(context),
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFF7C4DFF),
+                          backgroundColor: AppColors.secondary,
                           foregroundColor: Colors.white,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(16),
@@ -926,12 +927,12 @@ class _PlanDetailsSheet extends ConsumerWidget {
       SnackBar(
         content: Row(
           children: [
-            const Icon(Icons.play_circle, color: Color(0xFF7C4DFF)),
+            const Icon(Icons.play_circle, color: AppColors.secondary),
             const SizedBox(width: 8),
             Text('Quest "${plan.title}" started! Complete it to earn ${plan.xpReward} XP'),
           ],
         ),
-        backgroundColor: const Color(0xFF2A2A2A),
+        backgroundColor: AppColors.backgroundTertiary,
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       ),
@@ -957,7 +958,7 @@ class _StatCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: const Color(0xFF2A2A2A),
+        color: AppColors.backgroundTertiary,
         borderRadius: BorderRadius.circular(12),
       ),
       child: Column(
