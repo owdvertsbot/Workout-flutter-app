@@ -1,19 +1,20 @@
 // This file is the main barrel export for all providers.
 // For modular organization, providers have been split into:
 // - core_providers.dart: Database, UUID, error, loading state
-// - exercise_providers.dart: Exercise-related providers (loaded from exercise_providers.dart)
-// - workout_providers.dart: Workout session providers (TODO)
+// - exercise_providers.dart: Exercise-related providers
+// - settings_providers.dart: Theme, user settings, onboarding (extracted)
+// - workout_providers.dart: Workout session providers (TODO - complex interdependencies)
 // - player_providers.dart: Player profile providers (TODO)
 // - quest_providers.dart: Quest and workout plan providers (TODO)
-// - settings_providers.dart: Theme and user settings (TODO)
 //
-// The exercise providers are now defined in exercise_providers.dart and re-exported here.
-// This was previously causing duplication with hardcoded categories/equipment values.
+// Issue #21: Migration in progress. settings_providers.dart extracted.
+// Remaining providers have complex interdependencies requiring careful extraction.
 //
-// TODO: Complete the migration to modular provider files (Issue #3)
+// Note: Settings providers extracted - see settings_providers.dart
 
 export 'core_providers.dart';
 export 'exercise_providers.dart';
+export 'settings_providers.dart';
 
 import 'dart:convert';
 import 'package:drift/drift.dart';
