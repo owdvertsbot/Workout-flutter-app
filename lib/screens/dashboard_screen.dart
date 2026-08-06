@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
+import '../core/app_colors.dart';
 import '../providers/providers.dart';
 import '../models/models.dart';
 import 'active_workout_screen.dart';
@@ -28,8 +29,8 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
   void initState() {
     super.initState();
     _notifications.addAll([
-      {'title': 'Quest Complete!', 'body': 'You earned +100 XP', 'time': DateTime.now(), 'icon': Icons.emoji_events, 'color': const Color(0xFFFFD700)},
-      {'title': 'New PR!', 'body': 'Hit a new bench press record', 'time': DateTime.now().subtract(const Duration(hours: 2)), 'icon': Icons.trending_up, 'color': const Color(0xFF00E676)},
+      {'title': 'Quest Complete!', 'body': 'You earned +100 XP', 'time': DateTime.now(), 'icon': Icons.emoji_events, 'color': AppColors.xpGold},
+      {'title': 'New PR!', 'body': 'Hit a new bench press record', 'time': DateTime.now().subtract(const Duration(hours: 2)), 'icon': Icons.trending_up, 'color': AppColors.primary},
     ]);
   }
 
@@ -57,7 +58,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                   // App Bar with Avatar and Notifications (FDS 3.3)
                   SliverAppBar(
                     floating: true,
-                    backgroundColor: const Color(0xFF121212),
+                    backgroundColor: AppColors.backgroundDark,
                     toolbarHeight: 70,
                     title: Row(
                       children: [
@@ -68,8 +69,8 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                             height: 44,
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
-                              border: Border.all(color: const Color(0xFF7C4DFF), width: 2.5),
-                              gradient: const LinearGradient(colors: [Color(0xFF7C4DFF), Color(0xFF536DFE)]),
+                              border: Border.all(color: AppColors.secondary, width: 2.5),
+                              gradient: LinearGradient(colors: [AppColors.secondary, AppColors.levelPurple]),
                             ),
                             child: Center(child: Text('${profile.level}', style: GoogleFonts.inter(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16))),
                           ),
@@ -81,7 +82,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               Text(profile.characterTitle, style: GoogleFonts.inter(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16)),
-                              Text('Level ${profile.level}', style: GoogleFonts.inter(color: const Color(0xFF7C4DFF), fontSize: 12)),
+                              Text('Level ${profile.level}', style: GoogleFonts.inter(color: AppColors.secondary, fontSize: 12)),
                             ],
                           ),
                         ),
@@ -92,7 +93,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                         children: [
                           IconButton(icon: const Icon(Icons.notifications_outlined, size: 28), onPressed: () => _showNotificationsSheet(context)),
                           if (_hasNotification)
-                            Positioned(right: 10, top: 10, child: Container(width: 10, height: 10, decoration: const BoxDecoration(color: Color(0xFFFFD700), shape: BoxShape.circle))),
+                            Positioned(right: 10, top: 10, child: Container(width: 10, height: 10, decoration: const BoxDecoration(color: AppColors.xpGold, shape: BoxShape.circle))),
                         ],
                       ),
                       const SizedBox(width: 8),
@@ -137,7 +138,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
   void _showNotificationsSheet(BuildContext context) {
     showModalBottomSheet(
       context: context,
-      backgroundColor: const Color(0xFF1E1E1E),
+      backgroundColor: AppColors.surfaceDark,
       shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
       isScrollControlled: true,
       builder: (context) => DraggableScrollableSheet(
@@ -168,9 +169,9 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
   }
 
   void _showProfileSheet(BuildContext context, PlayerProfileModel profile) {
-    showModalBottomSheet(context: context, backgroundColor: const Color(0xFF1E1E1E), shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
+    showModalBottomSheet(context: context, backgroundColor: AppColors.surfaceDark, shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
       builder: (context) => Padding(padding: const EdgeInsets.all(24), child: Column(mainAxisSize: MainAxisSize.min, children: [
-        Container(width: 80, height: 80, decoration: BoxDecoration(shape: BoxShape.circle, gradient: const LinearGradient(colors: [Color(0xFF7C4DFF), Color(0xFF536DFE)]), boxShadow: [BoxShadow(color: const Color(0xFF7C4DFF).withOpacity(0.5), blurRadius: 20)]), child: Center(child: Text('${profile.level}', style: GoogleFonts.inter(color: Colors.white, fontSize: 32, fontWeight: FontWeight.bold)))),
+        Container(width: 80, height: 80, decoration: BoxDecoration(shape: BoxShape.circle, gradient: const LinearGradient(colors: [AppColors.secondary, AppColors.levelPurple]), boxShadow: [BoxShadow(color: AppColors.secondary.withOpacity(0.5), blurRadius: 20)]), child: Center(child: Text('${profile.level}', style: GoogleFonts.inter(color: Colors.white, fontSize: 32, fontWeight: FontWeight.bold)))),
         const SizedBox(height: 16),
         Text(profile.characterTitle, style: GoogleFonts.inter(fontSize: 24, fontWeight: FontWeight.bold)),
         const SizedBox(height: 24),
@@ -204,7 +205,7 @@ class _HeroBannerCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Container(
     padding: const EdgeInsets.all(20),
-    decoration: BoxDecoration(gradient: const LinearGradient(colors: [Color(0xFF7C4DFF), Color(0xFF536DFE)], begin: Alignment.topLeft, end: Alignment.bottomRight), borderRadius: BorderRadius.circular(20), boxShadow: [BoxShadow(color: const Color(0xFF7C4DFF).withOpacity(0.4), blurRadius: 25, offset: const Offset(0, 10))]),
+    decoration: BoxDecoration(gradient: const LinearGradient(colors: [AppColors.secondary, AppColors.levelPurple], begin: Alignment.topLeft, end: Alignment.bottomRight), borderRadius: BorderRadius.circular(20), boxShadow: [BoxShadow(color: AppColors.secondary.withOpacity(0.4), blurRadius: 25, offset: const Offset(0, 10))]),
     child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
         Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -221,9 +222,9 @@ class _HeroBannerCard extends StatelessWidget {
       Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
           Text('XP Progress', style: GoogleFonts.inter(color: Colors.white.withOpacity(0.7), fontSize: 12)),
-          Text('${profile.currentXp} / ${profile.xpToNextLevel}', style: GoogleFonts.inter(color: const Color(0xFFFFD700), fontSize: 12, fontWeight: FontWeight.bold))]),
+          Text('${profile.currentXp} / ${profile.xpToNextLevel}', style: GoogleFonts.inter(color: AppColors.xpGold, fontSize: 12, fontWeight: FontWeight.bold))]),
         const SizedBox(height: 8),
-        ClipRRect(borderRadius: BorderRadius.circular(6), child: LinearProgressIndicator(value: profile.levelProgress, backgroundColor: Colors.white.withOpacity(0.2), valueColor: const AlwaysStoppedAnimation<Color>(Color(0xFFFFD700)), minHeight: 12)),
+        ClipRRect(borderRadius: BorderRadius.circular(6), child: LinearProgressIndicator(value: profile.levelProgress, backgroundColor: Colors.white.withOpacity(0.2), valueColor: const AlwaysStoppedAnimation<Color>(AppColors.xpGold), minHeight: 12)),
       ]),
     ]),
   );
@@ -246,7 +247,7 @@ class _StartWorkoutCard extends StatelessWidget {
       onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const ActiveWorkoutScreen())),
       icon: const Icon(Icons.play_arrow_rounded, size: 28),
       label: Text(activeWorkout != null ? 'Resume Workout' : 'Start Empty Workout', style: GoogleFonts.inter(fontSize: 16, fontWeight: FontWeight.bold)),
-      style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF00E676), foregroundColor: Colors.black, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)), elevation: 4),
+      style: ElevatedButton.styleFrom(backgroundColor: AppColors.primary, foregroundColor: Colors.black, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)), elevation: 4),
     ),
   );
 }
@@ -280,15 +281,15 @@ class _QuestCard extends ConsumerWidget {
       onTap: quest.canClaim && !quest.isCompleted ? () => ref.read(dailyQuestsProvider.notifier).claimQuest(quest.id) : null,
       borderRadius: BorderRadius.circular(12),
       child: Padding(padding: const EdgeInsets.all(16), child: Row(children: [
-        Container(width: 44, height: 44, decoration: BoxDecoration(color: const Color(0xFFFFD700).withOpacity(0.2), borderRadius: BorderRadius.circular(12)), child: Icon(quest.isCompleted ? Icons.check_circle : Icons.emoji_events, color: const Color(0xFFFFD700))),
+        Container(width: 44, height: 44, decoration: BoxDecoration(color: AppColors.xpGold.withOpacity(0.2), borderRadius: BorderRadius.circular(12)), child: Icon(quest.isCompleted ? Icons.check_circle : Icons.emoji_events, color: AppColors.xpGold)),
         const SizedBox(width: 12),
         Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Row(children: [Expanded(child: Text(quest.title, style: GoogleFonts.inter(fontWeight: FontWeight.bold))), if (quest.isCompleted) Container(padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2), decoration: BoxDecoration(color: Colors.green.withOpacity(0.2), borderRadius: BorderRadius.circular(8)), child: Text('✓', style: GoogleFonts.inter(color: Colors.green, fontWeight: FontWeight.bold)))]),
           const SizedBox(height: 4),
-          Row(children: [Expanded(child: LinearProgressIndicator(value: quest.progress, backgroundColor: Colors.grey[800], valueColor: const AlwaysStoppedAnimation<Color>(Color(0xFF00E676)), minHeight: 6)), const SizedBox(width: 12), Text('${quest.currentValue}/${quest.targetValue}', style: GoogleFonts.inter(fontSize: 12, color: Colors.grey))]),
+          Row(children: [Expanded(child: LinearProgressIndicator(value: quest.progress, backgroundColor: Colors.grey[800], valueColor: const AlwaysStoppedAnimation<Color>(AppColors.primary), minHeight: 6)), const SizedBox(width: 12), Text('${quest.currentValue}/${quest.targetValue}', style: GoogleFonts.inter(fontSize: 12, color: Colors.grey))]),
         ])),
         const SizedBox(width: 12),
-        Container(padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6), decoration: BoxDecoration(color: const Color(0xFFFFD700).withOpacity(0.2), borderRadius: BorderRadius.circular(8)), child: Text(quest.isCompleted ? 'Claimed' : '+${quest.xpReward} XP', style: GoogleFonts.inter(color: const Color(0xFFFFD700), fontWeight: FontWeight.bold, fontSize: 12))),
+        Container(padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6), decoration: BoxDecoration(color: AppColors.xpGold.withOpacity(0.2), borderRadius: BorderRadius.circular(8)), child: Text(quest.isCompleted ? 'Claimed' : '+${quest.xpReward} XP', style: GoogleFonts.inter(color: AppColors.xpGold, fontWeight: FontWeight.bold, fontSize: 12))),
       ])),
     ),
   );
@@ -330,14 +331,14 @@ class _WeeklyHypertrophySummary extends ConsumerWidget {
           Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: List.generate(7, (index) {
             final hasWorkout = weekData[index];
             return Column(children: [
-              Container(width: 40, height: 40, decoration: BoxDecoration(color: hasWorkout ? const Color(0xFF00E676).withOpacity(0.2) : Colors.grey.withOpacity(0.1), borderRadius: BorderRadius.circular(10), border: hasWorkout ? Border.all(color: const Color(0xFF00E676), width: 2) : null), child: Icon(hasWorkout ? Icons.check : Icons.close, color: hasWorkout ? const Color(0xFF00E676) : Colors.grey, size: 20)),
+              Container(width: 40, height: 40, decoration: BoxDecoration(color: hasWorkout ? AppColors.primary.withOpacity(0.2) : Colors.grey.withOpacity(0.1), borderRadius: BorderRadius.circular(10), border: hasWorkout ? Border.all(color: AppColors.primary, width: 2) : null), child: Icon(hasWorkout ? Icons.check : Icons.close, color: hasWorkout ? AppColors.primary : Colors.grey, size: 20)),
               const SizedBox(height: 4),
               Text(days[index], style: GoogleFonts.inter(fontSize: 10, color: Colors.grey)),
             ]);
           })),
           const SizedBox(height: 16),
           Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
-            _SummaryStatItem(value: '$workoutCount', label: 'Workouts', color: const Color(0xFF00E676)),
+            _SummaryStatItem(value: '$workoutCount', label: 'Workouts', color: AppColors.primary),
             _SummaryStatItem(value: '${(profile.totalVolumeKg / 1000).toStringAsFixed(1)}t', label: 'Total Volume', color: Colors.orange),
             _SummaryStatItem(value: '${profile.streakDays}', label: 'Day Streak', color: Colors.blue),
           ]),
@@ -364,10 +365,10 @@ class _RecentWorkoutsSection extends ConsumerWidget {
       data: (workouts) {
         if (workouts.isEmpty) return Card(child: Padding(padding: const EdgeInsets.all(32), child: Column(children: [Icon(Icons.fitness_center, size: 48, color: Colors.grey[600]), const SizedBox(height: 16), Text('No workouts yet', style: GoogleFonts.inter(color: Colors.grey[600])), const SizedBox(height: 8), Text('Start your first workout!', style: GoogleFonts.inter(color: Colors.grey[700], fontSize: 12))])));
         return Column(children: workouts.take(3).map((workout) => Card(margin: const EdgeInsets.only(bottom: 8), child: ListTile(
-          leading: Container(width: 44, height: 44, decoration: BoxDecoration(color: const Color(0xFF00E676).withOpacity(0.2), borderRadius: BorderRadius.circular(10)), child: const Icon(Icons.fitness_center, color: Color(0xFF00E676))),
+          leading: Container(width: 44, height: 44, decoration: BoxDecoration(color: AppColors.primary.withOpacity(0.2), borderRadius: BorderRadius.circular(10)), child: const Icon(Icons.fitness_center, color: AppColors.primary)),
           title: Text(workout.title ?? 'Workout', style: GoogleFonts.inter(fontWeight: FontWeight.bold)),
           subtitle: Text(_formatDate(workout.startTime), style: GoogleFonts.inter(fontSize: 12, color: Colors.grey)),
-          trailing: Text(_formatDuration(workout.duration), style: GoogleFonts.inter(color: const Color(0xFF00E676), fontWeight: FontWeight.bold)),
+          trailing: Text(_formatDuration(workout.duration), style: GoogleFonts.inter(color: AppColors.primary, fontWeight: FontWeight.bold)),
           onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const ActiveWorkoutScreen())),
         ))).toList());
       },
@@ -429,9 +430,9 @@ class _ShimmerPlaceholderState extends State<ShimmerPlaceholder>
               begin: Alignment.centerLeft,
               end: Alignment.centerRight,
               colors: const [
-                Color(0xFF1E1E1E),
-                Color(0xFF2A2A2A),
-                Color(0xFF1E1E1E),
+                AppColors.surfaceDark,
+                AppColors.borderDark,
+                AppColors.surfaceDark,
               ],
               stops: [
                 _animation.value - 0.3,
@@ -455,10 +456,10 @@ class OfflineBanner extends StatelessWidget {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-      decoration: const BoxDecoration(
-        color: Color(0xFF2A2A2A),
+      decoration: BoxDecoration(
+        color: AppColors.borderDark,
         border: Border(
-          bottom: BorderSide(color: Color(0xFF3A3A3A)),
+          bottom: BorderSide(color: AppColors.borderDark),
         ),
       ),
       child: Row(
