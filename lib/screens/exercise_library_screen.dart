@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../core/app_colors.dart';
 import '../providers/providers.dart';
 import '../models/models.dart';
 
@@ -88,8 +89,8 @@ class _ExerciseLibraryScreenState extends ConsumerState<ExerciseLibraryScreen> {
                         _selectedBodyPart = part == 'All' ? null : part;
                       });
                     },
-                    selectedColor: const Color(0xFF00E676).withOpacity(0.3),
-                    checkmarkColor: const Color(0xFF00E676),
+                    selectedColor: AppColors.primary.withOpacity(0.3),
+                    checkmarkColor: AppColors.primary,
                   ),
                 );
               }).toList(),
@@ -478,7 +479,7 @@ class _OneRMCalculatorSectionState extends State<_OneRMCalculatorSection> {
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: const Color(0xFF00E676).withOpacity(0.1),
+      color: AppColors.primary.withOpacity(0.1),
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -486,7 +487,7 @@ class _OneRMCalculatorSectionState extends State<_OneRMCalculatorSection> {
           children: [
             Row(
               children: [
-                Icon(Icons.calculate, color: const Color(0xFF00E676), size: 20),
+                Icon(Icons.calculate, color: AppColors.primary, size: 20),
                 const SizedBox(width: 8),
                 Text(
                   '1RM Calculator',
@@ -530,7 +531,7 @@ class _OneRMCalculatorSectionState extends State<_OneRMCalculatorSection> {
                 width: double.infinity,
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF00E676).withOpacity(0.2),
+                  color: AppColors.primary.withOpacity(0.2),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Column(
@@ -545,7 +546,7 @@ class _OneRMCalculatorSectionState extends State<_OneRMCalculatorSection> {
                       style: GoogleFonts.jetBrainsMono(
                         fontSize: 28,
                         fontWeight: FontWeight.bold,
-                        color: const Color(0xFF00E676),
+                        color: AppColors.primary,
                       ),
                     ),
                     const SizedBox(height: 8),
