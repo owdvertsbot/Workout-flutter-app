@@ -29,8 +29,8 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
   void initState() {
     super.initState();
     _notifications.addAll([
-      {'title': 'Quest Complete!', 'body': 'You earned +100 XP', 'time': DateTime.now(), 'icon': Icons.emoji_events, 'color': const AppColors.xpGold},
-      {'title': 'New PR!', 'body': 'Hit a new bench press record', 'time': DateTime.now().subtract(const Duration(hours: 2)), 'icon': Icons.trending_up, 'color': const AppColors.primary},
+      {'title': 'Quest Complete!', 'body': 'You earned +100 XP', 'time': DateTime.now(), 'icon': Icons.emoji_events, 'color': AppColors.xpGold},
+      {'title': 'New PR!', 'body': 'Hit a new bench press record', 'time': DateTime.now().subtract(const Duration(hours: 2)), 'icon': Icons.trending_up, 'color': AppColors.primary},
     ]);
   }
 
@@ -58,7 +58,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                   // App Bar with Avatar and Notifications (FDS 3.3)
                   SliverAppBar(
                     floating: true,
-                    backgroundColor: const AppColors.backgroundDark,
+                    backgroundColor: AppColors.backgroundDark,
                     toolbarHeight: 70,
                     title: Row(
                       children: [
