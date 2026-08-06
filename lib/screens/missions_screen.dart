@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../core/app_colors.dart';
 import '../providers/providers.dart';
 import '../models/models.dart';
 
@@ -173,7 +174,7 @@ class _QuestCard extends StatelessWidget {
                     Text(
                       '+${quest.xpReward} XP',
                       style: GoogleFonts.inter(
-                        color: const Color(0xFF00E676),
+                        color: const AppColors.primary,
                         fontWeight: FontWeight.bold,
                         fontSize: 12,
                       ),
