@@ -5,6 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:rpg_workout_app/providers/providers.dart';
 import 'package:rpg_workout_app/providers/core_providers.dart';
 import 'package:rpg_workout_app/providers/exercise_providers.dart';
+import 'package:rpg_workout_app/providers/settings_providers.dart';
 
 void main() {
   group('CoreProviders', () {
