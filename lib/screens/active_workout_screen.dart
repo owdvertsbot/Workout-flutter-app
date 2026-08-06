@@ -993,7 +993,7 @@ class _FloatingRestTimerOverlay extends StatelessWidget {
         gradient: LinearGradient(
           colors: isPaused
               ? [Colors.grey[800]!, Colors.grey[900]!]
-              : [AppColors.primary, const AppColors.primaryDark],
+              : [AppColors.primary, AppColors.primaryDark],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),

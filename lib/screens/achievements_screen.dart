@@ -71,8 +71,8 @@ class _AchievementCard extends StatelessWidget {
 
     final tierColor = switch (tier) {
       'gold' => AppColors.xpGold,
-      'silver' => const AppColors.medalSilver,
-      'bronze' => const AppColors.medalBronze,
+      'silver' => AppColors.medalSilver,
+      'bronze' => AppColors.medalBronze,
       _ => Colors.grey,
     };
 
@@ -135,8 +135,8 @@ class _AchievementCard extends StatelessWidget {
     final tier = achievement['tier'] as String;
     final tierColor = switch (tier) {
       'gold' => AppColors.xpGold,
-      'silver' => const AppColors.medalSilver,
-      'bronze' => const AppColors.medalBronze,
+      'silver' => AppColors.medalSilver,
+      'bronze' => AppColors.medalBronze,
       _ => Colors.grey,
     };
 
