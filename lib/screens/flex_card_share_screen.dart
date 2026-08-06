@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import '../core/app_colors.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../models/models.dart';
 
@@ -18,10 +19,10 @@ class FlexCardShareScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF121212),
+      backgroundColor: AppColors.backgroundDark,
       appBar: AppBar(
         title: const Text('Share Your Progress'),
-        backgroundColor: const Color(0xFF121212),
+        backgroundColor: AppColors.backgroundDark,
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(24),
@@ -35,7 +36,7 @@ class FlexCardShareScreen extends StatelessWidget {
             _FlexCardOption(
               title: 'Classic',
               subtitle: 'Clean and simple',
-              gradient: const [Color(0xFF7C4DFF), Color(0xFF536DFE)],
+              gradient: const [AppColors.secondary, AppColors.levelPurple],
               icon: Icons.star,
               onTap: () => _shareCard(context, 'classic'),
             ),
@@ -43,7 +44,7 @@ class FlexCardShareScreen extends StatelessWidget {
             _FlexCardOption(
               title: 'Minimal',
               subtitle: 'Elegant monochrome',
-              gradient: const [Color(0xFF1E1E1E), Color(0xFF2D2D2D)],
+              gradient: const [AppColors.surfaceDark, AppColors.borderDark],
               icon: Icons.check_circle,
               onTap: () => _shareCard(context, 'minimal'),
             ),
@@ -51,7 +52,7 @@ class FlexCardShareScreen extends StatelessWidget {
             _FlexCardOption(
               title: 'Bold',
               subtitle: 'High contrast',
-              gradient: const [Color(0xFF00E676), Color(0xFF00C853)],
+              gradient: const [AppColors.primary, AppColors.primaryDark],
               icon: Icons.bolt,
               onTap: () => _shareCard(context, 'bold'),
             ),
@@ -59,7 +60,7 @@ class FlexCardShareScreen extends StatelessWidget {
             _FlexCardOption(
               title: 'Gold',
               subtitle: 'Premium achievement',
-              gradient: const [Color(0xFFFFD700), Color(0xFFFF8C00)],
+              gradient: const [AppColors.xpGold, AppColors.xpOrange],
               icon: Icons.emoji_events,
               onTap: () => _shareCard(context, 'gold'),
             ),
@@ -149,14 +150,14 @@ class _FlexCardPreview extends StatelessWidget {
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
         gradient: const LinearGradient(
-          colors: [Color(0xFF7C4DFF), Color(0xFF536DFE)],
+          colors: [AppColors.secondary, AppColors.levelPurple],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFF7C4DFF).withOpacity(0.4),
+            color: AppColors.secondary.withOpacity(0.4),
             blurRadius: 20,
             offset: const Offset(0, 10),
           ),
@@ -184,7 +185,7 @@ class _FlexCardPreview extends StatelessWidget {
             ),
             child: Column(
               children: [
-                Text('+$totalXp', style: GoogleFonts.inter(color: Color(0xFFFFD700), fontSize: 48, fontWeight: FontWeight.bold)),
+                Text('+$totalXp', style: GoogleFonts.inter(color: AppColors.xpGold, fontSize: 48, fontWeight: FontWeight.bold)),
                 Text('XP EARNED', style: GoogleFonts.inter(color: Colors.white70, letterSpacing: 2)),
               ],
             ),

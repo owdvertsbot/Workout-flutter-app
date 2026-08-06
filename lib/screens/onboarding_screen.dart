@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../core/app_colors.dart';
 import '../providers/providers.dart';
 import '../main.dart';
 import 'splash_screen.dart';
@@ -22,19 +23,19 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
       'icon': Icons.flash_on,
       'title': 'Lightning Fast Logging',
       'description': 'Log sets instantly with our optimized workout interface. No delays, no friction.',
-      'color': const Color(0xFF00E676),
+      'color': AppColors.primary,
     },
     {
       'icon': Icons.analytics,
       'title': 'Science-Based Analytics',
       'description': 'Track hypertrophy metrics, volume trends, and muscle recovery with detailed charts.',
-      'color': const Color(0xFF7C4DFF),
+      'color': AppColors.secondary,
     },
     {
       'icon': Icons.gamepad,
       'title': 'RPG Progression System',
       'description': 'Level up your character, earn XP, unlock achievements, and compete with yourself.',
-      'color': const Color(0xFFFFD700),
+      'color': AppColors.xpGold,
     },
   ];
 
@@ -65,7 +66,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF121212),
+      backgroundColor: AppColors.backgroundDark,
       body: SafeArea(
         child: Column(
           children: [
@@ -82,7 +83,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                     margin: const EdgeInsets.symmetric(horizontal: 4),
                     decoration: BoxDecoration(
                       color: _currentPage == index
-                          ? const Color(0xFF00E676)
+                          ? AppColors.primary
                           : Colors.white.withOpacity(0.2),
                       borderRadius: BorderRadius.circular(4),
                     ),
@@ -118,8 +119,8 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                         icon: const Icon(Icons.cloud),
                         label: const Text('Sign In / Create Account'),
                         style: OutlinedButton.styleFrom(
-                          foregroundColor: const Color(0xFF7C4DFF),
-                          side: const BorderSide(color: Color(0xFF7C4DFF)),
+                          foregroundColor: AppColors.secondary,
+                          side: const BorderSide(color: AppColors.secondary),
                           padding: const EdgeInsets.symmetric(vertical: 16),
                         ),
                       ),
@@ -151,7 +152,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                         child: ElevatedButton(
                           onPressed: _onNext,
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFF00E676),
+                            backgroundColor: AppColors.primary,
                             foregroundColor: Colors.black,
                             padding: const EdgeInsets.symmetric(vertical: 16),
                           ),
@@ -252,7 +253,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
           const Icon(
             Icons.straighten,
             size: 64,
-            color: Color(0xFF00E676),
+            color: AppColors.primary,
           ),
           const SizedBox(height: 24),
           Text(
@@ -284,7 +285,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                       padding: const EdgeInsets.symmetric(vertical: 20),
                       decoration: BoxDecoration(
                         color: _useMetric
-                            ? const Color(0xFF00E676)
+                            ? AppColors.primary
                             : Colors.transparent,
                         borderRadius: BorderRadius.circular(16),
                       ),
@@ -320,7 +321,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                       padding: const EdgeInsets.symmetric(vertical: 20),
                       decoration: BoxDecoration(
                         color: !_useMetric
-                            ? const Color(0xFF00E676)
+                            ? AppColors.primary
                             : Colors.transparent,
                         borderRadius: BorderRadius.circular(16),
                       ),
@@ -366,7 +367,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
           const Icon(
             Icons.track_changes,
             size: 64,
-            color: Color(0xFF7C4DFF),
+            color: AppColors.secondary,
           ),
           const SizedBox(height: 24),
           Text(
@@ -395,12 +396,12 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                   padding: const EdgeInsets.all(20),
                   decoration: BoxDecoration(
                     color: isSelected
-                        ? const Color(0xFF7C4DFF).withOpacity(0.2)
+                        ? AppColors.secondary.withOpacity(0.2)
                         : Colors.white.withOpacity(0.05),
                     borderRadius: BorderRadius.circular(16),
                     border: Border.all(
                       color: isSelected
-                          ? const Color(0xFF7C4DFF)
+                          ? AppColors.secondary
                           : Colors.white.withOpacity(0.1),
                       width: 2,
                     ),
@@ -427,7 +428,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                       if (isSelected)
                         const Icon(
                           Icons.check_circle,
-                          color: Color(0xFF7C4DFF),
+                          color: AppColors.secondary,
                         ),
                     ],
                   ),

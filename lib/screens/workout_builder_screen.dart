@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../core/app_colors.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../models/models.dart';
 import 'exercise_picker_screen.dart';
@@ -122,7 +123,7 @@ class _WorkoutBuilderScreenState extends ConsumerState<WorkoutBuilderScreen> {
         onPressed: _addExercise,
         icon: const Icon(Icons.add),
         label: const Text('Add Exercise'),
-        backgroundColor: const Color(0xFF00E676),
+        backgroundColor: AppColors.primary,
       ),
     );
   }
@@ -223,10 +224,10 @@ class _ExerciseBuilderCard extends StatelessWidget {
                   width: 32,
                   height: 32,
                   decoration: BoxDecoration(
-                    color: const Color(0xFF00E676).withOpacity(0.2),
+                    color: AppColors.primary.withOpacity(0.2),
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: Center(child: Text('${index + 1}', style: GoogleFonts.inter(color: const Color(0xFF00E676), fontWeight: FontWeight.bold))),
+                  child: Center(child: Text('${index + 1}', style: GoogleFonts.inter(color: AppColors.primary, fontWeight: FontWeight.bold))),
                 ),
                 const SizedBox(width: 12),
                 Expanded(
@@ -241,8 +242,8 @@ class _ExerciseBuilderCard extends StatelessWidget {
                 if (exercise.isSuperset)
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                    decoration: BoxDecoration(color: const Color(0xFF7C4DFF).withOpacity(0.2), borderRadius: BorderRadius.circular(8)),
-                    child: const Text('Superset', style: TextStyle(fontSize: 10, color: Color(0xFF7C4DFF))),
+                    decoration: BoxDecoration(color: AppColors.secondary.withOpacity(0.2), borderRadius: BorderRadius.circular(8)),
+                    child: const Text('Superset', style: TextStyle(fontSize: 10, color: AppColors.secondary)),
                   ),
                 PopupMenuButton<String>(
                   onSelected: (v) {

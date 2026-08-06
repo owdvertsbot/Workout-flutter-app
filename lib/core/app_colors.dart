@@ -38,6 +38,10 @@ class AppColors {
   static const Color primaryDark = Color(0xFF00C853);
   static const Color levelPurple = Color(0xFF7C4DFF);
 
+  // Gradient Colors
+  static const Color gradientPurple = Color(0xFF6366F1);
+  static const Color gradientViolet = Color(0xFF8B5CF6);
+
   // Medal Colors
   static const Color medalGold = Color(0xFFFFD700);
   static const Color medalSilver = Color(0xFFC0C0C0);
@@ -53,7 +57,7 @@ class AppColors {
   static const Color textMutedLight = Color(0xFF94A3B8);
 
   // Border Colors
-  static const Color borderDark = Color(0xFF2D2D2D);
+  static const Color borderDark = Color(0xFF2A2A2A);
   static const Color borderLight = Color(0xFFE0E0E0);
 
   // Helper method to get color for difficulty

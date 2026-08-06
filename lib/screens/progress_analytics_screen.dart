@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../core/app_colors.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../models/models.dart';
 import '../providers/providers.dart';
@@ -122,7 +123,7 @@ class _PeriodChip extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: BoxDecoration(
-          color: isSelected ? const Color(0xFF00E676) : Colors.transparent,
+          color: isSelected ? AppColors.primary : Colors.transparent,
           borderRadius: BorderRadius.circular(8),
         ),
         child: Text(
@@ -165,7 +166,7 @@ class _WeeklySummaryCard extends StatelessWidget {
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         gradient: const LinearGradient(
-          colors: [Color(0xFF7C4DFF), Color(0xFF536DFE)],
+          colors: [AppColors.secondary, AppColors.levelPurple],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
@@ -324,10 +325,10 @@ class _ViewToggle extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
         decoration: BoxDecoration(
-          color: isSelected ? const Color(0xFF00E676) : Colors.transparent,
+          color: isSelected ? AppColors.primary : Colors.transparent,
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
-            color: isSelected ? const Color(0xFF00E676) : Colors.grey,
+            color: isSelected ? AppColors.primary : Colors.grey,
           ),
         ),
         child: Text(
@@ -488,7 +489,7 @@ class _BarChartPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = const Color(0xFF00E676)
+      ..color = AppColors.primary
       ..style = PaintingStyle.fill;
 
     final barWidth = size.width / 9;
@@ -553,10 +554,10 @@ class _PRRow extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: const Color(0xFFFFD700).withOpacity(0.2),
+              color: AppColors.xpGold.withOpacity(0.2),
               borderRadius: BorderRadius.circular(8),
             ),
-            child: Icon(icon, color: const Color(0xFFFFD700), size: 20),
+            child: Icon(icon, color: AppColors.xpGold, size: 20),
           ),
           const SizedBox(width: 12),
           Expanded(
@@ -566,7 +567,7 @@ class _PRRow extends StatelessWidget {
             value,
             style: GoogleFonts.inter(
               fontWeight: FontWeight.bold,
-              color: const Color(0xFFFFD700),
+              color: AppColors.xpGold,
             ),
           ),
         ],
