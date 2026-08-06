@@ -41,7 +41,7 @@ class _WorkoutPlansScreenState extends ConsumerState<WorkoutPlansScreen> with Si
     final advancedPlans = allPlans.where((p) => p.difficulty == 'ADVANCED').toList();
 
     return Scaffold(
-      backgroundColor: AppColors.backgroundDarkest,
+      backgroundColor: AppColors.backgroundDark,
       body: NestedScrollView(
         headerSliverBuilder: (context, innerBoxIsScrolled) => [
           SliverAppBar(
@@ -51,11 +51,11 @@ class _WorkoutPlansScreenState extends ConsumerState<WorkoutPlansScreen> with Si
             backgroundColor: AppColors.backgroundDark,
             flexibleSpace: FlexibleSpaceBar(
               background: Container(
-                decoration: const BoxDecoration(
+                decoration: BoxDecoration(
                   gradient: LinearGradient(
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
-                    colors: [AppColors.backgroundLight, AppColors.backgroundMedium],
+                    colors: [AppColors.surfaceDark, AppColors.cardDark],
                   ),
                 ),
                 child: SafeArea(
@@ -210,7 +210,7 @@ class _PlanCard extends ConsumerWidget {
     
     return Card(
       margin: const EdgeInsets.only(bottom: 16),
-      color: AppColors.backgroundSecondary,
+      color: AppColors.surfaceDark,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
         side: BorderSide(
@@ -425,7 +425,7 @@ class _PlanCard extends ConsumerWidget {
       case 'INTERMEDIATE':
         return AppColors.xpGold;
       case 'ADVANCED':
-        return AppColors.errorRed;
+        return AppColors.difficultyAdvanced;
       default:
         return Colors.grey;
     }
@@ -479,7 +479,7 @@ class _DifficultyBadge extends StatelessWidget {
       case 'INTERMEDIATE':
         return AppColors.xpGold;
       case 'ADVANCED':
-        return AppColors.errorRed;
+        return AppColors.difficultyAdvanced;
       default:
         return Colors.grey;
     }
@@ -570,7 +570,7 @@ class _PlanDetailsSheet extends ConsumerWidget {
       builder: (context, scrollController) {
         return Container(
           decoration: const BoxDecoration(
-            color: AppColors.backgroundSecondary,
+            color: AppColors.surfaceDark,
             borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
           ),
           child: Column(
@@ -598,7 +598,7 @@ class _PlanDetailsSheet extends ConsumerWidget {
                           height: 64,
                           decoration: BoxDecoration(
                             gradient: const LinearGradient(
-                              colors: [AppColors.secondary, AppColors.accentBlue],
+                              colors: [AppColors.secondary, AppColors.levelPurple],
                             ),
                             borderRadius: BorderRadius.circular(16),
                           ),
@@ -762,7 +762,7 @@ class _PlanDetailsSheet extends ConsumerWidget {
                         margin: const EdgeInsets.only(bottom: 8),
                         padding: const EdgeInsets.all(12),
                         decoration: BoxDecoration(
-                          color: AppColors.backgroundTertiary,
+                          color: AppColors.surfaceDark,
                           borderRadius: BorderRadius.circular(12),
                           border: exercise.isWarmup 
                             ? Border.all(color: Colors.orange.withOpacity(0.3))
@@ -857,7 +857,7 @@ class _PlanDetailsSheet extends ConsumerWidget {
                       children: plan.muscleGroups.map((muscle) => Container(
                         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                         decoration: BoxDecoration(
-                          color: AppColors.backgroundTertiary,
+                          color: AppColors.surfaceDark,
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: Text(
@@ -932,7 +932,7 @@ class _PlanDetailsSheet extends ConsumerWidget {
             Text('Quest "${plan.title}" started! Complete it to earn ${plan.xpReward} XP'),
           ],
         ),
-        backgroundColor: AppColors.backgroundTertiary,
+        backgroundColor: AppColors.surfaceDark,
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       ),
@@ -958,7 +958,7 @@ class _StatCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppColors.backgroundTertiary,
+        color: AppColors.surfaceDark,
         borderRadius: BorderRadius.circular(12),
       ),
       child: Column(
