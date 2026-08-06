@@ -6,10 +6,125 @@ import 'providers/providers.dart';
 import 'screens/screens.dart';
 import 'models/models.dart';
 
+// ============================================================================
+// ADAPTIVE HEALTH - MAIN ENTRY POINT
+// A modern, evidence-based health coaching app
+// ============================================================================
+
 void main() {
-  runApp(const ProviderScope(child: RPGWorkoutApp()));
+  WidgetsFlutterBinding.ensureInitialized();
+  runApp(const ProviderScope(child: AdaptiveHealthApp()));
 }
 
+/// Adaptive Health App
+/// Evidence-based digital health coach for complete beginners
+class AdaptiveHealthApp extends ConsumerWidget {
+  const AdaptiveHealthApp({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final themeMode = ref.watch(themeModeProvider);
+
+    return MaterialApp(
+      title: 'Adaptive Health',
+      debugShowCheckedModeBanner: false,
+      theme: _buildHealthTheme(Brightness.light),
+      darkTheme: _buildHealthTheme(Brightness.dark),
+      themeMode: themeMode,
+      // Start with splash screen for onboarding
+      home: const SplashScreen(),
+    );
+  }
+
+  /// Clean Material 3 theme for Adaptive Health
+  ThemeData _buildHealthTheme(Brightness brightness) {
+    final isDark = brightness == Brightness.dark;
+    
+    // Clean, modern color palette
+    const primary = Color(0xFF0D9488);       // Calming teal
+    const secondary = Color(0xFFF97316);     // Warm coral
+    const background = Color(0xFFFAFAFA);    // Clean white
+    const surface = Color(0xFFFFFFFF);
+    const backgroundDark = Color(0xFF0F172A);
+    const surfaceDark = Color(0xFF1E293B);
+    
+    return ThemeData(
+      useMaterial3: true,
+      brightness: brightness,
+      colorScheme: ColorScheme.fromSeed(
+        seedColor: primary,
+        brightness: brightness,
+        primary: primary,
+        secondary: secondary,
+        surface: isDark ? surfaceDark : surface,
+      ),
+      scaffoldBackgroundColor: isDark ? backgroundDark : background,
+      textTheme: GoogleFonts.interTextTheme(ThemeData(brightness: brightness).textTheme),
+      appBarTheme: AppBarTheme(
+        centerTitle: false,
+        elevation: 0,
+        scrolledUnderElevation: 0,
+        backgroundColor: isDark ? backgroundDark : background,
+        foregroundColor: isDark ? Colors.white : Colors.black,
+        titleTextStyle: GoogleFonts.inter(
+          fontSize: 20,
+          fontWeight: FontWeight.w600,
+          color: isDark ? Colors.white : Colors.black,
+        ),
+      ),
+      cardTheme: CardTheme(
+        elevation: 0,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+        color: isDark ? surfaceDark : surface,
+      ),
+      elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ElevatedButton.styleFrom(
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8),
+          ),
+        ),
+      ),
+      inputDecorationTheme: InputDecorationTheme(
+        filled: true,
+        fillColor: isDark ? surfaceDark : Colors.grey[100],
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide.none,
+        ),
+      ),
+      // Navigation bar
+      navigationBarTheme: NavigationBarThemeData(
+        height: 80,
+        elevation: 0,
+        backgroundColor: isDark ? surfaceDark : surface,
+        indicatorColor: primary.withOpacity(0.12),
+        labelTextStyle: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) {
+            return GoogleFonts.inter(
+              fontSize: 12,
+              fontWeight: FontWeight.w600,
+              color: primary,
+            );
+          }
+          return GoogleFonts.inter(
+            fontSize: 12,
+            color: isDark ? Colors.grey[400] : Colors.grey[600],
+          );
+        }),
+      ),
+    );
+  }
+}
+
+// ============================================================================
+// LEGACY RPG WORKOUT APP (Deprecated)
+// Kept for reference during transition
+// ============================================================================
+
+/// @deprecated Use AdaptiveHealthApp instead
 class RPGWorkoutApp extends ConsumerWidget {
   const RPGWorkoutApp({super.key});
 
@@ -27,6 +142,7 @@ class RPGWorkoutApp extends ConsumerWidget {
     );
   }
 
+  @deprecated
   ThemeData _buildTheme(Brightness brightness) {
     final isDark = brightness == Brightness.dark;
     
