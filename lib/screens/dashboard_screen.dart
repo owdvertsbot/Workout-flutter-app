@@ -171,7 +171,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
   void _showProfileSheet(BuildContext context, PlayerProfileModel profile) {
     showModalBottomSheet(context: context, backgroundColor: const AppColors.surfaceDark, shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
       builder: (context) => Padding(padding: const EdgeInsets.all(24), child: Column(mainAxisSize: MainAxisSize.min, children: [
-        Container(width: 80, height: 80, decoration: BoxDecoration(shape: BoxShape.circle, gradient: const LinearGradient(colors: [AppColors.secondary, AppColors.levelPurple]), boxShadow: [BoxShadow(color: const AppColors.secondary.withOpacity(0.5), blurRadius: 20)]), child: Center(child: Text('${profile.level}', style: GoogleFonts.inter(color: Colors.white, fontSize: 32, fontWeight: FontWeight.bold)))),
+        Container(width: 80, height: 80, decoration: BoxDecoration(shape: BoxShape.circle, gradient: const LinearGradient(colors: [AppColors.secondary, AppColors.levelPurple]), boxShadow: [BoxShadow(color: AppColors.secondary.withOpacity(0.5), blurRadius: 20)]), child: Center(child: Text('${profile.level}', style: GoogleFonts.inter(color: Colors.white, fontSize: 32, fontWeight: FontWeight.bold)))),
         const SizedBox(height: 16),
         Text(profile.characterTitle, style: GoogleFonts.inter(fontSize: 24, fontWeight: FontWeight.bold)),
         const SizedBox(height: 24),
@@ -205,7 +205,7 @@ class _HeroBannerCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Container(
     padding: const EdgeInsets.all(20),
-    decoration: BoxDecoration(gradient: const LinearGradient(colors: [AppColors.secondary, AppColors.levelPurple], begin: Alignment.topLeft, end: Alignment.bottomRight), borderRadius: BorderRadius.circular(20), boxShadow: [BoxShadow(color: const AppColors.secondary.withOpacity(0.4), blurRadius: 25, offset: const Offset(0, 10))]),
+    decoration: BoxDecoration(gradient: const LinearGradient(colors: [AppColors.secondary, AppColors.levelPurple], begin: Alignment.topLeft, end: Alignment.bottomRight), borderRadius: BorderRadius.circular(20), boxShadow: [BoxShadow(color: AppColors.secondary.withOpacity(0.4), blurRadius: 25, offset: const Offset(0, 10))]),
     child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
         Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
