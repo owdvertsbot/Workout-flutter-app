@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import '../core/app_colors.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../providers/providers.dart';
@@ -257,7 +258,7 @@ class _ActiveWorkoutScreenState extends ConsumerState<ActiveWorkoutScreen> {
   void _showMiniPlayer(BuildContext context) {
     showModalBottomSheet(
       context: context,
-      backgroundColor: const Color(0xFF1E1E1E),
+      backgroundColor: AppColors.surfaceDark,
       shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(16))),
       builder: (context) => Container(
         height: 80,
@@ -266,8 +267,8 @@ class _ActiveWorkoutScreenState extends ConsumerState<ActiveWorkoutScreen> {
           children: [
             Container(
               width: 48, height: 48,
-              decoration: BoxDecoration(color: const Color(0xFF00E676).withOpacity(0.2), borderRadius: BorderRadius.circular(12)),
-              child: const Icon(Icons.fitness_center, color: Color(0xFF00E676)),
+              decoration: BoxDecoration(color: AppColors.primary.withOpacity(0.2), borderRadius: BorderRadius.circular(12)),
+              child: const Icon(Icons.fitness_center, color: AppColors.primary),
             ),
             const SizedBox(width: 12),
             Expanded(
@@ -556,7 +557,7 @@ class _ExerciseCard extends StatelessWidget {
                       const SizedBox(width: 60, child: Text('Weight', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12))),
                       const SizedBox(width: 45, child: Text('Reps', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12))),
                       const SizedBox(width: 45, child: Text('RPE', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12))),
-                      const SizedBox(width: 55, child: Text('Prev', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12, color: Color(0xFFFFD700)))),
+                      const SizedBox(width: 55, child: Text('Prev', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12, color: AppColors.xpGold))),
                       const Spacer(),
                     ],
                   ),
@@ -903,7 +904,7 @@ class _RunningTimerDialogState extends State<_RunningTimerDialog> {
             style: GoogleFonts.jetBrainsMono(
               fontSize: 64,
               fontWeight: FontWeight.bold,
-              color: _remaining <= 10 ? Colors.red : const Color(0xFF00E676),
+              color: _remaining <= 10 ? Colors.red : AppColors.primary,
             ),
           ),
           const SizedBox(height: 16),
@@ -933,13 +934,13 @@ class _RunningTimerDialogState extends State<_RunningTimerDialog> {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               decoration: BoxDecoration(
-                color: const Color(0xFFFFD700).withOpacity(0.2),
+                color: AppColors.xpGold.withOpacity(0.2),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: const Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(Icons.check_circle, color: Color(0xFFFFD700)),
+                  Icon(Icons.check_circle, color: AppColors.xpGold),
                   SizedBox(width: 8),
                   Text("Time's up!", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                 ],
@@ -992,13 +993,13 @@ class _FloatingRestTimerOverlay extends StatelessWidget {
         gradient: LinearGradient(
           colors: isPaused
               ? [Colors.grey[800]!, Colors.grey[900]!]
-              : [const Color(0xFF00E676), const Color(0xFF00C853)],
+              : [AppColors.primary, const AppColors.primaryDark],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFF00E676).withOpacity(0.4),
+            color: AppColors.primary.withOpacity(0.4),
             blurRadius: 12,
             offset: const Offset(0, 4),
           ),

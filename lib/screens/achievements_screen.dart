@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../core/app_colors.dart';
 
 class AchievementsScreen extends StatelessWidget {
   const AchievementsScreen({super.key});
@@ -69,9 +70,9 @@ class _AchievementCard extends StatelessWidget {
     final progress = achievement['progress'] as double;
 
     final tierColor = switch (tier) {
-      'gold' => const Color(0xFFFFD700),
-      'silver' => const Color(0xFFC0C0C0),
-      'bronze' => const Color(0xFFCD7F32),
+      'gold' => AppColors.xpGold,
+      'silver' => const AppColors.medalSilver,
+      'bronze' => const AppColors.medalBronze,
       _ => Colors.grey,
     };
 
@@ -133,15 +134,15 @@ class _AchievementCard extends StatelessWidget {
     final isUnlocked = achievement['unlocked'] as bool;
     final tier = achievement['tier'] as String;
     final tierColor = switch (tier) {
-      'gold' => const Color(0xFFFFD700),
-      'silver' => const Color(0xFFC0C0C0),
-      'bronze' => const Color(0xFFCD7F32),
+      'gold' => AppColors.xpGold,
+      'silver' => const AppColors.medalSilver,
+      'bronze' => const AppColors.medalBronze,
       _ => Colors.grey,
     };
 
     showModalBottomSheet(
       context: context,
-      backgroundColor: const Color(0xFF1E1E1E),
+      backgroundColor: AppColors.surfaceDark,
       shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
       builder: (context) => Padding(
         padding: const EdgeInsets.all(24),

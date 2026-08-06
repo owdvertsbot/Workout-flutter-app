@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../core/app_colors.dart';
 import '../models/models.dart';
 import '../main.dart';
 
@@ -66,7 +67,7 @@ class _WorkoutSummaryScreenState extends ConsumerState<WorkoutSummaryScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF121212),
+      backgroundColor: AppColors.backgroundDark,
       body: SafeArea(
         child: Column(
           children: [
@@ -87,13 +88,13 @@ class _WorkoutSummaryScreenState extends ConsumerState<WorkoutSummaryScreen>
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
                             gradient: const LinearGradient(
-                              colors: [Color(0xFFFFD700), Color(0xFFFF8C00)],
+                              colors: [AppColors.xpGold, AppColors.xpOrange],
                               begin: Alignment.topLeft,
                               end: Alignment.bottomRight,
                             ),
                             boxShadow: [
                               BoxShadow(
-                                color: const Color(0xFFFFD700).withOpacity(0.5),
+                                color: AppColors.xpGold.withOpacity(0.5),
                                 blurRadius: 40,
                                 spreadRadius: 10,
                               ),
@@ -125,7 +126,7 @@ class _WorkoutSummaryScreenState extends ConsumerState<WorkoutSummaryScreen>
                         child: const Text(
                           'LEVEL UP!',
                           style: TextStyle(
-                            color: Color(0xFFFFD700),
+                            color: AppColors.xpGold,
                             fontSize: 28,
                             fontWeight: FontWeight.bold,
                             letterSpacing: 4,
@@ -138,7 +139,7 @@ class _WorkoutSummaryScreenState extends ConsumerState<WorkoutSummaryScreen>
                     // Workout Complete Header
                     const Icon(
                       Icons.check_circle,
-                      color: Color(0xFF00E676),
+                      color: AppColors.primary,
                       size: 64,
                     ),
                     const SizedBox(height: 16),
@@ -189,7 +190,7 @@ class _WorkoutSummaryScreenState extends ConsumerState<WorkoutSummaryScreen>
                     );
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF00E676),
+                    backgroundColor: AppColors.primary,
                     foregroundColor: Colors.black,
                     padding: const EdgeInsets.symmetric(vertical: 16),
                   ),
@@ -214,14 +215,14 @@ class _WorkoutSummaryScreenState extends ConsumerState<WorkoutSummaryScreen>
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         gradient: const LinearGradient(
-          colors: [Color(0xFF7C4DFF), Color(0xFF536DFE)],
+          colors: [AppColors.secondary, AppColors.levelPurple],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFF7C4DFF).withOpacity(0.3),
+            color: AppColors.secondary.withOpacity(0.3),
             blurRadius: 20,
             offset: const Offset(0, 10),
           ),
@@ -234,7 +235,7 @@ class _WorkoutSummaryScreenState extends ConsumerState<WorkoutSummaryScreen>
             children: [
               const Icon(
                 Icons.bolt,
-                color: Color(0xFFFFD700),
+                color: AppColors.xpGold,
                 size: 32,
               ),
               const SizedBox(width: 8),
@@ -406,14 +407,14 @@ class _WorkoutSummaryScreenState extends ConsumerState<WorkoutSummaryScreen>
                       width: 32,
                       height: 32,
                       decoration: BoxDecoration(
-                        color: const Color(0xFF00E676).withOpacity(0.2),
+                        color: AppColors.primary.withOpacity(0.2),
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Center(
                         child: Text(
                           '${entry.key + 1}',
                           style: const TextStyle(
-                            color: Color(0xFF00E676),
+                            color: AppColors.primary,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
