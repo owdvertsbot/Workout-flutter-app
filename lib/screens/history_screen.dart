@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../core/app_colors.dart';
 import '../providers/providers.dart';
 import '../models/models.dart';
 
@@ -187,18 +188,18 @@ class _CalendarView extends StatelessWidget {
                 margin: const EdgeInsets.all(2),
                 decoration: BoxDecoration(
                   color: hasWorkout
-                      ? const Color(0xFF00E676).withOpacity(0.2)
+                      ? AppColors.primary.withOpacity(0.2)
                       : null,
                   borderRadius: BorderRadius.circular(8),
                   border: isToday
-                      ? Border.all(color: const Color(0xFF00E676), width: 2)
+                      ? Border.all(color: AppColors.primary, width: 2)
                       : null,
                 ),
                 child: Center(
                   child: Text(
                     '$dayOffset',
                     style: GoogleFonts.inter(
-                      color: hasWorkout ? const Color(0xFF00E676) : null,
+                      color: hasWorkout ? AppColors.primary : null,
                       fontWeight: hasWorkout ? FontWeight.bold : null,
                     ),
                   ),
@@ -407,7 +408,7 @@ class _WorkoutHistoryCard extends StatelessWidget {
                     _formatDuration(workout.duration),
                     style: GoogleFonts.inter(
                       fontWeight: FontWeight.bold,
-                      color: const Color(0xFF00E676),
+                      color: AppColors.primary,
                     ),
                   ),
                   const SizedBox(height: 4),
@@ -454,7 +455,7 @@ class _WorkoutHistoryCard extends StatelessWidget {
   Color _getStatusColor(WorkoutStatus status) {
     switch (status) {
       case WorkoutStatus.completed:
-        return const Color(0xFF00E676);
+        return AppColors.primary;
       case WorkoutStatus.inProgress:
         return Colors.orange;
       case WorkoutStatus.abandoned:
