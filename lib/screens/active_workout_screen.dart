@@ -8,6 +8,15 @@ import '../models/models.dart';
 import 'exercise_picker_screen.dart';
 import 'workout_summary_screen.dart';
 
+/// Accessibility helper to wrap icons with semantic labels for screen readers.
+/// Wraps the icon in a [Semantics] widget with the provided label.
+Widget _buildAccessibleIcon(Widget icon, String label) {
+  return Semantics(
+    label: label,
+    child: icon,
+  );
+}
+
 class ActiveWorkoutScreen extends ConsumerStatefulWidget {
   const ActiveWorkoutScreen({super.key});
 
@@ -35,7 +44,7 @@ class _ActiveWorkoutScreenState extends ConsumerState<ActiveWorkoutScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(Icons.fitness_center, size: 64, color: Colors.grey),
+              _buildAccessibleIcon(const Icon(Icons.fitness_center, size: 64, color: Colors.grey), 'Fitness center icon'),
               const SizedBox(height: 16),
               Text(
                 'No active workout',
@@ -46,7 +55,7 @@ class _ActiveWorkoutScreenState extends ConsumerState<ActiveWorkoutScreen> {
                 onPressed: () async {
                   await ref.read(activeWorkoutProvider.notifier).startWorkout();
                 },
-                icon: const Icon(Icons.play_arrow),
+                icon: _buildAccessibleIcon(const Icon(Icons.play_arrow), 'Start workout'),
                 label: const Text('Start Workout'),
               ),
             ],
@@ -65,19 +74,19 @@ class _ActiveWorkoutScreenState extends ConsumerState<ActiveWorkoutScreen> {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          icon: const Icon(Icons.minimize),
+          icon: _buildAccessibleIcon(const Icon(Icons.minimize), 'Minimize to mini player'),
           tooltip: 'Minimize to mini player',
           onPressed: () => _showMiniPlayer(context),
         ),
         title: Text(workout.title ?? 'Workout'),
         actions: [
           IconButton(
-            icon: const Icon(Icons.timer),
+            icon: _buildAccessibleIcon(const Icon(Icons.timer), 'Open rest timer'),
             onPressed: () => _showRestTimerDialog(context),
             tooltip: 'Rest Timer',
           ),
           IconButton(
-            icon: const Icon(Icons.calculate),
+            icon: _buildAccessibleIcon(const Icon(Icons.calculate), 'Open plate calculator'),
             onPressed: () => _showPlateCalculator(context),
             tooltip: 'Plate Calculator',
           ),
@@ -119,7 +128,7 @@ class _ActiveWorkoutScreenState extends ConsumerState<ActiveWorkoutScreen> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Icons.add_circle_outline, size: 64, color: Colors.grey[400]),
+                        _buildAccessibleIcon(Icon(Icons.add_circle_outline, size: 64, color: Colors.grey[400]), 'Add exercise icon'),
                         const SizedBox(height: 16),
                         Text(
                           'Add exercises to start',
@@ -128,7 +137,7 @@ class _ActiveWorkoutScreenState extends ConsumerState<ActiveWorkoutScreen> {
                         const SizedBox(height: 16),
                         ElevatedButton.icon(
                           onPressed: () => _navigateToExercisePicker(context),
-                          icon: const Icon(Icons.add),
+                          icon: _buildAccessibleIcon(const Icon(Icons.add), 'Add exercise'),
                           label: const Text('Add Exercise'),
                         ),
                       ],
@@ -174,7 +183,7 @@ class _ActiveWorkoutScreenState extends ConsumerState<ActiveWorkoutScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _navigateToExercisePicker(context),
-        child: const Icon(Icons.add),
+        child: _buildAccessibleIcon(const Icon(Icons.add), 'Add exercise'),
       ),
     );
   }
@@ -268,7 +277,7 @@ class _ActiveWorkoutScreenState extends ConsumerState<ActiveWorkoutScreen> {
             Container(
               width: 48, height: 48,
               decoration: BoxDecoration(color: AppColors.primary.withOpacity(0.2), borderRadius: BorderRadius.circular(12)),
-              child: const Icon(Icons.fitness_center, color: AppColors.primary),
+              child: _buildAccessibleIcon(const Icon(Icons.fitness_center, color: AppColors.primary), 'Workout in progress'),
             ),
             const SizedBox(width: 12),
             Expanded(
@@ -281,7 +290,7 @@ class _ActiveWorkoutScreenState extends ConsumerState<ActiveWorkoutScreen> {
                 ],
               ),
             ),
-            const Icon(Icons.keyboard_arrow_up, color: Colors.grey),
+            _buildAccessibleIcon(const Icon(Icons.keyboard_arrow_up, color: Colors.grey), 'Expand workout'),
           ],
         ),
       ),
@@ -405,23 +414,26 @@ class _StatItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Row(
-          children: [
-            Icon(icon, size: 16, color: Theme.of(context).primaryColor),
-            const SizedBox(width: 4),
-            Text(
-              value,
-              style: GoogleFonts.inter(fontWeight: FontWeight.bold, fontSize: 16),
-            ),
-          ],
-        ),
-        Text(
-          label,
-          style: GoogleFonts.inter(color: Colors.grey[600], fontSize: 11),
-        ),
-      ],
+    return Semantics(
+      label: '$label: $value',
+      child: Column(
+        children: [
+          Row(
+            children: [
+              Icon(icon, size: 16, color: Theme.of(context).primaryColor),
+              const SizedBox(width: 4),
+              Text(
+                value,
+                style: GoogleFonts.inter(fontWeight: FontWeight.bold, fontSize: 16),
+              ),
+            ],
+          ),
+          Text(
+            label,
+            style: GoogleFonts.inter(color: Colors.grey[600], fontSize: 11),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -476,7 +488,7 @@ class _ExerciseCard extends StatelessWidget {
                   ),
                   // Options menu (FDS 3.4)
                   PopupMenuButton<String>(
-                    icon: const Icon(Icons.more_vert, color: Colors.grey),
+                    icon: _buildAccessibleIcon(const Icon(Icons.more_vert, color: Colors.grey), 'Exercise options menu'),
                     tooltip: 'Options',
                     onSelected: (value) {
                       // Handle options - would call back to parent
@@ -518,9 +530,12 @@ class _ExerciseCard extends StatelessWidget {
                       ),
                     ],
                   ),
-                  Icon(
-                    isExpanded ? Icons.expand_less : Icons.expand_more,
-                    color: Colors.grey,
+                  _buildAccessibleIcon(
+                    Icon(
+                      isExpanded ? Icons.expand_less : Icons.expand_more,
+                      color: Colors.grey,
+                    ),
+                    isExpanded ? 'Collapse exercise' : 'Expand exercise',
                   ),
                 ],
               ),
@@ -537,7 +552,7 @@ class _ExerciseCard extends StatelessWidget {
               color: Colors.amber.withOpacity(0.1),
               child: Row(
                 children: [
-                  Icon(Icons.history, size: 14, color: Colors.amber[700]),
+                  _buildAccessibleIcon(Icon(Icons.history, size: 14, color: Colors.amber[700]), 'Previous session data'),
                   const SizedBox(width: 6),
                   Text(
                     'Last Session: 80 kg × 8 reps',
@@ -579,7 +594,7 @@ class _ExerciseCard extends StatelessWidget {
                   const SizedBox(height: 8),
                   TextButton.icon(
                     onPressed: onAddSet,
-                    icon: const Icon(Icons.add, size: 18),
+                    icon: _buildAccessibleIcon(const Icon(Icons.add, size: 18), 'Add another set'),
                     label: const Text('Add Set'),
                   ),
                 ],
@@ -768,13 +783,16 @@ class _SetRowState extends State<_SetRow> with SingleTickerProviderStateMixin {
                   ),
                 ),
                 const Spacer(),
-                IconButton(
-                  onPressed: widget.set.isCompleted ? null : widget.onComplete,
-                  icon: Icon(
-                    widget.set.isCompleted ? Icons.check_circle : Icons.check_circle_outline,
-                    color: widget.set.isCompleted ? Colors.green : Colors.grey,
+                Semantics(
+                  label: widget.set.isCompleted ? 'Set completed' : 'Mark set as completed',
+                  child: IconButton(
+                    onPressed: widget.set.isCompleted ? null : widget.onComplete,
+                    icon: Icon(
+                      widget.set.isCompleted ? Icons.check_circle : Icons.check_circle_outline,
+                      color: widget.set.isCompleted ? Colors.green : Colors.grey,
+                    ),
+                    visualDensity: VisualDensity.compact,
                   ),
-                  visualDensity: VisualDensity.compact,
                 ),
               ],
             ),
@@ -836,7 +854,7 @@ class _RestTimerDialogState extends State<_RestTimerDialog> {
                 widget.onStartFloating!(_selectedSeconds);
               }
             },
-            icon: const Icon(Icons.picture_in_picture_alt),
+            icon: _buildAccessibleIcon(const Icon(Icons.picture_in_picture_alt), 'Show as floating timer'),
             label: const Text('Show as Floating Timer'),
           ),
         ],
@@ -937,12 +955,12 @@ class _RunningTimerDialogState extends State<_RunningTimerDialog> {
                 color: AppColors.xpGold.withOpacity(0.2),
                 borderRadius: BorderRadius.circular(8),
               ),
-              child: const Row(
+              child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(Icons.check_circle, color: AppColors.xpGold),
-                  SizedBox(width: 8),
-                  Text("Time's up!", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                  _buildAccessibleIcon(const Icon(Icons.check_circle, color: AppColors.xpGold), "Rest time complete"),
+                  const SizedBox(width: 8),
+                  const Text("Time's up!", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                 ],
               ),
             ),
@@ -1049,6 +1067,7 @@ class _FloatingRestTimerOverlay extends StatelessWidget {
                   label: '30s',
                   onPressed: onAddTime,
                   isSmall: true,
+                  semanticLabel: 'Add 30 seconds to timer',
                 ),
                 const SizedBox(width: 8),
                 // -15s button
@@ -1057,6 +1076,7 @@ class _FloatingRestTimerOverlay extends StatelessWidget {
                   label: '15s',
                   onPressed: onSubtractTime,
                   isSmall: true,
+                  semanticLabel: 'Subtract 15 seconds from timer',
                 ),
                 const SizedBox(width: 16),
                 // Pause/Play button
@@ -1070,6 +1090,7 @@ class _FloatingRestTimerOverlay extends StatelessWidget {
                   style: IconButton.styleFrom(
                     backgroundColor: Colors.white24,
                   ),
+                  tooltip: isPaused ? 'Resume timer' : 'Pause timer',
                 ),
                 const SizedBox(width: 16),
                 // Skip button
@@ -1078,6 +1099,7 @@ class _FloatingRestTimerOverlay extends StatelessWidget {
                   label: 'Skip',
                   onPressed: onSkip,
                   isSmall: true,
+                  semanticLabel: 'Skip rest timer',
                 ),
               ],
             ),
@@ -1093,41 +1115,47 @@ class _TimerButton extends StatelessWidget {
   final String label;
   final VoidCallback onPressed;
   final bool isSmall;
+  final String? semanticLabel;
 
   const _TimerButton({
     required this.icon,
     required this.label,
     required this.onPressed,
     this.isSmall = false,
+    this.semanticLabel,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: Colors.white24,
-      borderRadius: BorderRadius.circular(8),
-      child: InkWell(
-        onTap: onPressed,
+    return Semantics(
+      label: semanticLabel ?? label,
+      button: true,
+      child: Material(
+        color: Colors.white24,
         borderRadius: BorderRadius.circular(8),
-        child: Padding(
-          padding: EdgeInsets.symmetric(
-            horizontal: isSmall ? 12 : 16,
-            vertical: isSmall ? 6 : 8,
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(icon, size: isSmall ? 16 : 20, color: Colors.white),
-              const SizedBox(width: 4),
-              Text(
-                label,
-                style: GoogleFonts.inter(
-                  fontSize: isSmall ? 12 : 14,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.white,
+        child: InkWell(
+          onTap: onPressed,
+          borderRadius: BorderRadius.circular(8),
+          child: Padding(
+            padding: EdgeInsets.symmetric(
+              horizontal: isSmall ? 12 : 16,
+              vertical: isSmall ? 6 : 8,
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(icon, size: isSmall ? 16 : 20, color: Colors.white),
+                const SizedBox(width: 4),
+                Text(
+                  label,
+                  style: GoogleFonts.inter(
+                    fontSize: isSmall ? 12 : 14,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.white,
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
