@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../core/app_colors.dart';
 import '../providers/providers.dart';
 import '../main.dart';
 import 'active_workout_screen.dart';
@@ -115,7 +116,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF121212),
+      backgroundColor: AppColors.backgroundDark,
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -136,13 +137,13 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                         boxShadow: [
                           // Primary green glow
                           BoxShadow(
-                            color: const Color(0xFF00E676).withOpacity(_glowAnimation.value),
+                            color: AppColors.primary.withOpacity(_glowAnimation.value),
                             blurRadius: 40,
                             spreadRadius: 10,
                           ),
                           // Secondary purple glow
                           BoxShadow(
-                            color: const Color(0xFF7C4DFF).withOpacity(_glowAnimation.value * 0.6),
+                            color: AppColors.secondary.withOpacity(_glowAnimation.value * 0.6),
                             blurRadius: 30,
                             spreadRadius: 5,
                           ),
@@ -158,7 +159,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           gradient: const LinearGradient(
-                            colors: [Color(0xFF00E676), Color(0xFF7C4DFF)],
+                            colors: [AppColors.primary, AppColors.secondary],
                             begin: Alignment.topLeft,
                             end: Alignment.bottomRight,
                           ),
@@ -254,7 +255,7 @@ class _WorkoutRecoveryScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
-      backgroundColor: const Color(0xFF121212),
+      backgroundColor: AppColors.backgroundDark,
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -262,7 +263,7 @@ class _WorkoutRecoveryScreen extends ConsumerWidget {
             const Icon(
               Icons.restore,
               size: 64,
-              color: Color(0xFFFFD700),
+              color: AppColors.xpGold,
             ),
             const SizedBox(height: 24),
             Text(
@@ -292,7 +293,7 @@ class _WorkoutRecoveryScreen extends ConsumerWidget {
               icon: const Icon(Icons.play_arrow),
               label: const Text('Resume Workout'),
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF00E676),
+                backgroundColor: AppColors.primary,
                 foregroundColor: Colors.black,
                 padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
               ),
