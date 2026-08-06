@@ -1,11 +1,14 @@
 // This file is the main barrel export for all providers.
 // For modular organization, providers have been split into:
 // - core_providers.dart: Database, UUID, error, loading state
-// - exercise_providers.dart: Exercise-related providers
+// - exercise_providers.dart: Exercise-related providers (loaded from exercise_providers.dart)
 // - workout_providers.dart: Workout session providers (TODO)
 // - player_providers.dart: Player profile providers (TODO)
 // - quest_providers.dart: Quest and workout plan providers (TODO)
 // - settings_providers.dart: Theme and user settings (TODO)
+//
+// The exercise providers are now defined in exercise_providers.dart and re-exported here.
+// This was previously causing duplication with hardcoded categories/equipment values.
 //
 // TODO: Complete the migration to modular provider files (Issue #3)
 
@@ -15,7 +18,6 @@ export 'exercise_providers.dart';
 import 'dart:convert';
 import 'package:drift/drift.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
@@ -23,77 +25,7 @@ import '../core/errors.dart';
 import '../database/database.dart';
 import '../models/models.dart';
 import 'core_providers.dart';
-
-// Exercises provider
-final exercisesProvider = FutureProvider<List<ExerciseModel>>((ref) async {
-  final db = ref.watch(databaseProvider);
-  final exercises = await db.getAllExercises();
-  
-  if (exercises.isEmpty) {
-    // Load exercises from JSON if database is empty
-    await ref.read(exerciseLoaderProvider.future);
-    return db.getAllExercises().then((list) => list.map((e) => ExerciseModel(
-      id: e.id,
-      name: e.name,
-      category: e.category,
-      bodyPart: e.bodyPart,
-      equipment: e.equipment,
-      muscleGroup: e.muscleGroup,
-      target: e.target,
-    )).toList());
-  }
-  
-  return exercises.map((e) => ExerciseModel(
-    id: e.id,
-    name: e.name,
-    category: e.category,
-    bodyPart: e.bodyPart,
-    equipment: e.equipment,
-    muscleGroup: e.muscleGroup,
-    target: e.target,
-  )).toList();
-});
-
-// Load exercises from JSON file
-final exerciseLoaderProvider = FutureProvider<void>((ref) async {
-  final db = ref.read(databaseProvider);
-  
-  // Load exercises from assets
-  final String jsonString = await rootBundle.loadString('assets/exercises.json');
-  final List<dynamic> jsonList = json.decode(jsonString);
-  
-  // Convert to database companions and insert
-  final exercises = jsonList.map((e) => ExercisesCompanion(
-    id: Value(e['id']?.toString() ?? ''),
-    name: Value(e['name']?.toString() ?? ''),
-    category: Value(e['category']?.toString() ?? ''),
-    bodyPart: Value(e['bodyPart']?.toString() ?? ''),
-    equipment: Value(e['equipment']?.toString() ?? ''),
-    muscleGroup: Value(e['muscleGroup']?.toString()),
-    secondaryMuscles: Value(e['secondaryMuscles'] != null ? json.encode(e['secondaryMuscles']) : null),
-    target: Value(e['target']?.toString()),
-    instructions: Value(e['instructions'] != null ? json.encode(e['instructions']) : null),
-  )).toList();
-  
-  await db.insertExercises(exercises);
-});
-
-// Exercise search provider
-final exerciseSearchProvider = StateProvider<String>((ref) => '');
-
-final filteredExercisesProvider = Provider<AsyncValue<List<ExerciseModel>>>((ref) {
-  final exercisesAsync = ref.watch(exercisesProvider);
-  final searchQuery = ref.watch(exerciseSearchProvider).toLowerCase();
-  
-  return exercisesAsync.whenData((exercises) {
-    if (searchQuery.isEmpty) return exercises;
-    return exercises.where((e) =>
-      e.name.toLowerCase().contains(searchQuery) ||
-      e.category.toLowerCase().contains(searchQuery) ||
-      e.bodyPart.toLowerCase().contains(searchQuery)
-    ).toList();
-  });
-});
+import 'exercise_providers.dart';
 
 // Active workout provider
 final activeWorkoutProvider = StateNotifierProvider<ActiveWorkoutNotifier, WorkoutSessionModel?>((ref) {
@@ -565,16 +497,6 @@ final workoutHistoryProvider = FutureProvider<List<WorkoutSessionModel>>((ref) a
     status: WorkoutStatus.fromString(s.status),
     templateId: s.templateId,
   )).toList();
-});
-
-// Exercise categories provider
-final exerciseCategoriesProvider = Provider<List<String>>((ref) {
-  return ['abs', 'back', 'cardio', 'chest', 'legs', 'shoulders', 'waist', 'lower arms', 'upper arms'];
-});
-
-// Equipment types provider
-final equipmentTypesProvider = Provider<List<String>>((ref) {
-  return ['body weight', 'barbell', 'dumbbell', 'cable', 'machine', 'kettlebell', 'band', 'other'];
 });
 
 // Daily quests provider
