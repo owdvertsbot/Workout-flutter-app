@@ -1,7 +1,7 @@
-name: rpg_workout_app
-description: "Offline-first RPG Workout App with XP, levels, and PR tracking"
+name: adaptive_health
+description: "Evidence-based digital health coach that automatically prescribes personalized daily plans based on scientific exercise, nutrition, and recovery principles"
 publish_to: 'none'
-version: 1.0.0+1
+version: 3.0.0+1
 
 environment:
   sdk: ^3.4.0

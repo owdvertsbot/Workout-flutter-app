@@ -1,37 +1,54 @@
-# RPG Workout App
+# Adaptive Health
 
-A gamified workout tracking app that transforms fitness into an RPG-like experience. Track your workouts, earn XP, level up your character, and complete quests!
+**Evidence-based digital health coach for complete beginners**
 
-![RPG Workout](https://img.shields.io/badge/version-2.4.0-blue) ![Flutter](https://img.shields.io/badge/Flutter-3.22.0-green) ![License](https://img.shields.io/badge/license-MIT-purple)
+Adaptive Health is a modern, minimal health app that automatically prescribes personalized daily plans based on scientific exercise, nutrition, and recovery principles. The app adapts continuously based on workout performance, recovery, sleep, and simple feedback.
+
+![Adaptive Health](https://img.shields.io/badge/version-3.0.0-blue) ![Flutter](https://img.shields.io/badge/Flutter-3.22.0-green) ![License](https://img.shields.io/badge/license-MIT-purple)
 
 ## ✨ Features
 
-### 🎮 Gamification
-- **XP System**: Earn experience points for every set, workout, and PR
-- **Leveling**: Progress through levels as you train (Level 1 → Legendary Champion)
-- **Gold & Rewards**: Earn gold from completing workout plans
-- **RPG Stats**: Strength, Dexterity, Vitality, Endurance
+### 🎯 Automatic Personalization
+- **Comprehensive Assessment**: Captures age, height, weight, activity level, goals, equipment, injuries, allergies, budget, and cooking skills
+- **Evidence-Based Prescriptions**: All recommendations powered by scientific research
+- **Continuous Adaptation**: Adjusts plans based on performance, recovery, sleep, and feedback
+- **"Why?" Explanations**: Every recommendation includes transparent scientific rationale
 
-### 💪 Workout Tracking
-- Log sets with weight, reps, and RPE (Rate of Perceived Exertion)
-- 4 set types: Warmup, Working, Drop Set, Failure
-- Rest timer between sets
-- Exercise library with 1,300+ exercises
+### 🏋️ Movement
+- Auto-prescribed daily exercises (no manual selection needed)
+- Accessibility-based substitutions for injuries and disabilities
+- Progressive adaptation based on performance
+- Clean, beginner-friendly interface
 
-### 🏆 Quest Missions
-- Pre-built workout plans (Beginner → Advanced)
-- Daily and weekly challenges
-- Muscle group focused routines
+### 🥗 Nutrition
+- Personalized calorie and macro targets
+- Meal timing recommendations
+- Hydration tracking
+- Budget-conscious meal guidance
 
-### 📊 Analytics
-- Workout history and progress charts
-- Personal Records (PR) tracking
-- Volume and consistency metrics
+### 😴 Recovery
+- Sleep optimization guidance
+- Readiness scoring
+- Recovery activity suggestions
+- Stress management
+
+### 📚 Education
+- Science-backed health content
+- Understanding the "why" behind recommendations
+- Habit formation guidance
+
+### 💫 Progress System (Adapted)
+- XP represents effective adaptation
+- Levels show overall progress
+- Ranks indicate training maturity
+- Achievements celebrate health milestones
+
+*Note: We retained the progression system as motivational visualization while removing fantasy themes, currencies, and game-like interfaces.*
 
 ### 🔄 Offline-First
 - SQLite database for local storage
 - No internet required for core features
-- Data persists across sessions
+- Cloud sync ready for future implementation
 
 ## 🚀 Getting Started
 
@@ -65,6 +82,9 @@ flutter build apk --debug
 
 # Release APK
 flutter build apk --release
+
+# Android App Bundle (for Play Store)
+flutter build appbundle --release
 ```
 
 ## 📁 Project Structure
@@ -73,85 +93,28 @@ flutter build apk --release
 lib/
 ├── core/                    # Error handling, constants
 │   └── errors.dart         # Custom exceptions and Result types
-├── database/                # SQLite database (Drift)
+├── database/               # SQLite database (Drift)
 │   ├── database.dart       # Database definitions
 │   └── database.g.dart     # Generated Drift code
-├── models/                 # Data models
-│   └── models.dart        # Exercise, Set, Player, Quest models
+├── health/                 # NEW: Adaptive Health module
+│   ├── core/
+│   │   └── theme.dart     # Material 3 design system
+│   ├── models/
+│   │   ├── user_profile.dart      # User data model
+│   │   ├── prescriptions.dart     # Exercise/nutrition prescriptions
+│   │   └── adaptation.dart       # Performance tracking
+│   ├── providers/
+│   │   ├── prescription_providers.dart  # Prescription generation
+│   │   └── adaptation_providers.dart    # Performance/feedback
+│   ├── evidence/
+│   │   └── evidence_service.dart        # Scientific explanations
+│   └── screens/
+│       └── main_shell.dart     # Four-pillar navigation
+├── models/                 # Legacy models (being migrated)
 ├── providers/              # State management (Riverpod)
-│   └── providers.dart     # All providers (~1,170 lines)
-├── screens/               # UI screens
-│   ├── splash_screen.dart
-│   ├── onboarding_screen.dart
-│   ├── dashboard_screen.dart
-│   ├── exercise_library_screen.dart
-│   ├── active_workout_screen.dart
-│   ├── workout_plans_screen.dart
-│   ├── progress_analytics_screen.dart
-│   └── profile_screen.dart
+├── screens/               # Legacy UI screens (being migrated)
 └── main.dart              # App entry point
 ```
-
-## 🎯 XP & Leveling System
-
-| Source | XP Formula |
-|--------|-----------|
-| Set Completed | `(15 + weight × reps × 0.002) × type_mult × streak_mult × rpe_mult` |
-| Workout Complete | Sum of all set XP |
-| All-Time PR | +250 XP |
-| 2-Month PR | +100 XP |
-| Volume PR | +50 XP |
-
-**Set Type Multipliers**: Warmup=0.5, Working=1.0, Drop=1.2, Failure=1.3
-**Streak Multiplier**: 1.0 to 1.5 over 30 days
-**RPE Multipliers**: ≤6=1.0, 7-8=1.1, 9-10=1.25
-
-**Level Formula**: `250 × level^1.5 + 500` XP per level
-
-### Character Titles
-| Level | Title |
-|-------|-------|
-| 1-4 | Novice Trainee |
-| 5-9 | Apprentice |
-| 10-19 | Skilled Warrior |
-| 20-29 | Veteran Adventurer |
-| 30-39 | Elite Fighter |
-| 40-49 | Master Warrior |
-| 50+ | Legendary Champion |
-
-## 🏋️ Exercise Data
-
-Exercises are loaded from `assets/exercises.json` (~13 MB, 1,300+ exercises).
-
-The dataset includes:
-- Exercise name, category, body part
-- Primary and secondary muscles
-- Equipment required
-- Step-by-step instructions
-
-## 🔧 Configuration
-
-### Environment Variables
-Create a `.env` file for API keys (if using cloud features):
-```env
-API_KEY=your_api_key_here
-```
-
-### Database
-The app uses Drift (SQLite) with offline storage. Schema version is tracked for future migrations.
-
-## 📱 Screens
-
-| Screen | Purpose |
-|--------|---------|
-| Splash | App initialization, session recovery |
-| Onboarding | First-time user setup |
-| Dashboard | Daily overview, quick actions |
-| Exercise Library | Browse/search 1,300+ exercises |
-| Active Workout | Log sets, rest timer, complete workout |
-| Quest Missions | Pre-built workout plans |
-| Progress | Charts, history, PRs |
-| Profile | Character stats, settings |
 
 ## 🧪 Testing
 
@@ -171,8 +134,7 @@ flutter test --coverage
 | drift | SQLite database |
 | sqlite3_flutter_libs | SQLite native bindings |
 | shared_preferences | Simple key-value storage |
-| google_fonts | Typography |
-| fl_chart | Charts and graphs |
+| google_fonts | Typography (Inter) |
 | uuid | Unique ID generation |
 
 ## 🔒 Security
@@ -195,3 +157,7 @@ MIT License - see LICENSE file for details.
 ## 📞 Support
 
 For issues and feature requests, please open a GitHub issue.
+
+---
+
+*Formerly known as RPG Workout App. The app is being transformed into Adaptive Health with a focus on evidence-based, beginner-friendly health coaching.*
