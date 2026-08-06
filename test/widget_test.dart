@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:rpg_workout_app/main.dart';
+import 'package:rpg_workout_app/core/app_colors.dart';
 
 void main() {
   group('SplashScreen Tests', () {
@@ -71,9 +72,9 @@ class _TestSplashContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      backgroundColor: Color(0xFF121212),
-      body: Center(
+    return Scaffold(
+      backgroundColor: AppColors.backgroundDark,
+      body: const Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
